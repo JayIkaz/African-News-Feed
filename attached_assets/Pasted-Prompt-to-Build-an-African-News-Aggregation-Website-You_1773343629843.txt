@@ -1,0 +1,392 @@
+Prompt to Build an African News Aggregation Website
+
+You are a senior full-stack engineer and systems architect.
+Build a production-ready web platform that aggregates news articles from the 20 largest print media organisations located within the top 25 GDP economies in Africa.
+
+The site must automatically collect, categorise, and display news articles in a clean, modern interface.
+
+1. Project Overview
+
+Build a news aggregation platform that:
+
+Collects articles from major African newspapers
+
+Groups them by country, topic, and publication
+
+Updates automatically via RSS feeds or scraping
+
+Displays articles in a fast, mobile-first interface
+
+Allows users to filter by country, topic, or source
+
+The platform must be scalable and production-ready, not a prototype.
+
+2. Target Media Sources
+
+Use the largest or most influential print newspapers in major African economies.
+
+Examples include:
+
+Nigeria
+
+The Guardian Nigeria
+
+Vanguard
+
+Punch
+
+Premium Times
+
+South Africa
+
+Sunday Times
+
+Daily Sun
+
+Business Day
+
+Ghana
+
+Daily Graphic
+
+Kenya
+
+Daily Nation
+
+The Standard
+
+Egypt
+
+Al-Ahram
+
+Morocco
+
+Le Matin
+
+Algeria
+
+El Khabar
+
+Ethiopia
+
+Addis Fortune
+
+Tanzania
+
+The Citizen
+
+Uganda
+
+New Vision
+
+Zimbabwe
+
+The Herald
+
+Angola
+
+Jornal de Angola
+
+Ivory Coast
+
+Fraternité Matin
+
+Tunisia
+
+La Presse
+
+(These countries dominate Africa’s media markets and print circulation across the continent. )
+
+Design the architecture so additional news sources can be added easily.
+
+3. Technology Stack
+
+Use modern production tools:
+
+Frontend
+
+Next.js
+
+React
+
+TypeScript
+
+Tailwind CSS
+
+Server Side Rendering
+
+Backend
+
+Node.js
+
+Express or Next API routes
+
+Database
+
+PostgreSQL
+
+Scraping / ingestion
+
+Python microservice
+
+BeautifulSoup
+
+Newspaper3k
+
+RSS feed ingestion
+
+Infrastructure
+
+Docker
+
+Vercel (frontend)
+
+AWS / Fly.io backend
+
+4. Core Features
+News Aggregation Engine
+
+The system must:
+
+Pull articles via RSS where available
+
+Scrape websites where RSS is not available
+
+Extract:
+
+headline
+
+author
+
+date
+
+summary
+
+article URL
+
+publication
+
+country
+
+category
+
+Store results in PostgreSQL.
+
+Deduplicate articles.
+
+Article Categorisation
+
+Automatically classify articles into:
+
+Politics
+
+Business
+
+Technology
+
+Economy
+
+Society
+
+Environment
+
+International
+
+Use a lightweight NLP classifier.
+
+5. Frontend Requirements
+
+Create a modern news interface similar to:
+
+Google News
+
+Financial Times layout
+
+Apple News
+
+Homepage sections:
+
+Top Stories
+Latest News
+Country Filters
+Topic Filters
+
+Each article card must display:
+
+headline
+
+source
+
+country
+
+summary
+
+publication date
+
+link to original article
+
+6. Country Filter
+
+Allow filtering by country:
+
+Examples:
+
+Nigeria
+
+South Africa
+
+Kenya
+
+Egypt
+
+Ghana
+
+Morocco
+
+Ethiopia
+
+Tanzania
+
+Algeria
+
+Uganda
+
+7. Advanced Features
+
+Add:
+
+Search functionality
+
+Trending stories (most shared)
+
+AI summary for each article
+
+Topic clusters
+
+“Compare coverage” across multiple newspapers.
+
+8. Scraper Architecture
+
+Create a modular scraper system.
+
+Each source should have its own scraper file.
+
+Example:
+
+/scrapers
+  nigeria_guardian.py
+  daily_nation.py
+  al_ahram.py
+  vanguard.py
+
+All scrapers must output a common JSON format.
+
+9. Database Schema
+
+Tables:
+
+sources
+
+id
+
+name
+
+country
+
+homepage
+
+rss_url
+
+articles
+
+id
+
+title
+
+summary
+
+author
+
+source_id
+
+country
+
+category
+
+published_date
+
+url
+
+created_at
+
+10. Admin Dashboard
+
+Create an admin panel allowing:
+
+Add/remove news sources
+
+Monitor scraper health
+
+View ingestion logs
+
+Re-run scrapers manually
+
+11. Performance Requirements
+
+Page load < 1.5 seconds.
+
+Use:
+
+CDN
+
+caching
+
+lazy loading
+
+12. Deployment
+
+Provide Docker files and deployment instructions.
+
+Environment variables must include:
+
+DATABASE_URL
+SCRAPER_INTERVAL
+OPENAI_KEY (for summarisation)
+13. UI Style
+
+Design should be:
+
+Clean
+Minimal
+Editorial
+Typography-driven
+
+Think:
+
+Financial Times + Apple News.
+
+14. Deliverables
+
+Generate:
+
+Full source code
+
+Database schema
+
+Scraper microservice
+
+Deployment guide
+
+Sample data ingestion
+
+15. Bonus Features
+
+If possible include:
+
+AI article summarisation
+
+Sentiment analysis of news coverage
+
+“Pan-African headlines” daily briefing
+
+Email newsletter generator

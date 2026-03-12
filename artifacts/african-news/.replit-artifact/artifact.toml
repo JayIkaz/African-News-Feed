@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "African News Aggregator"
+version = "1.0.0"
+id = "artifacts/african-news"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+localPort = 23696
+name = "web"
+paths = ["/"]
+
+[services.development]
+run = "pnpm --filter @workspace/african-news run dev"
+
+[services.env]
+PORT = "23696"
+BASE_PATH = "/"
+
+[services.production]
+build = ["pnpm", "--filter", "@workspace/african-news", "run", "build"]
+publicDir = "artifacts/african-news/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"

@@ -1,15 +1,26 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: African News Aggregator API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: articles
+    description: Article operations
+  - name: sources
+    description: News source operations
+  - name: categories
+    description: Category operations
+  - name: countries
+    description: Country operations
+  - name: search
+    description: Search operations
+  - name: ingestion
+    description: Scraper/ingestion operations
 paths:
   /healthz:
     get:
@@ -24,6 +35,211 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /articles:
+    get:
+      operationId: listArticles
+      tags: [articles]
+      summary: List articles
+      description: Returns paginated articles with optional filters
+      parameters:
+        - name: country
+          in: query
+          schema:
+            type: string
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: sourceId
+          in: query
+          schema:
+            type: integer
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: List of articles
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArticleListResponse"
+
+  /articles/trending:
+    get:
+      operationId: getTrendingArticles
+      tags: [articles]
+      summary: Get trending articles
+      description: Returns top trending articles based on recency and source diversity
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        "200":
+          description: Trending articles
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArticleListResponse"
+
+  /articles/top-stories:
+    get:
+      operationId: getTopStories
+      tags: [articles]
+      summary: Get top stories
+      description: Returns the top featured stories
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 6
+      responses:
+        "200":
+          description: Top stories
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArticleListResponse"
+
+  /articles/{id}:
+    get:
+      operationId: getArticle
+      tags: [articles]
+      summary: Get a single article
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Article details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Article"
+        "404":
+          description: Article not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /search:
+    get:
+      operationId: searchArticles
+      tags: [search]
+      summary: Search articles
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: Search results
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArticleListResponse"
+
+  /sources:
+    get:
+      operationId: listSources
+      tags: [sources]
+      summary: List all news sources
+      responses:
+        "200":
+          description: List of sources
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Source"
+
+  /countries:
+    get:
+      operationId: listCountries
+      tags: [countries]
+      summary: List countries with article counts
+      responses:
+        "200":
+          description: Countries list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CountrySummary"
+
+  /categories:
+    get:
+      operationId: listCategories
+      tags: [categories]
+      summary: List categories with article counts
+      responses:
+        "200":
+          description: Categories list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CategorySummary"
+
+  /ingestion/trigger:
+    post:
+      operationId: triggerIngestion
+      tags: [ingestion]
+      summary: Manually trigger article ingestion
+      responses:
+        "200":
+          description: Ingestion triggered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IngestionStatus"
+
+  /ingestion/status:
+    get:
+      operationId: getIngestionStatus
+      tags: [ingestion]
+      summary: Get ingestion status for all sources
+      responses:
+        "200":
+          description: Ingestion status per source
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SourceIngestionStatus"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +250,164 @@ components:
       required:
         - status
 
+    Article:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        summary:
+          type: string
+        author:
+          type: string
+          nullable: true
+        sourceId:
+          type: integer
+        sourceName:
+          type: string
+        country:
+          type: string
+        category:
+          type: string
+        publishedDate:
+          type: string
+          format: date-time
+        url:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        aiSummary:
+          type: string
+          nullable: true
+      required:
+        - id
+        - title
+        - summary
+        - sourceId
+        - sourceName
+        - country
+        - category
+        - publishedDate
+        - url
+        - createdAt
+
+    ArticleListResponse:
+      type: object
+      properties:
+        articles:
+          type: array
+          items:
+            $ref: "#/components/schemas/Article"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+        hasMore:
+          type: boolean
+      required:
+        - articles
+        - total
+        - page
+        - limit
+        - hasMore
+
+    Source:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        country:
+          type: string
+        homepage:
+          type: string
+        rssUrl:
+          type: string
+          nullable: true
+        isActive:
+          type: boolean
+        articleCount:
+          type: integer
+      required:
+        - id
+        - name
+        - country
+        - homepage
+        - isActive
+        - articleCount
+
+    CountrySummary:
+      type: object
+      properties:
+        country:
+          type: string
+        articleCount:
+          type: integer
+        sources:
+          type: integer
+      required:
+        - country
+        - articleCount
+        - sources
+
+    CategorySummary:
+      type: object
+      properties:
+        category:
+          type: string
+        articleCount:
+          type: integer
+      required:
+        - category
+        - articleCount
+
+    IngestionStatus:
+      type: object
+      properties:
+        message:
+          type: string
+        sourcesTriggered:
+          type: integer
+      required:
+        - message
+        - sourcesTriggered
+
+    SourceIngestionStatus:
+      type: object
+      properties:
+        sourceId:
+          type: integer
+        sourceName:
+          type: string
+        country:
+          type: string
+        lastFetched:
+          type: string
+          format: date-time
+          nullable: true
+        articlesFetched:
+          type: integer
+        status:
+          type: string
+      required:
+        - sourceId
+        - sourceName
+        - country
+        - articlesFetched
+        - status
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+      required:
+        - error
+        - message

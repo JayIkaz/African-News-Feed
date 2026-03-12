@@ -1,0 +1,14 @@
+packages:
+  "date-fns": "For elegant date formatting"
+  "lucide-react": "For UI icons across the application"
+  "clsx": "For conditional class names"
+  "tailwind-merge": "For merging tailwind classes safely"
+
+images:
+  - path: "artifacts/african-news/public/images/logo-icon.png"
+    description: "A minimalist, elegant, modern geometric icon suitable for a premium news publication, monochromatic deep slate blue, abstract 'A' and 'N' interwoven"
+    aspect_ratio: "1:1"
+
+notes:
+  - "Assuming @workspace/api-client-react exports the generated React Query hooks."
+  - "The API article schema does not include an image URL, so deterministic Unsplash placeholder images are mapped based on the article category and ID to provide a rich visual experience."
