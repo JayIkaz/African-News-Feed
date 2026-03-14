@@ -42,6 +42,31 @@ const SOURCES = [
   { name: "Dakar Actu", country: "Senegal", homepage: "https://www.dakaractu.com", rssUrl: "https://www.dakaractu.com/rss.xml" },
   { name: "The New Times Rwanda", country: "Rwanda", homepage: "https://www.newtimes.co.rw", rssUrl: "https://www.newtimes.co.rw/rss.xml" },
   { name: "Cameroon Tribune", country: "Cameroon", homepage: "https://www.cameroon-tribune.cm", rssUrl: "https://www.cameroon-tribune.cm/rss.xml" },
+  // Kenya additional
+  { name: "Capital FM Kenya", country: "Kenya", homepage: "https://www.capitalfm.co.ke", rssUrl: "https://www.capitalfm.co.ke/news/feed/" },
+  { name: "Business Daily Africa", country: "Kenya", homepage: "https://www.businessdailyafrica.com", rssUrl: "https://www.businessdailyafrica.com/feed/" },
+  { name: "The Standard Kenya", country: "Kenya", homepage: "https://www.standardmedia.co.ke", rssUrl: "https://www.standardmedia.co.ke/rss" },
+  // Zambia
+  { name: "Lusaka Times", country: "Zambia", homepage: "https://www.lusakatimes.com", rssUrl: "https://www.lusakatimes.com/feed/" },
+  { name: "Daily Mail Zambia", country: "Zambia", homepage: "https://www.daily-mail.co.zm", rssUrl: "https://www.daily-mail.co.zm/feed/" },
+  { name: "Zambia Reports", country: "Zambia", homepage: "https://zambiareports.com", rssUrl: "https://zambiareports.com/feed/" },
+  { name: "Diggers News", country: "Zambia", homepage: "https://diggers.news", rssUrl: "https://diggers.news/feed/" },
+  // Malawi
+  { name: "Nyasa Times", country: "Malawi", homepage: "https://www.nyasatimes.com", rssUrl: "https://www.nyasatimes.com/feed/" },
+  // Libya
+  { name: "Libya Herald", country: "Libya", homepage: "https://libyaherald.com", rssUrl: "https://libyaherald.com/feed/" },
+  // Liberia
+  { name: "FrontPage Africa", country: "Liberia", homepage: "https://frontpageafricaonline.com", rssUrl: "https://frontpageafricaonline.com/feed/" },
+  // Eritrea
+  { name: "TesfaNews", country: "Eritrea", homepage: "https://www.tesfanews.net", rssUrl: "https://www.tesfanews.net/feed/" },
+  // Burundi
+  { name: "Iwacu Burundi", country: "Burundi", homepage: "https://www.iwacu-burundi.org", rssUrl: "https://www.iwacu-burundi.org/feed/" },
+  // Lesotho
+  { name: "Lesotho Times", country: "Lesotho", homepage: "https://lestimes.com", rssUrl: "https://lestimes.com/feed/" },
+  // South Sudan
+  { name: "Eye Radio", country: "South Sudan", homepage: "https://eyeradio.org", rssUrl: "https://eyeradio.org/feed/" },
+  // Eswatini
+  { name: "Times of Eswatini", country: "Eswatini", homepage: "https://times.co.sz", rssUrl: "https://times.co.sz/feed/" },
 ];
 
 export async function seedSourcesIfEmpty(): Promise<void> {

@@ -4,18 +4,11 @@ import { Search, Menu, X, Globe, TrendingUp, ChevronDown, MapPin } from "lucide-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useListCountries } from "@workspace/api-client-react";
+import { COUNTRY_FLAGS } from "@/lib/countries";
 
 const CATEGORIES = [
   "Politics", "Business", "Technology", "Economy", "Society", "Environment", "International"
 ];
-
-const COUNTRY_FLAGS: Record<string, string> = {
-  "Nigeria": "🇳🇬", "South Africa": "🇿🇦", "Kenya": "🇰🇪", "Egypt": "🇪🇬",
-  "Ghana": "🇬🇭", "Morocco": "🇲🇦", "Ethiopia": "🇪🇹", "Tanzania": "🇹🇿",
-  "Uganda": "🇺🇬", "Algeria": "🇩🇿", "Zimbabwe": "🇿🇼", "Angola": "🇦🇴",
-  "Ivory Coast": "🇨🇮", "Tunisia": "🇹🇳", "Senegal": "🇸🇳", "Rwanda": "🇷🇼",
-  "Cameroon": "🇨🇲",
-};
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);

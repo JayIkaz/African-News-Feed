@@ -7,26 +7,7 @@ import { useListArticles, useListSources } from "@workspace/api-client-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Sidebar } from "@/components/article/Sidebar";
 import { Button } from "@/components/ui/button";
-
-const COUNTRY_FLAGS: Record<string, string> = {
-  "Nigeria": "🇳🇬",
-  "South Africa": "🇿🇦",
-  "Kenya": "🇰🇪",
-  "Egypt": "🇪🇬",
-  "Ghana": "🇬🇭",
-  "Morocco": "🇲🇦",
-  "Ethiopia": "🇪🇹",
-  "Tanzania": "🇹🇿",
-  "Uganda": "🇺🇬",
-  "Algeria": "🇩🇿",
-  "Zimbabwe": "🇿🇼",
-  "Angola": "🇦🇴",
-  "Ivory Coast": "🇨🇮",
-  "Tunisia": "🇹🇳",
-  "Senegal": "🇸🇳",
-  "Rwanda": "🇷🇼",
-  "Cameroon": "🇨🇲",
-};
+import { COUNTRY_FLAGS, COUNTRY_REGIONS, REGION_BADGE_COLORS } from "@/lib/countries";
 
 const LIMIT = 12;
 
@@ -58,10 +39,14 @@ export default function Country() {
           <div className="flex items-center gap-5">
             <span className="text-6xl md:text-7xl leading-none" role="img" aria-label={decodedCountry}>{flag}</span>
             <div>
-              <div className="flex items-center gap-2 mb-2">
-                <MapPin className="w-4 h-4 text-primary" />
-                <span className="text-primary font-bold tracking-widest uppercase text-xs">Region Focus</span>
-              </div>
+              {(() => {
+                const region = COUNTRY_REGIONS[decodedCountry];
+                return region ? (
+                  <span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full mb-3 ${REGION_BADGE_COLORS[region]}`}>
+                    <MapPin className="w-3 h-3" /> {region}
+                  </span>
+                ) : null;
+              })()}
               <h1 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-2">{decodedCountry}</h1>
               <p className="text-muted-foreground text-base max-w-2xl">
                 News from {countrySources.length > 0 ? `${countrySources.length} source${countrySources.length > 1 ? "s" : ""} including ${countrySources.slice(0, 2).map(s => s.name).join(", ")}` : "leading publications"} covering {decodedCountry}.
