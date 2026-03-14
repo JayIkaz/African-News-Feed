@@ -1,23 +1,47 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { Search, Menu, X, Globe, TrendingUp } from "lucide-react";
+import { Search, Menu, X, Globe, TrendingUp, ChevronDown, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useListCountries } from "@workspace/api-client-react";
 
 const CATEGORIES = [
   "Politics", "Business", "Technology", "Economy", "Society", "Environment", "International"
 ];
 
+const COUNTRY_FLAGS: Record<string, string> = {
+  "Nigeria": "🇳🇬", "South Africa": "🇿🇦", "Kenya": "🇰🇪", "Egypt": "🇪🇬",
+  "Ghana": "🇬🇭", "Morocco": "🇲🇦", "Ethiopia": "🇪🇹", "Tanzania": "🇹🇿",
+  "Uganda": "🇺🇬", "Algeria": "🇩🇿", "Zimbabwe": "🇿🇼", "Angola": "🇦🇴",
+  "Ivory Coast": "🇨🇮", "Tunisia": "🇹🇳", "Senegal": "🇸🇳", "Rwanda": "🇷🇼",
+  "Cameroon": "🇨🇲",
+};
+
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [countriesOpen, setCountriesOpen] = useState(false);
   const [, setLocation] = useLocation();
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Handle scroll effect
-  if (typeof window !== "undefined") {
-    window.onscroll = () => setIsScrolled(window.scrollY > 10);
-  }
+  const { data: countries } = useListCountries();
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setCountriesOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,15 +76,12 @@ export function Navbar() {
         <div className="flex justify-between items-center h-16 md:h-20">
           {/* Brand */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 bg-primary text-primary-foreground flex items-center justify-center rounded-sm overflow-hidden group-hover:bg-accent transition-colors">
+            <div className="w-10 h-10 bg-primary text-primary-foreground flex items-center justify-center rounded-sm overflow-hidden group-hover:bg-accent transition-colors relative">
               <img 
                 src={`${import.meta.env.BASE_URL}images/logo-icon.png`} 
                 alt="AfricaNews Logo" 
                 className="w-full h-full object-cover"
-                onError={(e) => {
-                  // Fallback if image not generated yet
-                  (e.target as HTMLElement).style.display = 'none';
-                }}
+                onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }}
               />
               <span className="font-serif font-bold text-xl absolute">A</span>
             </div>
@@ -92,7 +113,7 @@ export function Navbar() {
           </div>
         </div>
 
-        {/* Category Navigation (Desktop) */}
+        {/* Category + Countries Navigation (Desktop) */}
         <nav className="hidden md:flex items-center justify-center space-x-1 py-3 border-t border-border/50">
           {CATEGORIES.map((category) => (
             <Link 
@@ -104,15 +125,74 @@ export function Navbar() {
             </Link>
           ))}
           <span className="text-border mx-2">|</span>
-          <Link href="/countries" className="px-4 py-1.5 text-sm font-medium text-foreground/80 hover:text-primary hover:bg-primary/5 rounded-full transition-all">
-            Countries
-          </Link>
+
+          {/* Countries Dropdown */}
+          <div className="relative" ref={dropdownRef}>
+            <button
+              onClick={() => setCountriesOpen(!countriesOpen)}
+              className={`flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium rounded-full transition-all ${
+                countriesOpen
+                  ? "bg-primary text-primary-foreground"
+                  : "text-foreground/80 hover:text-primary hover:bg-primary/5"
+              }`}
+            >
+              <MapPin className="w-3.5 h-3.5" />
+              Countries
+              <ChevronDown className={`w-3.5 h-3.5 transition-transform ${countriesOpen ? "rotate-180" : ""}`} />
+            </button>
+
+            {countriesOpen && (
+              <div className="absolute right-0 top-full mt-2 w-72 bg-background border border-border rounded-xl shadow-xl z-50 py-2 overflow-hidden">
+                <div className="px-4 py-2 border-b border-border flex items-center justify-between">
+                  <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Browse by Country</span>
+                  <Link
+                    href="/countries"
+                    onClick={() => setCountriesOpen(false)}
+                    className="text-xs text-primary hover:underline font-medium"
+                  >
+                    View all →
+                  </Link>
+                </div>
+                <div className="max-h-80 overflow-y-auto">
+                  {countries && countries.length > 0 ? (
+                    countries.map((item) => (
+                      <Link
+                        key={item.country}
+                        href={`/country/${encodeURIComponent(item.country)}`}
+                        onClick={() => setCountriesOpen(false)}
+                        className="flex items-center justify-between px-4 py-2.5 hover:bg-secondary transition-colors group"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <span className="text-lg leading-none">{COUNTRY_FLAGS[item.country] ?? "🌍"}</span>
+                          <span className="text-sm font-medium group-hover:text-primary transition-colors">{item.country}</span>
+                        </div>
+                        <span className="text-xs text-muted-foreground bg-secondary rounded-full px-2 py-0.5 font-medium">
+                          {item.articleCount.toLocaleString()}
+                        </span>
+                      </Link>
+                    ))
+                  ) : (
+                    <div className="px-4 py-6 text-center text-sm text-muted-foreground">Loading countries...</div>
+                  )}
+                </div>
+                <div className="px-4 py-2 border-t border-border">
+                  <Link
+                    href="/countries"
+                    onClick={() => setCountriesOpen(false)}
+                    className="block text-center text-sm font-medium text-primary hover:text-accent transition-colors py-1"
+                  >
+                    See all country pages →
+                  </Link>
+                </div>
+              </div>
+            )}
+          </div>
         </nav>
       </div>
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-border bg-background absolute w-full shadow-xl">
+        <div className="md:hidden border-t border-border bg-background absolute w-full shadow-xl z-50">
           <div className="px-4 pt-4 pb-6 space-y-4">
             <form onSubmit={handleSearch} className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -137,12 +217,25 @@ export function Navbar() {
                 </Link>
               ))}
               <div className="my-2 border-t border-border" />
+              <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-2">Countries</div>
+              {countries && countries.slice(0, 8).map((item) => (
+                <Link 
+                  key={item.country}
+                  href={`/country/${encodeURIComponent(item.country)}`}
+                  className="flex items-center gap-2 px-3 py-2 text-base font-medium rounded-md hover:bg-secondary transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <span>{COUNTRY_FLAGS[item.country] ?? "🌍"}</span>
+                  {item.country}
+                  <span className="ml-auto text-sm text-muted-foreground">{item.articleCount}</span>
+                </Link>
+              ))}
               <Link 
                 href="/countries"
-                className="px-3 py-2 text-base font-medium rounded-md hover:bg-secondary transition-colors"
+                className="px-3 py-2 text-base font-medium rounded-md hover:bg-secondary transition-colors text-primary"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Browse by Country
+                See all countries →
               </Link>
             </nav>
           </div>

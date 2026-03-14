@@ -9,6 +9,7 @@ import ArticleDetail from "@/pages/ArticleDetail";
 import Category from "@/pages/Category";
 import Country from "@/pages/Country";
 import Search from "@/pages/Search";
+import Countries from "@/pages/Countries";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient({
@@ -29,9 +30,9 @@ function Router() {
       <Route path="/category/:category" component={Category} />
       <Route path="/country/:country" component={Country} />
       <Route path="/search" component={Search} />
+      <Route path="/countries" component={Countries} />
       {/* Fallbacks for static sidebar links */}
       <Route path="/trending" component={Home} />
-      <Route path="/countries" component={Home} />
       <Route path="/sources" component={Home} />
       <Route component={NotFound} />
     </Switch>
