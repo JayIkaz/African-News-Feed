@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useParams } from "wouter";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  ChevronLeft, ChevronRight,
+  Landmark, TrendingUp, Cpu, BarChart2, Users, Leaf, Globe, Newspaper,
+} from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { ArticleCard } from "@/components/article/ArticleCard";
 import { useListArticles } from "@workspace/api-client-react";
@@ -8,26 +11,47 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Sidebar } from "@/components/article/Sidebar";
 import { Button } from "@/components/ui/button";
 
-const CATEGORY_DESCRIPTIONS: Record<string, string> = {
-  Politics: "Elections, governance, policy, and political analysis from across the African continent.",
-  Business: "Markets, trade, corporate news, and business strategy from Africa's leading economies.",
-  Technology: "Innovation, startups, digital transformation, and tech news from the continent.",
-  Economy: "GDP, inflation, fiscal policy, economic growth, and financial analysis.",
-  Society: "Health, education, culture, community, sports, and social issues.",
-  Environment: "Climate, wildlife, conservation, energy, and environmental reporting.",
-  International: "Africa on the world stage — diplomacy, foreign affairs, and global events.",
-  General: "A wide range of news and features from across the continent.",
-};
-
-const CATEGORY_EMOJI: Record<string, string> = {
-  Politics: "🏛️",
-  Business: "📈",
-  Technology: "💻",
-  Economy: "💰",
-  Society: "🤝",
-  Environment: "🌿",
-  International: "🌍",
-  General: "📰",
+const CATEGORY_META: Record<string, { description: string; Icon: React.ElementType; color: string }> = {
+  Politics: {
+    description: "Elections, governance, policy, and political analysis from across the African continent.",
+    Icon: Landmark,
+    color: "text-blue-400",
+  },
+  Business: {
+    description: "Markets, trade, corporate news, and business strategy from Africa's leading economies.",
+    Icon: TrendingUp,
+    color: "text-emerald-400",
+  },
+  Technology: {
+    description: "Innovation, startups, digital transformation, and tech news from the continent.",
+    Icon: Cpu,
+    color: "text-violet-400",
+  },
+  Economy: {
+    description: "GDP, inflation, fiscal policy, economic growth, and financial analysis.",
+    Icon: BarChart2,
+    color: "text-amber-400",
+  },
+  Society: {
+    description: "Health, education, culture, community, sports, and social issues.",
+    Icon: Users,
+    color: "text-rose-400",
+  },
+  Environment: {
+    description: "Climate, wildlife, conservation, energy, and environmental reporting.",
+    Icon: Leaf,
+    color: "text-green-400",
+  },
+  International: {
+    description: "Africa on the world stage — diplomacy, foreign affairs, and global events.",
+    Icon: Globe,
+    color: "text-sky-400",
+  },
+  General: {
+    description: "A wide range of news and features from across the continent.",
+    Icon: Newspaper,
+    color: "text-slate-400",
+  },
 };
 
 const LIMIT = 12;
@@ -44,18 +68,25 @@ export default function Category() {
   });
 
   const totalPages = data ? Math.ceil(data.total / LIMIT) : 1;
-  const description = CATEGORY_DESCRIPTIONS[decodedCategory] ?? `Latest news and analysis on ${decodedCategory.toLowerCase()} from across Africa.`;
-  const emoji = CATEGORY_EMOJI[decodedCategory] ?? "📰";
+  const meta = CATEGORY_META[decodedCategory] ?? {
+    description: `Latest news and analysis on ${decodedCategory.toLowerCase()} from across Africa.`,
+    Icon: Newspaper,
+    color: "text-slate-400",
+  };
+  const { Icon, color, description } = meta;
 
   return (
     <AppLayout>
-      {/* Category Header */}
       <div className="bg-primary text-primary-foreground py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
-            <span className="text-4xl mb-4 block" role="img" aria-label={decodedCategory}>{emoji}</span>
-            <span className="text-accent font-bold tracking-widest uppercase text-sm mb-2 block">Section</span>
-            <h1 className="font-serif text-4xl md:text-6xl font-bold mb-4">{decodedCategory}</h1>
+            <div className={`w-14 h-14 rounded-xl bg-white/10 flex items-center justify-center mb-5 ${color}`}>
+              <Icon className="w-7 h-7" />
+            </div>
+            <span className="text-accent font-bold tracking-widest uppercase text-sm mb-3 block">Section</span>
+            <h1 className="font-serif text-4xl md:text-6xl font-bold mb-4 text-white">
+              {decodedCategory}
+            </h1>
             <p className="text-primary-foreground/70 text-lg md:text-xl">{description}</p>
           </div>
         </div>
@@ -66,7 +97,6 @@ export default function Category() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
 
             <div className="lg:col-span-8">
-              {/* Results header */}
               <div className="flex items-center justify-between mb-6 pb-4 border-b border-border">
                 <h2 className="font-serif text-2xl font-bold">
                   {data ? `${data.total.toLocaleString()} Articles` : "Loading..."}
@@ -94,14 +124,13 @@ export default function Category() {
                   ))
                 ) : (
                   <div className="col-span-2 text-center py-20 bg-secondary/30 rounded-xl border border-dashed border-border">
-                    <span className="text-5xl mb-4 block">{emoji}</span>
+                    <Icon className={`w-12 h-12 mx-auto mb-4 ${color}`} />
                     <h3 className="font-serif text-2xl font-bold mb-2">No articles found</h3>
                     <p className="text-muted-foreground">Check back later for {decodedCategory.toLowerCase()} updates.</p>
                   </div>
                 )}
               </div>
 
-              {/* Pagination */}
               {data && data.total > LIMIT && (
                 <div className="flex items-center justify-between pt-6 border-t border-border">
                   <Button
