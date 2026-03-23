@@ -15,7 +15,7 @@ export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [countriesOpen, setCountriesOpen] = useState(false);
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const { data: countries } = useListCountries();
@@ -45,6 +45,8 @@ export function Navbar() {
     }
   };
 
+  const isOnCountries = location === "/countries" || location.startsWith("/country/");
+
   return (
     <header className={`sticky top-0 z-50 w-full transition-all duration-300 ${
       isScrolled ? "bg-background/95 backdrop-blur-md shadow-sm" : "bg-background border-b border-border"
@@ -70,9 +72,9 @@ export function Navbar() {
           {/* Brand */}
           <Link href="/" className="flex items-center gap-3 group">
             <div className="w-10 h-10 bg-primary text-primary-foreground flex items-center justify-center rounded-sm overflow-hidden group-hover:bg-accent transition-colors relative">
-              <img 
-                src={`${import.meta.env.BASE_URL}images/logo-icon.png`} 
-                alt="AfricaNews Logo" 
+              <img
+                src={`${import.meta.env.BASE_URL}images/logo-icon.png`}
+                alt="AfricaNews Logo"
                 className="w-full h-full object-cover"
                 onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }}
               />
@@ -88,9 +90,9 @@ export function Navbar() {
           <div className="hidden md:flex flex-1 max-w-md ml-12">
             <form onSubmit={handleSearch} className="relative w-full group">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
-              <Input 
-                type="search" 
-                placeholder="Search news, topics, or countries..." 
+              <Input
+                type="search"
+                placeholder="Search news, topics, or countries..."
                 className="w-full pl-10 bg-secondary/50 border-transparent focus-visible:bg-background focus-visible:border-primary focus-visible:ring-primary/20 rounded-full transition-all"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -108,15 +110,22 @@ export function Navbar() {
 
         {/* Category + Countries Navigation (Desktop) */}
         <nav className="hidden md:flex items-center justify-center space-x-1 py-3 border-t border-border/50">
-          {CATEGORIES.map((category) => (
-            <Link 
-              key={category} 
-              href={`/category/${category}`}
-              className="px-4 py-1.5 text-sm font-medium text-foreground/80 hover:text-accent hover:bg-accent/5 rounded-full transition-all"
-            >
-              {category}
-            </Link>
-          ))}
+          {CATEGORIES.map((category) => {
+            const isActive = location === `/category/${category}`;
+            return (
+              <Link
+                key={category}
+                href={`/category/${category}`}
+                className={`px-4 py-1.5 text-sm font-medium rounded-full transition-all ${
+                  isActive
+                    ? "text-accent bg-accent/10 font-semibold underline underline-offset-4 decoration-accent/60"
+                    : "text-foreground/80 hover:text-accent hover:bg-accent/5"
+                }`}
+              >
+                {category}
+              </Link>
+            );
+          })}
           <span className="text-border mx-2">|</span>
 
           {/* Countries Dropdown */}
@@ -124,7 +133,7 @@ export function Navbar() {
             <button
               onClick={() => setCountriesOpen(!countriesOpen)}
               className={`flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium rounded-full transition-all ${
-                countriesOpen
+                isOnCountries || countriesOpen
                   ? "bg-primary text-primary-foreground"
                   : "text-foreground/80 hover:text-primary hover:bg-primary/5"
               }`}
@@ -189,9 +198,9 @@ export function Navbar() {
           <div className="px-4 pt-4 pb-6 space-y-4">
             <form onSubmit={handleSearch} className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input 
-                type="search" 
-                placeholder="Search..." 
+              <Input
+                type="search"
+                placeholder="Search..."
                 className="w-full pl-10"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -199,20 +208,25 @@ export function Navbar() {
             </form>
             <nav className="flex flex-col space-y-1">
               <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-2">Categories</div>
-              {CATEGORIES.map((category) => (
-                <Link 
-                  key={category} 
-                  href={`/category/${category}`}
-                  className="px-3 py-2 text-base font-medium rounded-md hover:bg-secondary transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {category}
-                </Link>
-              ))}
+              {CATEGORIES.map((category) => {
+                const isActive = location === `/category/${category}`;
+                return (
+                  <Link
+                    key={category}
+                    href={`/category/${category}`}
+                    className={`px-3 py-2 text-base font-medium rounded-md transition-colors ${
+                      isActive ? "bg-accent/10 text-accent font-semibold" : "hover:bg-secondary"
+                    }`}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {category}
+                  </Link>
+                );
+              })}
               <div className="my-2 border-t border-border" />
               <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-2">Countries</div>
               {countries && countries.slice(0, 8).map((item) => (
-                <Link 
+                <Link
                   key={item.country}
                   href={`/country/${encodeURIComponent(item.country)}`}
                   className="flex items-center gap-2 px-3 py-2 text-base font-medium rounded-md hover:bg-secondary transition-colors"
@@ -223,7 +237,7 @@ export function Navbar() {
                   <span className="ml-auto text-sm text-muted-foreground">{item.articleCount}</span>
                 </Link>
               ))}
-              <Link 
+              <Link
                 href="/countries"
                 className="px-3 py-2 text-base font-medium rounded-md hover:bg-secondary transition-colors text-primary"
                 onClick={() => setMobileMenuOpen(false)}

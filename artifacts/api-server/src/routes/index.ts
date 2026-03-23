@@ -6,6 +6,7 @@ import sourcesRouter from "./sources";
 import countriesRouter from "./countries";
 import categoriesRouter from "./categories";
 import ingestionRouter from "./ingestion";
+import newsletterRouter from "./newsletter";
 
 const router = Router();
 
@@ -16,5 +17,6 @@ router.use("/sources", sourcesRouter);
 router.use("/countries", countriesRouter);
 router.use("/categories", categoriesRouter);
 router.use("/ingestion", ingestionRouter);
+router.use("/newsletter", newsletterRouter);
 
 export default router;

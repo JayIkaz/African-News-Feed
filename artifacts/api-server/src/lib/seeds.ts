@@ -67,6 +67,24 @@ const SOURCES = [
   { name: "Eye Radio", country: "South Sudan", homepage: "https://eyeradio.org", rssUrl: "https://eyeradio.org/feed/" },
   // Eswatini
   { name: "Times of Eswatini", country: "Eswatini", homepage: "https://times.co.sz", rssUrl: "https://times.co.sz/feed/" },
+  // DR Congo (Central Africa)
+  { name: "Radio Okapi", country: "DR Congo", homepage: "https://www.radiookapi.net", rssUrl: "https://www.radiookapi.net/feed" },
+  { name: "7sur7 Congo", country: "DR Congo", homepage: "https://7sur7.cd", rssUrl: "https://7sur7.cd/feed/" },
+  // Mozambique
+  { name: "Club of Mozambique", country: "Mozambique", homepage: "https://clubofmozambique.com", rssUrl: "https://clubofmozambique.com/feed/" },
+  // Botswana
+  { name: "Mmegi Online", country: "Botswana", homepage: "https://www.mmegi.bw", rssUrl: "https://www.mmegi.bw/rss.xml" },
+  // Namibia
+  { name: "The Namibian", country: "Namibia", homepage: "https://www.namibian.com.na", rssUrl: "https://www.namibian.com.na/feed/" },
+  // Senegal
+  { name: "Senego", country: "Senegal", homepage: "https://senego.com", rssUrl: "https://senego.com/feed/" },
+  // Ivory Coast
+  { name: "Connectionivoirienne", country: "Ivory Coast", homepage: "https://www.connectionivoirienne.net", rssUrl: "https://www.connectionivoirienne.net/feed/" },
+  { name: "AIP Côte d'Ivoire", country: "Ivory Coast", homepage: "https://www.aip.ci", rssUrl: "https://www.aip.ci/feed/" },
+  // Sudan
+  { name: "Sudan Tribune", country: "Sudan", homepage: "https://sudantribune.com", rssUrl: "https://sudantribune.com/rss.xml" },
+  // Somalia
+  { name: "Garowe Online", country: "Somalia", homepage: "https://www.garoweonline.com", rssUrl: "https://www.garoweonline.com/en/feed" },
 ];
 
 export async function seedSourcesIfEmpty(): Promise<void> {

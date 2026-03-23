@@ -1,12 +1,23 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { ArrowRight, Newspaper } from "lucide-react";
+import { ArrowRight, Newspaper, BarChart2, Globe, Rss } from "lucide-react";
 import { useListArticles, useGetTopStories } from "@workspace/api-client-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { ArticleCard } from "@/components/article/ArticleCard";
 import { Sidebar } from "@/components/article/Sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
+import { AdBanner } from "@/components/ads/AdBanner";
+
+const CATEGORY_QUICK_LINKS = [
+  { label: "Politics", href: "/category/Politics", color: "bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100" },
+  { label: "Business", href: "/category/Business", color: "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100" },
+  { label: "Technology", href: "/category/Technology", color: "bg-violet-50 text-violet-700 border-violet-200 hover:bg-violet-100" },
+  { label: "Economy", href: "/category/Economy", color: "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100" },
+  { label: "Society", href: "/category/Society", color: "bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100" },
+  { label: "Environment", href: "/category/Environment", color: "bg-green-50 text-green-700 border-green-200 hover:bg-green-100" },
+  { label: "International", href: "/category/International", color: "bg-sky-50 text-sky-700 border-sky-200 hover:bg-sky-100" },
+];
 
 export default function Home() {
   const [page, setPage] = useState(1);
@@ -17,6 +28,20 @@ export default function Home() {
 
   return (
     <AppLayout>
+      {/* Platform Stats Strip */}
+      <div className="bg-primary/5 border-b border-border py-2.5 hidden md:block">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between text-xs text-muted-foreground">
+          <div className="flex items-center gap-6">
+            <span className="flex items-center gap-1.5"><Globe className="w-3.5 h-3.5 text-accent" /> 14+ African countries</span>
+            <span className="flex items-center gap-1.5"><Rss className="w-3.5 h-3.5 text-accent" /> 54 news sources</span>
+            <span className="flex items-center gap-1.5"><BarChart2 className="w-3.5 h-3.5 text-accent" /> Updated every hour</span>
+          </div>
+          <Link href="/countries" className="font-medium text-primary hover:text-accent transition-colors flex items-center gap-1">
+            Browse by country <ArrowRight className="w-3 h-3" />
+          </Link>
+        </div>
+      </div>
+
       {/* Featured Hero Section */}
       <section className="bg-secondary/30 pt-8 pb-12 border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -59,17 +84,39 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Category Quick Links */}
+      <div className="border-b border-border py-5 bg-background">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-wrap gap-2">
+            {CATEGORY_QUICK_LINKS.map(({ label, href, color }) => (
+              <Link
+                key={label}
+                href={href}
+                className={`inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${color}`}
+              >
+                {label}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Ad Banner — Leaderboard */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <AdBanner slot="leaderboard" />
+      </div>
+
       {/* Main Content Layout */}
-      <section className="py-12">
+      <section className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-            
+
             {/* Left Column: Latest News */}
             <div className="lg:col-span-8">
               <div className="flex items-center justify-between mb-8 pb-4 border-b border-border">
                 <h2 className="font-serif text-3xl font-bold">Latest News</h2>
-                <Link href="/category/Politics" className="text-sm font-medium text-primary hover:text-accent flex items-center gap-1 transition-colors">
-                  View All <ArrowRight className="w-4 h-4" />
+                <Link href="/category/International" className="text-sm font-medium text-primary hover:text-accent flex items-center gap-1 transition-colors">
+                  All articles <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
 
@@ -87,9 +134,17 @@ export default function Home() {
                     </div>
                   ))
                 ) : latestNews?.articles && latestNews.articles.length > 0 ? (
-                  latestNews.articles.map((article) => (
-                    <ArticleCard key={article.id} article={article} />
-                  ))
+                  latestNews.articles.flatMap((article, i) => {
+                    const cards = [<ArticleCard key={article.id} article={article} />];
+                    if (i === 5) {
+                      cards.push(
+                        <div key="ad-inline" className="md:col-span-2">
+                          <AdBanner slot="inline" />
+                        </div>
+                      );
+                    }
+                    return cards;
+                  })
                 ) : (
                   <div className="col-span-2 text-center py-12 text-muted-foreground border border-dashed border-border rounded-xl">
                     <p>No articles found.</p>
@@ -100,22 +155,22 @@ export default function Home() {
               {/* Pagination Controls */}
               {latestNews && latestNews.articles.length > 0 && (
                 <div className="flex items-center justify-center gap-4 py-8 border-t border-border">
-                  <Button 
-                    variant="outline" 
-                    onClick={() => setPage(p => Math.max(1, p - 1))}
+                  <Button
+                    variant="outline"
+                    onClick={() => { setPage(p => Math.max(1, p - 1)); window.scrollTo({ top: 0, behavior: "smooth" }); }}
                     disabled={page === 1 || isFetching}
                   >
-                    Previous Page
+                    Previous
                   </Button>
                   <span className="text-sm font-medium text-muted-foreground">
-                    Page {page} of {Math.ceil(latestNews.total / limit)}
+                    Page {page} of {Math.ceil((latestNews.total ?? 0) / limit)}
                   </span>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => setPage(p => p + 1)}
+                  <Button
+                    variant="outline"
+                    onClick={() => { setPage(p => p + 1); window.scrollTo({ top: 0, behavior: "smooth" }); }}
                     disabled={!latestNews.hasMore || isFetching}
                   >
-                    Next Page
+                    Next
                   </Button>
                 </div>
               )}
@@ -124,6 +179,9 @@ export default function Home() {
             {/* Right Column: Sidebar */}
             <div className="lg:col-span-4">
               <Sidebar />
+              <div className="mt-6">
+                <AdBanner slot="rectangle" />
+              </div>
             </div>
 
           </div>

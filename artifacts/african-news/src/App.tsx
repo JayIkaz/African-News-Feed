@@ -10,13 +10,15 @@ import Category from "@/pages/Category";
 import Country from "@/pages/Country";
 import Search from "@/pages/Search";
 import Countries from "@/pages/Countries";
+import Advertise from "@/pages/Advertise";
+import ApiAccess from "@/pages/ApiAccess";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      staleTime: 5 * 60 * 1000,
       retry: 1,
     },
   },
@@ -31,6 +33,8 @@ function Router() {
       <Route path="/country/:country" component={Country} />
       <Route path="/search" component={Search} />
       <Route path="/countries" component={Countries} />
+      <Route path="/advertise" component={Advertise} />
+      <Route path="/api-access" component={ApiAccess} />
       {/* Fallbacks for static sidebar links */}
       <Route path="/trending" component={Home} />
       <Route path="/sources" component={Home} />

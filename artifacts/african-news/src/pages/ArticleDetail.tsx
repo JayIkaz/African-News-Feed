@@ -66,9 +66,12 @@ export default function ArticleDetail() {
       <article className="bg-background pb-16">
         {/* Editorial Header */}
         <header className="max-w-4xl mx-auto px-4 sm:px-6 pt-10 pb-8">
-          <Link href="/" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-primary mb-8 transition-colors">
-            <ArrowLeft className="w-4 h-4 mr-2" /> Back to top stories
-          </Link>
+          <button
+            onClick={() => window.history.length > 1 ? window.history.back() : (window.location.href = "/")}
+            className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-primary mb-8 transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" /> Back
+          </button>
           
           <div className="flex items-center gap-3 mb-6">
             <Link href={`/category/${article.category}`}>
