@@ -1,192 +1,262 @@
 import { useState } from "react";
-import { Link } from "wouter";
-import { ArrowRight, Newspaper, BarChart2, Globe, Rss } from "lucide-react";
-import { useListArticles, useGetTopStories } from "@workspace/api-client-react";
+import { useListArticles, useGetTopStories, useListCountries } from "@workspace/api-client-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { ArticleCard } from "@/components/article/ArticleCard";
 import { Sidebar } from "@/components/article/Sidebar";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
 import { AdBanner } from "@/components/ads/AdBanner";
 
-const CATEGORY_QUICK_LINKS = [
-  { label: "Politics", href: "/category/Politics", color: "bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100" },
-  { label: "Business", href: "/category/Business", color: "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100" },
-  { label: "Technology", href: "/category/Technology", color: "bg-violet-50 text-violet-700 border-violet-200 hover:bg-violet-100" },
-  { label: "Economy", href: "/category/Economy", color: "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100" },
-  { label: "Society", href: "/category/Society", color: "bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100" },
-  { label: "Environment", href: "/category/Environment", color: "bg-green-50 text-green-700 border-green-200 hover:bg-green-100" },
-  { label: "International", href: "/category/International", color: "bg-sky-50 text-sky-700 border-sky-200 hover:bg-sky-100" },
+const CATEGORY_PILLS = [
+  { label: "All", icon: "🌐", value: null },
+  { label: "Politics", icon: "🏛️", value: "Politics" },
+  { label: "Business", icon: "💼", value: "Business" },
+  { label: "Technology", icon: "💡", value: "Technology" },
+  { label: "Economy", icon: "📊", value: "Economy" },
+  { label: "Society", icon: "👥", value: "Society" },
+  { label: "Environment", icon: "🌿", value: "Environment" },
+  { label: "International", icon: "🤝", value: "International" },
 ];
 
 export default function Home() {
+  const [activeCat, setActiveCat] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const limit = 9;
 
-  const { data: topStories, isLoading: topStoriesLoading } = useGetTopStories({ limit: 3 });
-  const { data: latestNews, isLoading: latestLoading, isFetching } = useListArticles({ page, limit });
+  const { data: topStories, isLoading: topLoading } = useGetTopStories({ limit: 3 });
+  const { data: latestNews, isLoading: latestLoading, isFetching } = useListArticles({ page, limit, category: activeCat ?? undefined });
+  const { data: countries } = useListCountries();
+  const totalArticles = (countries ?? []).reduce((sum, c) => sum + c.articleCount, 0);
+  const countryCount = (countries ?? []).length;
+
+  const handlePill = (value: string | null) => {
+    setActiveCat(value);
+    setPage(1);
+  };
+
+  const totalPages = latestNews ? Math.ceil((latestNews.total ?? 0) / limit) : 1;
 
   return (
     <AppLayout>
-      {/* Platform Stats Strip */}
-      <div className="bg-primary/5 border-b border-border py-2.5 hidden md:block">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between text-xs text-muted-foreground">
-          <div className="flex items-center gap-6">
-            <span className="flex items-center gap-1.5"><Globe className="w-3.5 h-3.5 text-accent" /> 14+ African countries</span>
-            <span className="flex items-center gap-1.5"><Rss className="w-3.5 h-3.5 text-accent" /> 54 news sources</span>
-            <span className="flex items-center gap-1.5"><BarChart2 className="w-3.5 h-3.5 text-accent" /> Updated every hour</span>
+      {/* ── Dark Stats Strip ── */}
+      <div style={{ background: "var(--ink)", color: "#fff" }}>
+        <div style={{ maxWidth: 1320, margin: "0 auto", padding: "0 24px", height: 44, display: "flex", alignItems: "center", gap: 32 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-sans)", fontSize: 12 }}>
+            <span style={{ opacity: 0.6, fontSize: 13 }}>🌍</span>
+            <span style={{ fontWeight: 600, fontSize: 13 }}>{countryCount > 0 ? countryCount : "25"}+</span>
+            <span style={{ opacity: 0.65 }}>African countries</span>
           </div>
-          <Link href="/countries" className="font-medium text-primary hover:text-accent transition-colors flex items-center gap-1">
-            Browse by country <ArrowRight className="w-3 h-3" />
-          </Link>
+          <div style={{ width: 1, height: 16, background: "rgba(255,255,255,0.2)" }} />
+          <div style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-sans)", fontSize: 12 }}>
+            <span style={{ opacity: 0.6, fontSize: 13 }}>📡</span>
+            <span style={{ fontWeight: 600, fontSize: 13 }}>65+</span>
+            <span style={{ opacity: 0.65 }}>news sources</span>
+          </div>
+          <div style={{ width: 1, height: 16, background: "rgba(255,255,255,0.2)" }} />
+          <div style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-sans)", fontSize: 12 }}>
+            <span style={{ opacity: 0.6, fontSize: 13 }}>📰</span>
+            <span style={{ fontWeight: 600, fontSize: 13 }}>{totalArticles > 0 ? totalArticles.toLocaleString() : "1,000"}+</span>
+            <span style={{ opacity: 0.65 }}>articles indexed</span>
+          </div>
+          <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 6, fontFamily: "var(--font-sans)", fontSize: 11.5, opacity: 0.7 }}>
+            <span style={{ width: 6, height: 6, background: "#4ade80", borderRadius: "50%", animation: "pulse-dot 2s ease-in-out infinite", display: "inline-block" }} />
+            Updated every hour
+          </div>
         </div>
       </div>
 
-      {/* Featured Hero Section */}
-      <section className="bg-secondary/30 pt-8 pb-12 border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-6">
-            <h1 className="font-serif text-2xl md:text-3xl font-bold flex items-center gap-2">
-              <span className="w-2 h-8 bg-accent inline-block rounded-sm"></span>
-              Top Stories
-            </h1>
+      <div style={{ maxWidth: 1320, margin: "0 auto", padding: "0 24px" }}>
+
+        {/* ── Hero / Top Stories ── */}
+        <section style={{ paddingTop: 36 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
+            <div style={{ width: 4, height: 22, background: "var(--accent)", borderRadius: 2 }} />
+            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em" }}>Top Stories</h2>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {topStoriesLoading ? (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 340px",
+              gridTemplateRows: "1fr 1fr",
+              gap: 2,
+              background: "var(--paper-3)",
+              borderRadius: 10,
+              overflow: "hidden",
+              minHeight: 480,
+            }}
+            className="max-md:block"
+          >
+            {topLoading ? (
               <>
-                <Skeleton className="col-span-1 lg:col-span-2 h-[400px] rounded-xl" />
-                <div className="flex flex-col gap-6">
-                  <Skeleton className="h-[188px] rounded-xl" />
-                  <Skeleton className="h-[188px] rounded-xl" />
-                </div>
+                <div className="an-skeleton" style={{ gridRow: "1/3", minHeight: 480 }} />
+                <div className="an-skeleton" style={{ minHeight: 220 }} />
+                <div className="an-skeleton" style={{ minHeight: 220 }} />
               </>
             ) : topStories?.articles && topStories.articles.length > 0 ? (
               <>
-                <div className="col-span-1 lg:col-span-2">
+                <div style={{ gridRow: "1/3" }}>
                   <ArticleCard article={topStories.articles[0]} featured />
                 </div>
-                <div className="flex flex-col gap-6">
-                  {topStories.articles.slice(1, 3).map((article) => (
-                    <div key={article.id} className="flex-1">
-                      <ArticleCard article={article} />
-                    </div>
-                  ))}
-                </div>
+                {topStories.articles[1] && (
+                  <ArticleCard article={topStories.articles[1]} side />
+                )}
+                {topStories.articles[2] && (
+                  <ArticleCard article={topStories.articles[2]} side />
+                )}
               </>
             ) : (
-              <div className="col-span-3 text-center py-12 text-muted-foreground">
-                <Newspaper className="w-12 h-12 mx-auto mb-3 opacity-20" />
-                <p>No featured stories available at the moment.</p>
+              <div style={{ gridColumn: "1/3", display: "flex", alignItems: "center", justifyContent: "center", padding: 40, color: "var(--ink-4)", fontFamily: "var(--font-sans)", fontSize: 14 }}>
+                No top stories available.
               </div>
             )}
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Category Quick Links */}
-      <div className="border-b border-border py-5 bg-background">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-wrap gap-2">
-            {CATEGORY_QUICK_LINKS.map(({ label, href, color }) => (
-              <Link
+        {/* ── Ad Leaderboard ── */}
+        <div style={{ margin: "20px 0" }}>
+          <AdBanner slot="leaderboard" />
+        </div>
+
+        {/* ── Category Pills ── */}
+        <div style={{ display: "flex", gap: 8, padding: "8px 0 4px", flexWrap: "wrap" }}>
+          {CATEGORY_PILLS.map(({ label, icon, value }) => {
+            const isActive = activeCat === value;
+            return (
+              <button
                 key={label}
-                href={href}
-                className={`inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${color}`}
+                onClick={() => handlePill(value)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  padding: "8px 16px",
+                  borderRadius: 100,
+                  border: `1.5px solid ${isActive ? "var(--ink)" : "var(--paper-3)"}`,
+                  fontFamily: "var(--font-sans)",
+                  fontSize: 13,
+                  fontWeight: 500,
+                  color: isActive ? "#fff" : "var(--ink-3)",
+                  background: isActive ? "var(--ink)" : "#fff",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                }}
+                onMouseEnter={e => { if (!isActive) { e.currentTarget.style.borderColor = "var(--ink-3)"; e.currentTarget.style.color = "var(--ink)"; } }}
+                onMouseLeave={e => { if (!isActive) { e.currentTarget.style.borderColor = "var(--paper-3)"; e.currentTarget.style.color = "var(--ink-3)"; } }}
               >
+                <span style={{ fontSize: 15 }}>{icon}</span>
                 {label}
-              </Link>
-            ))}
-          </div>
+              </button>
+            );
+          })}
         </div>
-      </div>
 
-      {/* Ad Banner — Leaderboard */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-        <AdBanner slot="leaderboard" />
-      </div>
+        {/* ── Articles + Sidebar ── */}
+        <section style={{ padding: "28px 0 48px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 300px", gap: 40, alignItems: "start" }}>
 
-      {/* Main Content Layout */}
-      <section className="py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-
-            {/* Left Column: Latest News */}
-            <div className="lg:col-span-8">
-              <div className="flex items-center justify-between mb-8 pb-4 border-b border-border">
-                <h2 className="font-serif text-3xl font-bold">Latest News</h2>
-                <Link href="/category/International" className="text-sm font-medium text-primary hover:text-accent flex items-center gap-1 transition-colors">
-                  All articles <ArrowRight className="w-4 h-4" />
-                </Link>
+            {/* Articles main */}
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
+                <div style={{ width: 4, height: 22, background: "var(--accent)", borderRadius: 2 }} />
+                <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em" }}>
+                  {activeCat ? `${activeCat} News` : "Latest News"}
+                </h2>
+                {latestNews && (
+                  <span style={{ marginLeft: "auto", fontFamily: "var(--font-sans)", fontSize: 12, color: "var(--ink-4)" }}>
+                    {latestNews.total?.toLocaleString()} articles
+                  </span>
+                )}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-                {latestLoading ? (
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 }}>
+                {latestLoading || isFetching ? (
                   Array(6).fill(0).map((_, i) => (
-                    <div key={i} className="flex flex-col h-[400px]">
-                      <Skeleton className="w-full h-48 rounded-t-xl rounded-b-none" />
-                      <div className="p-5 border border-t-0 border-border rounded-b-xl flex-1 space-y-3">
-                        <Skeleton className="h-4 w-20" />
-                        <Skeleton className="h-6 w-full" />
-                        <Skeleton className="h-6 w-4/5" />
-                        <Skeleton className="h-16 w-full mt-4" />
+                    <div key={i} style={{ background: "#fff", borderRadius: 10, overflow: "hidden", border: "1px solid var(--paper-3)" }}>
+                      <div className="an-skeleton" style={{ aspectRatio: "16/9", width: "100%" }} />
+                      <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 8 }}>
+                        <div className="an-skeleton" style={{ height: 14 }} />
+                        <div className="an-skeleton" style={{ height: 14, width: "80%" }} />
+                        <div className="an-skeleton" style={{ height: 14, width: "60%" }} />
                       </div>
                     </div>
                   ))
                 ) : latestNews?.articles && latestNews.articles.length > 0 ? (
-                  latestNews.articles.flatMap((article, i) => {
-                    const cards = [<ArticleCard key={article.id} article={article} />];
-                    if (i === 5) {
-                      cards.push(
-                        <div key="ad-inline" className="md:col-span-2">
-                          <AdBanner slot="inline" />
-                        </div>
-                      );
-                    }
-                    return cards;
-                  })
+                  latestNews.articles.map((article) => (
+                    <ArticleCard key={article.id} article={article} />
+                  ))
                 ) : (
-                  <div className="col-span-2 text-center py-12 text-muted-foreground border border-dashed border-border rounded-xl">
-                    <p>No articles found.</p>
+                  <div style={{ gridColumn: "1/4", textAlign: "center", padding: "60px 24px", color: "var(--ink-4)" }}>
+                    <div style={{ fontSize: 48, marginBottom: 16 }}>📭</div>
+                    <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 20, color: "var(--ink-3)", marginBottom: 8 }}>No articles found</h3>
+                    <p style={{ fontFamily: "var(--font-sans)", fontSize: 14 }}>Try a different category or check back soon.</p>
                   </div>
                 )}
               </div>
 
-              {/* Pagination Controls */}
-              {latestNews && latestNews.articles.length > 0 && (
-                <div className="flex items-center justify-center gap-4 py-8 border-t border-border">
-                  <Button
-                    variant="outline"
+              {/* Pagination */}
+              {latestNews && latestNews.total > limit && (
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 32, paddingTop: 24, borderTop: "1px solid var(--paper-3)" }}>
+                  <PagBtn
                     onClick={() => { setPage(p => Math.max(1, p - 1)); window.scrollTo({ top: 0, behavior: "smooth" }); }}
                     disabled={page === 1 || isFetching}
                   >
-                    Previous
-                  </Button>
-                  <span className="text-sm font-medium text-muted-foreground">
-                    Page {page} of {Math.ceil((latestNews.total ?? 0) / limit)}
-                  </span>
-                  <Button
-                    variant="outline"
+                    ← Previous
+                  </PagBtn>
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    let p = i + 1;
+                    if (totalPages > 5 && page > 3) p = page - 2 + i;
+                    if (p > totalPages) return null;
+                    return (
+                      <PagBtn
+                        key={p}
+                        onClick={() => { setPage(p); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                        disabled={isFetching}
+                        active={p === page}
+                      >
+                        {p}
+                      </PagBtn>
+                    );
+                  })}
+                  <PagBtn
                     onClick={() => { setPage(p => p + 1); window.scrollTo({ top: 0, behavior: "smooth" }); }}
                     disabled={!latestNews.hasMore || isFetching}
                   >
-                    Next
-                  </Button>
+                    Next →
+                  </PagBtn>
                 </div>
               )}
             </div>
 
-            {/* Right Column: Sidebar */}
-            <div className="lg:col-span-4">
-              <Sidebar />
-              <div className="mt-6">
-                <AdBanner slot="rectangle" />
-              </div>
-            </div>
-
+            {/* Sidebar */}
+            <Sidebar />
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </AppLayout>
+  );
+}
+
+function PagBtn({ children, onClick, disabled, active }: { children: React.ReactNode; onClick: () => void; disabled?: boolean; active?: boolean }) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      style={{
+        minWidth: 36,
+        height: 36,
+        padding: "0 12px",
+        borderRadius: 6,
+        border: `1px solid ${active ? "var(--ink)" : "var(--paper-3)"}`,
+        background: active ? "var(--ink)" : "#fff",
+        color: active ? "#fff" : disabled ? "var(--ink-4)" : "var(--ink-2)",
+        fontFamily: "var(--font-sans)",
+        fontSize: 13,
+        fontWeight: 500,
+        cursor: disabled ? "default" : "pointer",
+        opacity: disabled ? 0.4 : 1,
+        transition: "all 0.2s",
+      }}
+    >
+      {children}
+    </button>
   );
 }

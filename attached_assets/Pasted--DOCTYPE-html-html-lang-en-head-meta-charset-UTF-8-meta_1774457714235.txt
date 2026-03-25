@@ -1,0 +1,2196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AfricaNews — The Continent's Pulse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f0e0d;
+    --ink-2: #2d2b28;
+    --ink-3: #5a5750;
+    --ink-4: #8a8780;
+    --paper: #faf9f6;
+    --paper-2: #f3f1ec;
+    --paper-3: #e8e5de;
+    --accent: #c1392b;
+    --accent-2: #e8523f;
+    --accent-warm: #e07b39;
+    --gold: #b8860b;
+    --teal: #1a7a6e;
+    --region-north: #8b4513;
+    --region-west: #2d6a4f;
+    --region-east: #1a4a7a;
+    --region-central: #6b3fa0;
+    --region-south: #b8860b;
+    --serif: 'Playfair Display', Georgia, serif;
+    --body-serif: 'Source Serif 4', Georgia, serif;
+    --sans: 'DM Sans', system-ui, sans-serif;
+    --nav-h: 56px;
+    --ticker-h: 36px;
+    --transition: 0.2s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--body-serif);
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; text-decoration: none; }
+  img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+  /* ─── BREAKING TICKER ─── */
+  .ticker-bar {
+    background: var(--accent);
+    color: #fff;
+    height: var(--ticker-h);
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+    z-index: 100;
+  }
+  .ticker-label {
+    background: var(--ink);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    flex-shrink: 0;
+    gap: 6px;
+  }
+  .ticker-dot {
+    width: 6px; height: 6px;
+    background: var(--accent-2);
+    border-radius: 50%;
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity:1; transform:scale(1); }
+    50% { opacity:0.5; transform:scale(0.7); }
+  }
+  .ticker-scroll {
+    flex: 1;
+    overflow: hidden;
+    padding: 0 20px;
+  }
+  .ticker-track {
+    display: flex;
+    gap: 60px;
+    animation: ticker 40s linear infinite;
+    white-space: nowrap;
+  }
+  .ticker-track:hover { animation-play-state: paused; }
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  .ticker-item {
+    font-family: var(--sans);
+    font-size: 12.5px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: opacity var(--transition);
+    white-space: nowrap;
+  }
+  .ticker-item:hover { opacity: 0.8; }
+  .ticker-sep { opacity: 0.4; }
+
+  /* ─── HEADER ─── */
+  .site-header {
+    background: var(--paper);
+    border-bottom: 1px solid var(--paper-3);
+    position: sticky;
+    top: 0;
+    z-index: 90;
+  }
+  .header-main {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .logo-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+  .logo-icon {
+    width: 40px; height: 40px;
+    background: var(--ink);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .logo-icon svg { width: 24px; height: 24px; }
+  .logo-text { line-height: 1.1; }
+  .logo-name {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+  .logo-tagline {
+    font-family: var(--sans);
+    font-size: 9.5px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+  }
+  .header-search {
+    flex: 1;
+    max-width: 400px;
+    margin-left: auto;
+    position: relative;
+  }
+  .search-input {
+    width: 100%;
+    height: 40px;
+    background: var(--paper-2);
+    border: 1.5px solid transparent;
+    border-radius: 6px;
+    padding: 0 40px 0 14px;
+    font-family: var(--sans);
+    font-size: 13.5px;
+    color: var(--ink);
+    outline: none;
+    transition: border-color var(--transition), background var(--transition);
+  }
+  .search-input::placeholder { color: var(--ink-4); }
+  .search-input:focus {
+    border-color: var(--ink-3);
+    background: #fff;
+  }
+  .search-btn {
+    position: absolute;
+    right: 10px; top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--ink-4);
+    display: flex;
+    padding: 4px;
+    transition: color var(--transition);
+  }
+  .search-btn:hover { color: var(--ink); }
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+  }
+  .btn-subscribe {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 0 16px;
+    height: 36px;
+    font-family: var(--sans);
+    font-size: 12.5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background var(--transition);
+    white-space: nowrap;
+  }
+  .btn-subscribe:hover { background: var(--accent-2); }
+
+  /* ─── NAV ─── */
+  .site-nav {
+    border-top: 1px solid var(--paper-3);
+    background: var(--paper);
+  }
+  .nav-inner {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    height: var(--nav-h);
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav-inner::-webkit-scrollbar { display: none; }
+  .nav-link {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-3);
+    padding: 0 14px;
+    height: var(--nav-h);
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: color var(--transition), border-color var(--transition);
+    cursor: pointer;
+  }
+  .nav-link:hover { color: var(--ink); }
+  .nav-link.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    font-weight: 600;
+  }
+  .nav-divider {
+    width: 1px;
+    height: 20px;
+    background: var(--paper-3);
+    flex-shrink: 0;
+    margin: 0 8px;
+  }
+  .nav-dropdown {
+    position: relative;
+  }
+  .nav-dropdown-btn {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-3);
+    padding: 0 14px;
+    height: var(--nav-h);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: color var(--transition);
+  }
+  .nav-dropdown-btn:hover { color: var(--ink); }
+  .nav-dropdown-btn svg { transition: transform var(--transition); }
+  .nav-dropdown.open .nav-dropdown-btn svg { transform: rotate(180deg); }
+  .dropdown-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    background: #fff;
+    border: 1px solid var(--paper-3);
+    border-radius: 10px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    min-width: 560px;
+    padding: 20px;
+    display: none;
+    z-index: 200;
+  }
+  .nav-dropdown.open .dropdown-menu { display: block; }
+  .dropdown-regions {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .region-group h4 {
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--paper-3);
+  }
+  .region-group.north h4 { border-color: var(--region-north); color: var(--region-north); }
+  .region-group.west h4 { border-color: var(--region-west); color: var(--region-west); }
+  .region-group.east h4 { border-color: var(--region-east); color: var(--region-east); }
+  .region-group.central h4 { border-color: var(--region-central); color: var(--region-central); }
+  .region-group.south h4 { border-color: var(--region-south); color: var(--region-south); }
+  .country-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 0;
+    font-family: var(--sans);
+    font-size: 12.5px;
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: color var(--transition);
+    border: none;
+    background: none;
+    text-align: left;
+    width: 100%;
+  }
+  .country-link:hover { color: var(--accent); }
+  .country-flag { font-size: 14px; line-height: 1; }
+
+  /* ─── STATS STRIP ─── */
+  .stats-strip {
+    background: var(--ink);
+    color: #fff;
+  }
+  .stats-inner {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+  .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--sans);
+    font-size: 12px;
+  }
+  .stat-icon { opacity: 0.6; font-size: 13px; }
+  .stat-num {
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .stat-label { opacity: 0.65; }
+  .stat-divider { width: 1px; height: 16px; background: rgba(255,255,255,0.2); }
+  .stats-fresh {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--sans);
+    font-size: 11.5px;
+    opacity: 0.7;
+  }
+  .fresh-dot {
+    width: 6px; height: 6px;
+    background: #4ade80;
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  /* ─── MAIN LAYOUT ─── */
+  .page-wrap {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ─── SECTION LABEL ─── */
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .section-label-bar {
+    width: 4px;
+    height: 22px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+  .section-label h2 {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .section-label-count {
+    margin-left: auto;
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--ink-4);
+  }
+
+  /* ─── HERO GRID ─── */
+  .hero-section { padding: 36px 0 0; }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    grid-template-rows: auto auto;
+    gap: 2px;
+    background: var(--paper-3);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .hero-main {
+    grid-row: 1 / 3;
+    position: relative;
+    background: var(--ink-2);
+    min-height: 480px;
+    cursor: pointer;
+    overflow: hidden;
+  }
+  .hero-main:hover .hero-main-img { transform: scale(1.03); }
+  .hero-main-img {
+    position: absolute; inset: 0;
+    transition: transform 0.5s cubic-bezier(0.4,0,0.2,1);
+  }
+  .hero-main-fallback {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--ink-2) 0%, #1a3a2a 50%, #0a1a2a 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .hero-main-fallback svg { opacity: 0.15; width: 80px; }
+  .hero-main-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.3) 50%, transparent 100%);
+  }
+  .hero-main-content {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 28px;
+    color: #fff;
+  }
+  .hero-category {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 3px;
+    margin-bottom: 12px;
+  }
+  .hero-title {
+    font-family: var(--serif);
+    font-size: clamp(22px, 2.5vw, 30px);
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 10px;
+    letter-spacing: -0.02em;
+  }
+  .hero-summary {
+    font-family: var(--body-serif);
+    font-size: 14px;
+    opacity: 0.85;
+    margin-bottom: 14px;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .hero-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--sans);
+    font-size: 12px;
+    opacity: 0.75;
+  }
+  .hero-meta .country-flag { font-size: 16px; }
+  .hero-side-card {
+    background: #fff;
+    padding: 20px;
+    cursor: pointer;
+    transition: background var(--transition);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .hero-side-card:hover { background: var(--paper-2); }
+  .side-card-img {
+    width: 100%; height: 150px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--paper-3);
+    flex-shrink: 0;
+  }
+  .side-card-img-inner {
+    width: 100%; height: 100%;
+    position: relative;
+  }
+  .side-cat {
+    display: inline-block;
+    font-family: var(--sans);
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 3px;
+    margin-bottom: 4px;
+  }
+  .side-title {
+    font-family: var(--serif);
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .side-meta {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--sans);
+    font-size: 11.5px;
+    color: var(--ink-4);
+  }
+
+  /* ─── CATEGORY PILLS ─── */
+  .category-pills {
+    display: flex;
+    gap: 8px;
+    padding: 28px 0 4px;
+    flex-wrap: wrap;
+  }
+  .pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 100px;
+    border: 1.5px solid var(--paper-3);
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-3);
+    cursor: pointer;
+    transition: all var(--transition);
+    background: #fff;
+  }
+  .pill:hover { border-color: var(--ink-3); color: var(--ink); }
+  .pill.active {
+    background: var(--ink);
+    color: #fff;
+    border-color: var(--ink);
+  }
+  .pill-icon { font-size: 15px; }
+
+  /* ─── ARTICLE GRID ─── */
+  .articles-section { padding: 28px 0 48px; }
+  .articles-layout {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 40px;
+    align-items: start;
+  }
+  .articles-main {}
+  .articles-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  /* ─── ARTICLE CARD ─── */
+  .article-card {
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform var(--transition), box-shadow var(--transition);
+    border: 1px solid var(--paper-3);
+    display: flex;
+    flex-direction: column;
+  }
+  .article-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.09);
+  }
+  .card-img {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: var(--paper-2);
+    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .card-img-inner {
+    width: 100%; height: 100%;
+    transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+  }
+  .article-card:hover .card-img-inner { transform: scale(1.05); }
+  .card-img-fallback {
+    width: 100%; height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--paper-2);
+  }
+  .card-img-fallback .fallback-initial {
+    font-family: var(--serif);
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--paper-3);
+  }
+  .card-cat-badge {
+    position: absolute;
+    top: 10px; left: 10px;
+    font-family: var(--sans);
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 3px;
+    color: #fff;
+  }
+  .card-body {
+    padding: 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .card-title {
+    font-family: var(--serif);
+    font-size: 15.5px;
+    font-weight: 700;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    color: var(--ink);
+  }
+  .card-summary {
+    font-family: var(--body-serif);
+    font-size: 13px;
+    color: var(--ink-3);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    flex: 1;
+  }
+  .card-footer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-top: 10px;
+    border-top: 1px solid var(--paper-2);
+    margin-top: auto;
+  }
+  .card-flag { font-size: 16px; line-height: 1; }
+  .card-country {
+    font-family: var(--sans);
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--ink-2);
+  }
+  .card-dot { color: var(--paper-3); }
+  .card-time {
+    font-family: var(--sans);
+    font-size: 11px;
+    color: var(--ink-4);
+    margin-left: auto;
+  }
+  .card-source {
+    font-family: var(--sans);
+    font-size: 10.5px;
+    color: var(--ink-4);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* ─── SKELETON ─── */
+  @keyframes shimmer {
+    0% { background-position: -400px 0; }
+    100% { background-position: 400px 0; }
+  }
+  .skeleton {
+    background: linear-gradient(90deg, var(--paper-2) 25%, var(--paper-3) 50%, var(--paper-2) 75%);
+    background-size: 400px 100%;
+    animation: shimmer 1.4s ease-in-out infinite;
+    border-radius: 4px;
+  }
+  .skeleton-card {
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--paper-3);
+  }
+  .skeleton-img { width: 100%; aspect-ratio: 16/9; }
+  .skeleton-body { padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .skeleton-line { height: 14px; }
+  .skeleton-line.short { width: 60%; }
+  .skeleton-line.med { width: 80%; }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar { display: flex; flex-direction: column; gap: 24px; }
+  .sidebar-widget {
+    background: #fff;
+    border: 1px solid var(--paper-3);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .widget-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--paper-2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .widget-header h3 {
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+  }
+  .widget-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+  .trending-item {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--paper-2);
+    cursor: pointer;
+    transition: background var(--transition);
+    display: grid;
+    grid-template-columns: 1fr 56px;
+    gap: 10px;
+    align-items: start;
+  }
+  .trending-item:last-child { border-bottom: none; }
+  .trending-item:hover { background: var(--paper-2); }
+  .trending-rank {
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 3px;
+  }
+  .trending-title {
+    font-family: var(--serif);
+    font-size: 13.5px;
+    font-weight: 700;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .trending-meta {
+    font-family: var(--sans);
+    font-size: 11px;
+    color: var(--ink-4);
+    margin-top: 4px;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+  .trending-thumb {
+    width: 56px; height: 56px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--paper-2);
+    flex-shrink: 0;
+  }
+
+  /* ─── REGION MAP WIDGET ─── */
+  .region-map {
+    padding: 16px 18px;
+  }
+  .region-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--paper-2);
+    cursor: pointer;
+    transition: background var(--transition);
+  }
+  .region-row:last-child { border-bottom: none; }
+  .region-row:hover { color: var(--accent); }
+  .region-name {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .region-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .region-count {
+    font-family: var(--sans);
+    font-size: 11px;
+    color: var(--ink-4);
+  }
+
+  /* ─── NEWSLETTER WIDGET ─── */
+  .newsletter-widget {
+    background: var(--ink);
+    color: #fff;
+    border-radius: 10px;
+    padding: 24px;
+  }
+  .newsletter-widget h3 {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .newsletter-widget p {
+    font-family: var(--sans);
+    font-size: 12.5px;
+    opacity: 0.7;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+  .newsletter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .newsletter-input {
+    width: 100%;
+    height: 40px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 5px;
+    padding: 0 12px;
+    font-family: var(--sans);
+    font-size: 13px;
+    color: #fff;
+    outline: none;
+    transition: border-color var(--transition);
+  }
+  .newsletter-input::placeholder { color: rgba(255,255,255,0.4); }
+  .newsletter-input:focus { border-color: rgba(255,255,255,0.5); }
+  .newsletter-btn {
+    width: 100%;
+    height: 40px;
+    background: var(--accent);
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background var(--transition);
+  }
+  .newsletter-btn:hover { background: var(--accent-2); }
+  .newsletter-success {
+    display: none;
+    color: #4ade80;
+    font-family: var(--sans);
+    font-size: 13px;
+    text-align: center;
+    padding: 8px 0;
+  }
+
+  /* ─── PAGINATION ─── */
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 32px 0 0;
+  }
+  .page-btn {
+    min-width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 6px;
+    border: 1px solid var(--paper-3);
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-3);
+    cursor: pointer;
+    background: #fff;
+    transition: all var(--transition);
+    padding: 0 10px;
+  }
+  .page-btn:hover { border-color: var(--ink-3); color: var(--ink); }
+  .page-btn.active {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: #fff;
+  }
+  .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* ─── ARTICLE DETAIL ─── */
+  .article-detail { display: none; }
+  .article-detail.visible { display: block; }
+  .article-detail-wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-3);
+    cursor: pointer;
+    margin-bottom: 28px;
+    transition: color var(--transition);
+    background: none;
+    border: none;
+    padding: 0;
+  }
+  .back-btn:hover { color: var(--ink); }
+  .article-cat-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .article-hero-title {
+    font-family: var(--serif);
+    font-size: clamp(26px, 4vw, 40px);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+  .article-deck {
+    font-family: var(--body-serif);
+    font-size: 19px;
+    font-weight: 300;
+    color: var(--ink-2);
+    line-height: 1.65;
+    margin-bottom: 28px;
+    font-style: italic;
+  }
+  .article-byline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0;
+    border-top: 1px solid var(--paper-3);
+    border-bottom: 1px solid var(--paper-3);
+    margin-bottom: 28px;
+  }
+  .byline-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .byline-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-family: var(--sans);
+    font-size: 16px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .byline-source {
+    font-family: var(--sans);
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .byline-date {
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--ink-4);
+  }
+  .byline-actions { display: flex; gap: 8px; }
+  .byline-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--paper-3);
+    background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--ink-3);
+    transition: all var(--transition);
+    font-size: 16px;
+  }
+  .byline-btn:hover { border-color: var(--ink-3); color: var(--ink); }
+  .article-hero-img {
+    width: 100%;
+    aspect-ratio: 16/9;
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--paper-2);
+    margin-bottom: 28px;
+  }
+  .article-body {
+    font-family: var(--body-serif);
+    font-size: 18px;
+    line-height: 1.75;
+    color: var(--ink-2);
+  }
+  .read-original {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 32px;
+    padding: 12px 24px;
+    background: var(--ink);
+    color: #fff;
+    border-radius: 6px;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 500;
+    transition: background var(--transition);
+  }
+  .read-original:hover { background: var(--accent); }
+
+  /* ─── FOOTER ─── */
+  .site-footer {
+    background: var(--ink);
+    color: rgba(255,255,255,0.7);
+    padding: 48px 0 32px;
+    margin-top: 48px;
+  }
+  .footer-inner {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 240px 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 40px;
+  }
+  .footer-brand .logo-name { color: #fff; font-size: 24px; }
+  .footer-brand .logo-tagline { color: rgba(255,255,255,0.4); }
+  .footer-brand p {
+    font-family: var(--sans);
+    font-size: 13px;
+    margin-top: 12px;
+    line-height: 1.6;
+  }
+  .footer-col h4 {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 14px;
+  }
+  .footer-col a {
+    display: block;
+    font-family: var(--sans);
+    font-size: 13px;
+    color: rgba(255,255,255,0.65);
+    padding: 4px 0;
+    transition: color var(--transition);
+    cursor: pointer;
+  }
+  .footer-col a:hover { color: #fff; }
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--sans);
+    font-size: 12px;
+    color: rgba(255,255,255,0.35);
+  }
+
+  /* ─── CATEGORY PAGE ─── */
+  .category-page { display: none; }
+  .category-page.visible { display: block; }
+  .cat-hero {
+    background: var(--ink);
+    color: #fff;
+    padding: 36px 0;
+    margin-bottom: 32px;
+  }
+  .cat-hero-inner {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .cat-badge {
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .cat-title {
+    font-family: var(--serif);
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    margin-bottom: 8px;
+  }
+  .cat-desc {
+    font-family: var(--body-serif);
+    font-size: 16px;
+    opacity: 0.65;
+    max-width: 560px;
+    font-style: italic;
+  }
+
+  /* ─── SEARCH PAGE ─── */
+  .search-page { display: none; }
+  .search-page.visible { display: block; }
+  .search-results-header {
+    padding: 28px 0 20px;
+    border-bottom: 1px solid var(--paper-3);
+    margin-bottom: 28px;
+  }
+  .search-query-display {
+    font-family: var(--serif);
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .search-query-display span { color: var(--accent); font-style: italic; }
+  .search-count {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--ink-4);
+  }
+
+  /* ─── COLOUR MAP FOR CATEGORIES ─── */
+  .cat-politics { background: #c1392b; }
+  .cat-business { background: #1a5276; }
+  .cat-technology { background: #1a7a6e; }
+  .cat-economy { background: #b8860b; }
+  .cat-society { background: #6b3fa0; }
+  .cat-environment { background: #2d6a4f; }
+  .cat-international { background: #8b4513; }
+  .cat-general { background: #5a5750; }
+
+  /* ─── AD SLOTS ─── */
+  .ad-slot {
+    background: var(--paper-2);
+    border: 1px dashed var(--paper-3);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--sans);
+    font-size: 11px;
+    color: var(--ink-4);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .ad-leaderboard { width: 100%; height: 90px; margin: 20px 0; }
+  .ad-rectangle { width: 100%; height: 250px; }
+
+  /* ─── MOBILE ─── */
+  @media (max-width: 900px) {
+    .hero-grid { grid-template-columns: 1fr; grid-template-rows: auto auto auto; }
+    .hero-main { min-height: 320px; grid-row: auto; }
+    .articles-layout { grid-template-columns: 1fr; }
+    .articles-grid { grid-template-columns: repeat(2, 1fr); }
+    .sidebar { display: none; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
+    .dropdown-menu { min-width: 100vw; left: -24px; }
+    .dropdown-regions { grid-template-columns: repeat(2, 1fr); }
+    .header-actions .btn-subscribe { display: none; }
+  }
+  @media (max-width: 600px) {
+    .articles-grid { grid-template-columns: 1fr; }
+    .header-search { display: none; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .stats-inner { gap: 16px; overflow-x: auto; }
+    .hero-main { min-height: 280px; }
+    .page-wrap { padding: 0 16px; }
+  }
+
+  /* ─── LOADING STATE ─── */
+  .loading-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(250,249,246,0.85);
+    z-index: 300;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .loading-overlay.visible { display: flex; }
+  .loading-spinner {
+    width: 36px; height: 36px;
+    border: 3px solid var(--paper-3);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ─── EMPTY STATE ─── */
+  .empty-state {
+    text-align: center;
+    padding: 60px 24px;
+    color: var(--ink-4);
+  }
+  .empty-state .empty-icon { font-size: 48px; margin-bottom: 16px; }
+  .empty-state h3 {
+    font-family: var(--serif);
+    font-size: 20px;
+    color: var(--ink-3);
+    margin-bottom: 8px;
+  }
+  .empty-state p { font-family: var(--sans); font-size: 14px; }
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-spinner"></div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker-bar">
+  <div class="ticker-label">
+    <span class="ticker-dot"></span>
+    Breaking
+  </div>
+  <div class="ticker-scroll">
+    <div class="ticker-track" id="tickerTrack">
+      <span class="ticker-item">Loading latest headlines...</span>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-main">
+    <a class="logo-group" href="#" onclick="showHome(); return false;">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" fill="white" opacity="0.4"/>
+          <path d="M8 10l4-4 4 4M8 14l4 4 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <div class="logo-name">AfricaNews</div>
+        <div class="logo-tagline">The Continent's Pulse</div>
+      </div>
+    </a>
+    <div class="header-search">
+      <input type="text" class="search-input" id="searchInput" placeholder="Search news, topics, countries…" 
+             onkeydown="if(event.key==='Enter') doSearch()">
+      <button class="search-btn" onclick="doSearch()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+      </button>
+    </div>
+    <div class="header-actions">
+      <button class="btn-subscribe" onclick="document.getElementById('newsletterEmail').focus(); document.querySelector('.newsletter-widget').scrollIntoView({behavior:'smooth'})">
+        Newsletter
+      </button>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav class="site-nav">
+    <div class="nav-inner">
+      <a class="nav-link active" id="nav-home" onclick="showHome(); setActiveNav('nav-home'); return false;" href="#">Home</a>
+      <a class="nav-link" id="nav-politics" onclick="showCategory('Politics'); setActiveNav('nav-politics'); return false;" href="#">Politics</a>
+      <a class="nav-link" id="nav-business" onclick="showCategory('Business'); setActiveNav('nav-business'); return false;" href="#">Business</a>
+      <a class="nav-link" id="nav-technology" onclick="showCategory('Technology'); setActiveNav('nav-technology'); return false;" href="#">Technology</a>
+      <a class="nav-link" id="nav-economy" onclick="showCategory('Economy'); setActiveNav('nav-economy'); return false;" href="#">Economy</a>
+      <a class="nav-link" id="nav-society" onclick="showCategory('Society'); setActiveNav('nav-society'); return false;" href="#">Society</a>
+      <a class="nav-link" id="nav-environment" onclick="showCategory('Environment'); setActiveNav('nav-environment'); return false;" href="#">Environment</a>
+      <a class="nav-link" id="nav-international" onclick="showCategory('International'); setActiveNav('nav-international'); return false;" href="#">International</a>
+      <div class="nav-divider"></div>
+      <div class="nav-dropdown" id="countriesDropdown">
+        <button class="nav-dropdown-btn" onclick="toggleDropdown()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          Countries
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="dropdown-menu" id="countriesMenu">
+          <div class="dropdown-regions" id="dropdownRegions">
+            <div class="region-group north"><h4>North Africa</h4><div id="north-countries"></div></div>
+            <div class="region-group west"><h4>West Africa</h4><div id="west-countries"></div></div>
+            <div class="region-group east"><h4>East Africa</h4><div id="east-countries"></div></div>
+            <div class="region-group central"><h4>Central Africa</h4><div id="central-countries"></div></div>
+            <div class="region-group south"><h4>Southern Africa</h4><div id="south-countries"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- STATS STRIP -->
+<div class="stats-strip">
+  <div class="stats-inner">
+    <div class="stat-item">
+      <span class="stat-icon">🌍</span>
+      <span class="stat-num" id="statCountries">—</span>
+      <span class="stat-label">African countries</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-icon">📡</span>
+      <span class="stat-num" id="statSources">—</span>
+      <span class="stat-label">news sources</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-icon">📰</span>
+      <span class="stat-num" id="statArticles">—</span>
+      <span class="stat-label">articles indexed</span>
+    </div>
+    <div class="stats-fresh">
+      <span class="fresh-dot"></span>
+      Updated every hour
+    </div>
+  </div>
+</div>
+
+<!-- HOME PAGE -->
+<div id="homePage">
+  <div class="page-wrap">
+
+    <!-- HERO -->
+    <section class="hero-section">
+      <div class="section-label">
+        <div class="section-label-bar"></div>
+        <h2>Top Stories</h2>
+      </div>
+      <div class="hero-grid" id="heroGrid">
+        <!-- JS rendered -->
+        <div class="hero-main">
+          <div class="hero-main-fallback">
+            <svg viewBox="0 0 80 80" fill="white"><text x="40" y="55" text-anchor="middle" font-size="52">🌍</text></svg>
+          </div>
+          <div class="hero-main-overlay"></div>
+          <div class="hero-main-content">
+            <div class="skeleton" style="width:80px;height:20px;margin-bottom:12px;"></div>
+            <div class="skeleton" style="width:90%;height:28px;margin-bottom:8px;"></div>
+            <div class="skeleton" style="width:75%;height:28px;margin-bottom:12px;"></div>
+            <div class="skeleton" style="width:50%;height:14px;"></div>
+          </div>
+        </div>
+        <div class="hero-side-card"><div class="skeleton-body"><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line med"></div><div class="skeleton skeleton-line short"></div></div></div>
+        <div class="hero-side-card"><div class="skeleton-body"><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line med"></div><div class="skeleton skeleton-line short"></div></div></div>
+      </div>
+    </section>
+
+    <!-- AD LEADERBOARD -->
+    <div class="ad-slot ad-leaderboard">Advertisement</div>
+
+    <!-- CATEGORY QUICK FILTERS -->
+    <div class="category-pills" id="categoryPills">
+      <div class="pill active" onclick="filterArticles(null, this)">
+        <span class="pill-icon">🌐</span> All
+      </div>
+      <div class="pill" onclick="filterArticles('Politics', this)"><span class="pill-icon">🏛️</span> Politics</div>
+      <div class="pill" onclick="filterArticles('Business', this)"><span class="pill-icon">💼</span> Business</div>
+      <div class="pill" onclick="filterArticles('Technology', this)"><span class="pill-icon">💡</span> Technology</div>
+      <div class="pill" onclick="filterArticles('Economy', this)"><span class="pill-icon">📊</span> Economy</div>
+      <div class="pill" onclick="filterArticles('Society', this)"><span class="pill-icon">👥</span> Society</div>
+      <div class="pill" onclick="filterArticles('Environment', this)"><span class="pill-icon">🌿</span> Environment</div>
+      <div class="pill" onclick="filterArticles('International', this)"><span class="pill-icon">🤝</span> International</div>
+    </div>
+
+    <!-- ARTICLES + SIDEBAR -->
+    <section class="articles-section">
+      <div class="articles-layout">
+        <div class="articles-main">
+          <div class="section-label">
+            <div class="section-label-bar"></div>
+            <h2 id="articlesHeading">Latest News</h2>
+            <span class="section-label-count" id="articlesCount"></span>
+          </div>
+          <div class="articles-grid" id="articlesGrid">
+            <!-- Skeleton -->
+            ${[...Array(6)].map(() => `
+            <div class="skeleton-card">
+              <div class="skeleton skeleton-img"></div>
+              <div class="skeleton-body">
+                <div class="skeleton skeleton-line"></div>
+                <div class="skeleton skeleton-line med"></div>
+                <div class="skeleton skeleton-line short"></div>
+              </div>
+            </div>`).join('')}
+          </div>
+          <div class="pagination" id="pagination"></div>
+        </div>
+        <aside class="sidebar">
+          <!-- Trending -->
+          <div class="sidebar-widget">
+            <div class="widget-header">
+              <div class="widget-dot"></div>
+              <h3>Trending Now</h3>
+            </div>
+            <div id="trendingList">
+              ${[...Array(4)].map(() => `
+              <div class="trending-item">
+                <div>
+                  <div class="skeleton" style="width:60px;height:11px;margin-bottom:4px;"></div>
+                  <div class="skeleton" style="height:13px;margin-bottom:4px;"></div>
+                  <div class="skeleton" style="width:80%;height:13px;"></div>
+                </div>
+                <div class="trending-thumb"><div class="skeleton" style="width:100%;height:100%;"></div></div>
+              </div>`).join('')}
+            </div>
+          </div>
+
+          <!-- Region map -->
+          <div class="sidebar-widget">
+            <div class="widget-header">
+              <h3>Browse by Region</h3>
+            </div>
+            <div class="region-map" id="regionMap">
+              <div class="region-row" onclick="filterByRegion('North Africa')"><span class="region-name"><span class="region-dot" style="background:var(--region-north)"></span>North Africa</span><span class="region-count" id="rc-north">—</span></div>
+              <div class="region-row" onclick="filterByRegion('West Africa')"><span class="region-name"><span class="region-dot" style="background:var(--region-west)"></span>West Africa</span><span class="region-count" id="rc-west">—</span></div>
+              <div class="region-row" onclick="filterByRegion('East Africa')"><span class="region-name"><span class="region-dot" style="background:var(--region-east)"></span>East Africa</span><span class="region-count" id="rc-east">—</span></div>
+              <div class="region-row" onclick="filterByRegion('Central Africa')"><span class="region-name"><span class="region-dot" style="background:var(--region-central)"></span>Central Africa</span><span class="region-count" id="rc-central">—</span></div>
+              <div class="region-row" onclick="filterByRegion('Southern Africa')"><span class="region-name"><span class="region-dot" style="background:var(--region-south)"></span>Southern Africa</span><span class="region-count" id="rc-south">—</span></div>
+            </div>
+          </div>
+
+          <!-- Ad rectangle -->
+          <div class="ad-slot ad-rectangle">Advertisement</div>
+
+          <!-- Newsletter -->
+          <div class="newsletter-widget" id="newsletterWidget">
+            <h3>Africa in Your Inbox</h3>
+            <p>Daily digest of the continent's most important stories, curated from 50+ sources.</p>
+            <div class="newsletter-form">
+              <input type="email" class="newsletter-input" id="newsletterEmail" placeholder="your@email.com">
+              <button class="newsletter-btn" onclick="subscribeNewsletter()">Subscribe — it's free</button>
+            </div>
+            <div class="newsletter-success" id="newsletterSuccess">✓ You're subscribed! Check your inbox.</div>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- CATEGORY PAGE -->
+<div class="category-page" id="categoryPage">
+  <div class="cat-hero" id="catHero">
+    <div class="cat-hero-inner">
+      <div class="cat-badge" id="catBadge">Section</div>
+      <h1 class="cat-title" id="catTitle">Category</h1>
+      <p class="cat-desc" id="catDesc"></p>
+    </div>
+  </div>
+  <div class="page-wrap">
+    <div class="articles-layout">
+      <div class="articles-main">
+        <div class="section-label">
+          <div class="section-label-bar"></div>
+          <h2 id="catArticlesHeading">Articles</h2>
+          <span class="section-label-count" id="catArticlesCount"></span>
+        </div>
+        <div class="articles-grid" id="catArticlesGrid"></div>
+        <div class="pagination" id="catPagination"></div>
+      </div>
+      <aside class="sidebar">
+        <div class="sidebar-widget">
+          <div class="widget-header"><div class="widget-dot"></div><h3>Trending Now</h3></div>
+          <div id="catTrendingList"></div>
+        </div>
+        <div class="ad-slot ad-rectangle">Advertisement</div>
+        <div class="newsletter-widget">
+          <h3>Africa in Your Inbox</h3>
+          <p>Daily digest from 50+ sources across the continent.</p>
+          <div class="newsletter-form">
+            <input type="email" class="newsletter-input" placeholder="your@email.com">
+            <button class="newsletter-btn" onclick="subscribeNewsletter()">Subscribe free</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<!-- ARTICLE DETAIL PAGE -->
+<div class="article-detail" id="articleDetail">
+  <div class="article-detail-wrap">
+    <button class="back-btn" onclick="goBack()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      Back
+    </button>
+    <div id="articleContent"></div>
+  </div>
+</div>
+
+<!-- SEARCH PAGE -->
+<div class="search-page" id="searchPage">
+  <div class="page-wrap">
+    <div class="search-results-header">
+      <div class="search-query-display">Results for <span id="searchQueryDisplay"></span></div>
+      <div class="search-count" id="searchCountDisplay"></div>
+    </div>
+    <div class="articles-layout">
+      <div>
+        <div class="articles-grid" id="searchGrid"></div>
+        <div class="pagination" id="searchPagination"></div>
+      </div>
+      <aside class="sidebar">
+        <div class="sidebar-widget">
+          <div class="widget-header"><div class="widget-dot"></div><h3>Trending Now</h3></div>
+          <div id="searchTrendingList"></div>
+        </div>
+        <div class="ad-slot ad-rectangle">Advertisement</div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo-name">AfricaNews</div>
+        <div class="logo-tagline" style="color:rgba(255,255,255,0.4);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;font-family:var(--sans)">The Continent's Pulse</div>
+        <p>Pan-African news aggregation from 50+ established outlets across 25+ countries.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Sections</h4>
+        <a onclick="showCategory('Politics'); return false;">Politics</a>
+        <a onclick="showCategory('Business'); return false;">Business</a>
+        <a onclick="showCategory('Technology'); return false;">Technology</a>
+        <a onclick="showCategory('Economy'); return false;">Economy</a>
+        <a onclick="showCategory('Environment'); return false;">Environment</a>
+      </div>
+      <div class="footer-col">
+        <h4>Regions</h4>
+        <a onclick="filterByRegion('North Africa'); return false;">North Africa</a>
+        <a onclick="filterByRegion('West Africa'); return false;">West Africa</a>
+        <a onclick="filterByRegion('East Africa'); return false;">East Africa</a>
+        <a onclick="filterByRegion('Central Africa'); return false;">Central Africa</a>
+        <a onclick="filterByRegion('Southern Africa'); return false;">Southern Africa</a>
+      </div>
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <a href="/advertise">Advertise</a>
+        <a href="/api-access">API Access</a>
+        <a href="/sources">Our Sources</a>
+        <a href="/countries">All Countries</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 AfricaNews. Aggregated from public RSS feeds.</span>
+      <span>Updated every hour · 25+ countries · 50+ sources</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ─── CONFIG ───
+const API_BASE = '';  // same-origin; Replit serves API and frontend together
+const PAGE_SIZE = 12;
+
+// Country → flag + region mapping
+const COUNTRY_DATA = {
+  'Nigeria':{'flag':'🇳🇬','region':'West Africa'},
+  'Ghana':{'flag':'🇬🇭','region':'West Africa'},
+  'Senegal':{'flag':'🇸🇳','region':'West Africa'},
+  'Ivory Coast':{'flag':'🇨🇮','region':'West Africa'},
+  'Mali':{'flag':'🇲🇱','region':'West Africa'},
+  'Cameroon':{'flag':'🇨🇲','region':'West Africa'},
+  'Kenya':{'flag':'🇰🇪','region':'East Africa'},
+  'Ethiopia':{'flag':'🇪🇹','region':'East Africa'},
+  'Tanzania':{'flag':'🇹🇿','region':'East Africa'},
+  'Uganda':{'flag':'🇺🇬','region':'East Africa'},
+  'Rwanda':{'flag':'🇷🇼','region':'East Africa'},
+  'Somalia':{'flag':'🇸🇴','region':'East Africa'},
+  'Egypt':{'flag':'🇪🇬','region':'North Africa'},
+  'Morocco':{'flag':'🇲🇦','region':'North Africa'},
+  'Tunisia':{'flag':'🇹🇳','region':'North Africa'},
+  'Algeria':{'flag':'🇩🇿','region':'North Africa'},
+  'Libya':{'flag':'🇱🇾','region':'North Africa'},
+  'Sudan':{'flag':'🇸🇩','region':'North Africa'},
+  'South Africa':{'flag':'🇿🇦','region':'Southern Africa'},
+  'Zimbabwe':{'flag':'🇿🇼','region':'Southern Africa'},
+  'Zambia':{'flag':'🇿🇲','region':'Southern Africa'},
+  'Mozambique':{'flag':'🇲🇿','region':'Southern Africa'},
+  'Botswana':{'flag':'🇧🇼','region':'Southern Africa'},
+  'Namibia':{'flag':'🇳🇦','region':'Southern Africa'},
+  'DRC':{'flag':'🇨🇩','region':'Central Africa'},
+  'Angola':{'flag':'🇦🇴','region':'Central Africa'},
+  'Gabon':{'flag':'🇬🇦','region':'Central Africa'},
+  'Congo':{'flag':'🇨🇬','region':'Central Africa'},
+};
+
+const CATEGORY_DESC = {
+  'Politics': 'Elections, governance, policy, and political analysis from across the African continent.',
+  'Business': 'Markets, trade, investment, and corporate news driving Africa\'s economies.',
+  'Technology': 'Innovation, startups, fintech, and digital transformation across Africa.',
+  'Economy': 'GDP, inflation, development finance, and macroeconomic trends.',
+  'Society': 'Culture, health, education, and the stories of everyday African life.',
+  'Environment': 'Climate, conservation, natural resources, and environmental policy.',
+  'International': 'Africa\'s role in global affairs, diplomacy, and international relations.',
+  'General': 'Latest stories that span topics and regions across the continent.',
+};
+
+const REGION_COUNTRIES = {
+  'North Africa': ['Egypt','Morocco','Tunisia','Algeria','Libya','Sudan'],
+  'West Africa': ['Nigeria','Ghana','Senegal','Ivory Coast','Mali','Cameroon'],
+  'East Africa': ['Kenya','Ethiopia','Tanzania','Uganda','Rwanda','Somalia'],
+  'Central Africa': ['DRC','Angola','Gabon','Congo'],
+  'Southern Africa': ['South Africa','Zimbabwe','Zambia','Mozambique','Botswana','Namibia'],
+};
+
+// ─── STATE ───
+let currentPage = 1;
+let currentCategory = null;
+let currentSearch = '';
+let currentRegion = null;
+let allArticles = [];
+let topStories = [];
+let prevPage = 'home'; // for back navigation
+
+function getFlag(country) {
+  return COUNTRY_DATA[country]?.flag || '🌍';
+}
+
+function getRegion(country) {
+  return COUNTRY_DATA[country]?.region || '';
+}
+
+function getCatClass(cat) {
+  const map = {
+    'Politics':'cat-politics','Business':'cat-business','Technology':'cat-technology',
+    'Economy':'cat-economy','Society':'cat-society','Environment':'cat-environment',
+    'International':'cat-international','General':'cat-general'
+  };
+  return map[cat] || 'cat-general';
+}
+
+function timeAgo(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  const diff = Math.floor((Date.now() - d) / 1000);
+  if (diff < 60) return `${diff}s ago`;
+  if (diff < 3600) return `${Math.floor(diff/60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff/3600)}h ago`;
+  return d.toLocaleDateString('en-GB', {day:'numeric',month:'short'});
+}
+
+// ─── INIT ───
+async function init() {
+  await Promise.all([loadStats(), loadTopStories(), loadArticles()]);
+  buildCountryDropdown();
+  populateRegionCounts();
+}
+
+async function loadStats() {
+  try {
+    const r = await fetch(`${API_BASE}/api/stats`);
+    if (!r.ok) return;
+    const d = await r.json();
+    document.getElementById('statCountries').textContent = (d.countries || d.total_countries || '—') + '+';
+    document.getElementById('statSources').textContent = (d.sources || d.total_sources || '—');
+    document.getElementById('statArticles').textContent = ((d.articles || d.total_articles || 0) > 999 
+      ? Math.floor((d.articles||d.total_articles)/1000) + 'k+' 
+      : (d.articles||d.total_articles||'—'));
+  } catch(e) {}
+}
+
+async function loadTopStories() {
+  try {
+    const r = await fetch(`${API_BASE}/api/articles/top-stories`);
+    if (!r.ok) throw new Error();
+    const d = await r.json();
+    topStories = Array.isArray(d) ? d : (d.articles || d.data || []);
+    renderHero(topStories);
+    renderTrending(topStories, 'trendingList');
+    renderTrending(topStories, 'catTrendingList');
+    renderTrending(topStories, 'searchTrendingList');
+    buildTicker(topStories);
+  } catch(e) {
+    // fallback: use first articles
+    renderHeroFallback();
+  }
+}
+
+async function loadArticles(page=1, category=null, search='', country=null) {
+  showLoading(true);
+  try {
+    let url = `${API_BASE}/api/articles?page=${page}&limit=${PAGE_SIZE}`;
+    if (category) url += `&category=${encodeURIComponent(category)}`;
+    if (search) url += `&search=${encodeURIComponent(search)}`;
+    if (country) url += `&country=${encodeURIComponent(country)}`;
+    const r = await fetch(url);
+    if (!r.ok) throw new Error();
+    const d = await r.json();
+    allArticles = Array.isArray(d) ? d : (d.articles || d.data || []);
+    const total = d.total || d.total_count || allArticles.length;
+    const totalPages = d.totalPages || d.total_pages || Math.ceil(total / PAGE_SIZE);
+
+    if (search) {
+      renderGrid(allArticles, 'searchGrid');
+      document.getElementById('searchCountDisplay').textContent = `${total.toLocaleString()} result${total !== 1 ? 's' : ''}`;
+      renderPagination('searchPagination', page, totalPages, (p) => {
+        currentPage = p;
+        loadArticles(p, null, search, null);
+      });
+    } else if (category) {
+      renderGrid(allArticles, 'catArticlesGrid');
+      document.getElementById('catArticlesCount').textContent = `${total.toLocaleString()} articles`;
+      renderPagination('catPagination', page, totalPages, (p) => {
+        currentPage = p;
+        loadArticles(p, category, '', null);
+        window.scrollTo({top:0,behavior:'smooth'});
+      });
+    } else {
+      renderGrid(allArticles, 'articlesGrid');
+      document.getElementById('articlesCount').textContent = `${total.toLocaleString()} articles`;
+      renderPagination('pagination', page, totalPages, (p) => {
+        currentPage = p;
+        loadArticles(p, null, '', null);
+        window.scrollTo({top:0,behavior:'smooth'});
+      });
+    }
+  } catch(e) {
+    const target = search ? 'searchGrid' : (category ? 'catArticlesGrid' : 'articlesGrid');
+    document.getElementById(target).innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">📡</div><h3>Connection issue</h3><p>Could not load articles. Please refresh.</p></div>`;
+  } finally {
+    showLoading(false);
+  }
+}
+
+// ─── RENDER HERO ───
+function renderHero(articles) {
+  if (!articles || articles.length === 0) { renderHeroFallback(); return; }
+  const main = articles[0];
+  const side1 = articles[1];
+  const side2 = articles[2];
+
+  const heroGrid = document.getElementById('heroGrid');
+  heroGrid.innerHTML = `
+    <div class="hero-main" onclick="showArticle(${JSON.stringify(main).replace(/"/g,'&quot;')})">
+      ${main.image_url ? `<img class="hero-main-img" src="${main.image_url}" alt="${escapeHtml(main.title)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">` : ''}
+      <div class="hero-main-fallback" style="${main.image_url ? 'display:none' : ''}">
+        <svg viewBox="0 0 80 80" fill="white"><text x="40" y="55" text-anchor="middle" font-size="52">🌍</text></svg>
+      </div>
+      <div class="hero-main-overlay"></div>
+      <div class="hero-main-content">
+        <span class="hero-category">${escapeHtml(main.category || 'General')}</span>
+        <h2 class="hero-title">${escapeHtml(main.title)}</h2>
+        ${main.summary ? `<p class="hero-summary">${escapeHtml(main.summary)}</p>` : ''}
+        <div class="hero-meta">
+          <span class="country-flag">${getFlag(main.country)}</span>
+          <span>${escapeHtml(main.country || '')}</span>
+          <span>·</span>
+          <span>${timeAgo(main.published_at)}</span>
+          ${main.source_name ? `<span>·</span><span>${escapeHtml(main.source_name)}</span>` : ''}
+        </div>
+      </div>
+    </div>
+    ${side1 ? renderSideCard(side1) : ''}
+    ${side2 ? renderSideCard(side2) : ''}
+  `;
+}
+
+function renderSideCard(article) {
+  const catClass = getCatClass(article.category);
+  return `
+    <div class="hero-side-card" onclick="showArticle(${JSON.stringify(article).replace(/"/g,'&quot;')})">
+      <div class="side-card-img">
+        <div class="side-card-img-inner">
+          ${article.image_url 
+            ? `<img src="${article.image_url}" alt="" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='<div style=\'width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--paper-2);font-size:32px\'>${getFlag(article.country)}</div>'">`
+            : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--paper-2);font-size:32px">${getFlag(article.country)}</div>`
+          }
+        </div>
+      </div>
+      <span class="side-cat ${catClass}">${escapeHtml(article.category || 'General')}</span>
+      <h3 class="side-title">${escapeHtml(article.title)}</h3>
+      <div class="side-meta">
+        <span>${getFlag(article.country)}</span>
+        <span>${escapeHtml(article.country || '')}</span>
+        <span>·</span>
+        <span>${timeAgo(article.published_at)}</span>
+      </div>
+    </div>
+  `;
+}
+
+function renderHeroFallback() {
+  // hero stays as skeleton
+}
+
+// ─── RENDER GRID ───
+function renderGrid(articles, containerId) {
+  const el = document.getElementById(containerId);
+  if (!articles || articles.length === 0) {
+    el.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🔍</div><h3>No articles found</h3><p>Try a different filter or search term.</p></div>`;
+    return;
+  }
+  el.innerHTML = articles.map(a => renderCard(a)).join('');
+}
+
+function renderCard(article) {
+  const catClass = getCatClass(article.category);
+  const flag = getFlag(article.country);
+  const initial = (article.source_name || article.title || 'N')[0].toUpperCase();
+
+  return `
+    <div class="article-card" onclick="showArticle(${JSON.stringify(article).replace(/"/g,'&quot;')})">
+      <div class="card-img">
+        <div class="card-img-inner">
+          ${article.image_url 
+            ? `<img src="${article.image_url}" alt="" style="width:100%;height:100%;object-fit:cover" 
+                 onerror="this.parentElement.innerHTML='<div class=\'card-img-fallback\'><span class=\'fallback-initial\'>${flag}</span></div>'">`
+            : `<div class="card-img-fallback"><span class="fallback-initial">${flag}</span></div>`
+          }
+        </div>
+        <span class="card-cat-badge ${catClass}">${escapeHtml(article.category || 'General')}</span>
+      </div>
+      <div class="card-body">
+        <h3 class="card-title">${escapeHtml(article.title)}</h3>
+        ${article.summary ? `<p class="card-summary">${escapeHtml(article.summary)}</p>` : ''}
+        <div class="card-footer">
+          <span class="card-flag">${flag}</span>
+          <span class="card-country">${escapeHtml(article.country || '')}</span>
+          ${article.source_name ? `<span class="card-dot">·</span><span class="card-source">${escapeHtml(article.source_name)}</span>` : ''}
+          <span class="card-time">${timeAgo(article.published_at)}</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ─── TRENDING SIDEBAR ───
+function renderTrending(articles, containerId) {
+  const el = document.getElementById(containerId);
+  if (!el || !articles || articles.length === 0) return;
+  el.innerHTML = articles.slice(0,5).map((a, i) => `
+    <div class="trending-item" onclick="showArticle(${JSON.stringify(a).replace(/"/g,'&quot;')})">
+      <div>
+        <div class="trending-rank">${escapeHtml(a.category || 'General')}</div>
+        <div class="trending-title">${escapeHtml(a.title)}</div>
+        <div class="trending-meta">
+          ${getFlag(a.country)} ${escapeHtml(a.country || '')} · ${timeAgo(a.published_at)}
+        </div>
+      </div>
+      <div class="trending-thumb">
+        ${a.image_url 
+          ? `<img src="${a.image_url}" alt="" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='<div style=\'display:flex;align-items:center;justify-content:center;height:100%;font-size:24px\'>${getFlag(a.country)}</div>'">`
+          : `<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:24px;background:var(--paper-2)">${getFlag(a.country)}</div>`
+        }
+      </div>
+    </div>
+  `).join('');
+}
+
+// ─── TICKER ───
+function buildTicker(articles) {
+  if (!articles || articles.length === 0) return;
+  const items = articles.slice(0, 10);
+  const html = [...items, ...items].map(a =>
+    `<span class="ticker-item" onclick="showArticle(${JSON.stringify(a).replace(/"/g,'&quot;')})">${getFlag(a.country)} ${escapeHtml(a.title)}</span><span class="ticker-sep">◆</span>`
+  ).join('');
+  document.getElementById('tickerTrack').innerHTML = html;
+}
+
+// ─── PAGINATION ───
+function renderPagination(containerId, current, total, onPage) {
+  const el = document.getElementById(containerId);
+  if (!el || total <= 1) { if(el) el.innerHTML = ''; return; }
+  
+  const pages = [];
+  if (total <= 7) {
+    for (let i = 1; i <= total; i++) pages.push(i);
+  } else {
+    pages.push(1);
+    if (current > 3) pages.push('...');
+    for (let i = Math.max(2, current-1); i <= Math.min(total-1, current+1); i++) pages.push(i);
+    if (current < total - 2) pages.push('...');
+    pages.push(total);
+  }
+
+  el.innerHTML = `
+    <button class="page-btn" onclick="(${onPage.toString()})(${current - 1})" ${current === 1 ? 'disabled' : ''}>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg>
+    </button>
+    ${pages.map(p => p === '...' 
+      ? `<span class="page-btn" style="cursor:default;border:none">…</span>`
+      : `<button class="page-btn ${p === current ? 'active' : ''}" onclick="(${onPage.toString()})(${p})">${p}</button>`
+    ).join('')}
+    <button class="page-btn" onclick="(${onPage.toString()})(${current + 1})" ${current === total ? 'disabled' : ''}>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg>
+    </button>
+  `;
+}
+
+// ─── COUNTRY DROPDOWN ───
+function buildCountryDropdown() {
+  const regionMap = {
+    'North Africa': 'north',
+    'West Africa': 'west',
+    'East Africa': 'east',
+    'Central Africa': 'central',
+    'Southern Africa': 'south',
+  };
+  Object.entries(REGION_COUNTRIES).forEach(([region, countries]) => {
+    const id = regionMap[region];
+    const el = document.getElementById(`${id}-countries`);
+    if (!el) return;
+    el.innerHTML = countries.map(c => `
+      <button class="country-link" onclick="filterByCountry('${c}'); toggleDropdown();">
+        <span class="country-flag">${getFlag(c)}</span>${c}
+      </button>
+    `).join('');
+  });
+}
+
+function toggleDropdown() {
+  const d = document.getElementById('countriesDropdown');
+  d.classList.toggle('open');
+}
+
+document.addEventListener('click', (e) => {
+  const d = document.getElementById('countriesDropdown');
+  if (!d.contains(e.target)) d.classList.remove('open');
+});
+
+// ─── REGION COUNTS (best effort from loaded articles) ───
+function populateRegionCounts() {
+  // Will update once articles are loaded
+  setTimeout(() => {
+    const counts = {'North Africa':0,'West Africa':0,'East Africa':0,'Central Africa':0,'Southern Africa':0};
+    if (allArticles.length === 0 && topStories.length === 0) return;
+    const combined = [...topStories, ...allArticles];
+    combined.forEach(a => {
+      const region = getRegion(a.country);
+      if (counts[region] !== undefined) counts[region]++;
+    });
+    const idMap = {'North Africa':'rc-north','West Africa':'rc-west','East Africa':'rc-east','Central Africa':'rc-central','Southern Africa':'rc-south'};
+    Object.entries(counts).forEach(([region, count]) => {
+      const el = document.getElementById(idMap[region]);
+      if (el && count > 0) el.textContent = count + ' stories';
+    });
+  }, 2000);
+}
+
+// ─── PAGE NAVIGATION ───
+function showHome() {
+  hideAll();
+  document.getElementById('homePage').style.display = 'block';
+  currentCategory = null;
+  currentSearch = '';
+  document.getElementById('articlesHeading').textContent = 'Latest News';
+  loadArticles(1);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function showCategory(cat) {
+  hideAll();
+  prevPage = 'category';
+  currentCategory = cat;
+  document.getElementById('categoryPage').classList.add('visible');
+  document.getElementById('catBadge').textContent = 'Section';
+  document.getElementById('catTitle').textContent = cat;
+  document.getElementById('catDesc').textContent = CATEGORY_DESC[cat] || '';
+  document.getElementById('catArticlesHeading').textContent = cat + ' News';
+  loadArticles(1, cat);
+  renderTrending(topStories, 'catTrendingList');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function filterArticles(category, pillEl) {
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  if (pillEl) pillEl.classList.add('active');
+  currentCategory = category;
+  document.getElementById('articlesHeading').textContent = category ? `${category} News` : 'Latest News';
+  loadArticles(1, category);
+}
+
+function filterByCountry(country) {
+  hideAll();
+  prevPage = 'country';
+  document.getElementById('categoryPage').classList.add('visible');
+  document.getElementById('catBadge').textContent = getRegion(country);
+  document.getElementById('catTitle').textContent = `${getFlag(country)} ${country}`;
+  document.getElementById('catDesc').textContent = `Latest news from ${country}`;
+  document.getElementById('catArticlesHeading').textContent = `${country} News`;
+  loadArticles(1, null, '', country);
+  renderTrending(topStories, 'catTrendingList');
+  setActiveNav(null);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function filterByRegion(region) {
+  const countries = REGION_COUNTRIES[region];
+  if (!countries) return;
+  // Show category page with region title, filter by first country as proxy
+  // Better UX: navigate to category page with region label
+  hideAll();
+  prevPage = 'region';
+  document.getElementById('categoryPage').classList.add('visible');
+  document.getElementById('catBadge').textContent = 'Region';
+  document.getElementById('catTitle').textContent = region;
+  document.getElementById('catDesc').textContent = `News from ${countries.join(', ')} and more.`;
+  document.getElementById('catArticlesHeading').textContent = `${region} News`;
+  // Load articles for first country as sample — ideally API supports region param
+  loadArticles(1, null, '', countries[0]);
+  renderTrending(topStories, 'catTrendingList');
+  setActiveNav(null);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function showArticle(article) {
+  if (typeof article === 'string') { try { article = JSON.parse(article); } catch(e){ return; } }
+  hideAll();
+  document.getElementById('articleDetail').classList.add('visible');
+
+  const catClass = getCatClass(article.category);
+  const flag = getFlag(article.country);
+  const initial = (article.source_name || 'N')[0].toUpperCase();
+
+  document.getElementById('articleContent').innerHTML = `
+    <div class="article-cat-row">
+      <span class="card-cat-badge ${catClass}" style="position:static;font-size:11px;padding:4px 10px">${escapeHtml(article.category || 'General')}</span>
+      <span style="display:flex;align-items:center;gap:6px;font-family:var(--sans);font-size:13px;color:var(--ink-4)">
+        ${flag} ${escapeHtml(article.country || '')}
+      </span>
+    </div>
+    <h1 class="article-hero-title">${escapeHtml(article.title)}</h1>
+    ${article.summary ? `<p class="article-deck">${escapeHtml(article.summary)}</p>` : ''}
+    <div class="article-byline">
+      <div class="byline-left">
+        <div class="byline-avatar">${initial}</div>
+        <div>
+          <div class="byline-source">${escapeHtml(article.source_name || 'Unknown source')}</div>
+          <div class="byline-date">${article.published_at ? new Date(article.published_at).toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'}) : ''}</div>
+        </div>
+      </div>
+      <div class="byline-actions">
+        <button class="byline-btn" onclick="navigator.share ? navigator.share({title:'${escapeHtml(article.title).replace(/'/g,"\\'")}',url:'${article.url}'}) : navigator.clipboard.writeText('${article.url}')" title="Share">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        </button>
+        <button class="byline-btn" onclick="window.open('${article.url}','_blank')" title="Open original">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </button>
+      </div>
+    </div>
+    ${article.image_url ? `
+      <div class="article-hero-img">
+        <img src="${article.image_url}" alt="${escapeHtml(article.title)}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.style.display='none'">
+      </div>` : ''}
+    <div class="article-body">
+      ${article.summary ? `<p>${escapeHtml(article.summary)}</p>` : '<p>Visit the original article to read the full story.</p>'}
+    </div>
+    <a href="${article.url}" target="_blank" rel="noopener" class="read-original">
+      Read full story at ${escapeHtml(article.source_name || 'source')}
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+    </a>
+  `;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function goBack() {
+  hideAll();
+  document.getElementById('homePage').style.display = 'block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function doSearch() {
+  const q = document.getElementById('searchInput').value.trim();
+  if (!q) return;
+  currentSearch = q;
+  hideAll();
+  document.getElementById('searchPage').classList.add('visible');
+  document.getElementById('searchQueryDisplay').textContent = `"${q}"`;
+  renderTrending(topStories, 'searchTrendingList');
+  loadArticles(1, null, q, null);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function hideAll() {
+  document.getElementById('homePage').style.display = 'none';
+  document.getElementById('categoryPage').classList.remove('visible');
+  document.getElementById('articleDetail').classList.remove('visible');
+  document.getElementById('searchPage').classList.remove('visible');
+}
+
+function setActiveNav(id) {
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  if (id) {
+    const el = document.getElementById(id);
+    if (el) el.classList.add('active');
+  }
+}
+
+// ─── NEWSLETTER ───
+async function subscribeNewsletter() {
+  const email = document.getElementById('newsletterEmail').value.trim();
+  if (!email || !email.includes('@')) return;
+  try {
+    await fetch(`${API_BASE}/api/newsletter/subscribe`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({email})
+    });
+  } catch(e) {}
+  document.querySelector('.newsletter-form').style.display = 'none';
+  document.getElementById('newsletterSuccess').style.display = 'block';
+}
+
+// ─── UTILS ───
+function showLoading(v) {
+  document.getElementById('loadingOverlay').classList.toggle('visible', v);
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
+}
+
+// ─── MOBILE SEARCH FALLBACK ───
+document.addEventListener('keydown', (e) => {
+  if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
+    e.preventDefault();
+    document.getElementById('searchInput').focus();
+  }
+});
+
+// ─── START ───
+init();
+</script>
+</body>
+</html>

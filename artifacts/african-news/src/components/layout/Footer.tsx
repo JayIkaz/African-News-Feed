@@ -1,31 +1,25 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { Globe, Mail, Twitter, Facebook, Instagram, CheckCircle2 } from "lucide-react";
 import { useTriggerIngestion } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
-import { Button } from "@/components/ui/button";
 
 export function Footer() {
   const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
-  const [subscribing, setSubscribing] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const triggerIngestion = useTriggerIngestion({
     mutation: {
-      onSuccess: () => {
-        toast({ title: "Update triggered", description: "Fetching latest articles from sources." });
-      },
-      onError: () => {
-        toast({ title: "Update failed", description: "Could not reach the ingestion service.", variant: "destructive" });
-      }
+      onSuccess: () => toast({ title: "Update triggered", description: "Fetching latest articles from sources." }),
+      onError: () => toast({ title: "Update failed", description: "Could not reach the ingestion service.", variant: "destructive" }),
     }
   });
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim()) return;
-    setSubscribing(true);
+    setSubmitting(true);
     try {
       const base = import.meta.env.BASE_URL?.replace(/\/$/, "") || "";
       const res = await fetch(`${base}/api/newsletter/subscribe`, {
@@ -33,134 +27,155 @@ export function Footer() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: email.trim() }),
       });
-      if (res.ok) {
-        setSubscribed(true);
-        setEmail("");
-        toast({ title: "Subscribed!", description: "You'll receive our daily digest." });
-      } else {
-        const err = await res.json();
-        toast({ title: "Subscription failed", description: err.message ?? "Please try again.", variant: "destructive" });
-      }
-    } catch {
-      toast({ title: "Network error", description: "Please check your connection.", variant: "destructive" });
-    } finally {
-      setSubscribing(false);
-    }
+      if (res.ok) { setSubscribed(true); setEmail(""); }
+    } catch {}
+    setSubmitting(false);
   };
 
   return (
-    <footer className="bg-primary text-primary-foreground pt-16 pb-8 border-t-4 border-accent">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8 mb-12">
+    <footer style={{ background: "var(--ink)", color: "rgba(255,255,255,0.7)", padding: "48px 0 32px", marginTop: 48 }}>
+      <div style={{ maxWidth: 1320, margin: "0 auto", padding: "0 24px" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "240px 1fr 1fr 1fr", gap: 40, marginBottom: 40 }}>
 
           {/* Brand */}
-          <div className="col-span-1 md:col-span-1">
-            <Link href="/" className="flex items-center gap-2 mb-6 group inline-flex">
-              <div className="w-8 h-8 bg-white text-primary flex items-center justify-center rounded-sm">
-                <span className="font-serif font-bold text-lg">A</span>
-              </div>
-              <span className="font-serif text-2xl font-bold tracking-tight">AfricaNews</span>
+          <div>
+            <Link href="/" style={{ textDecoration: "none" }}>
+              <div style={{ fontFamily: "var(--font-serif)", fontSize: 24, fontWeight: 700, color: "#fff", letterSpacing: "-0.02em", marginBottom: 2 }}>AfricaNews</div>
+              <div style={{ fontFamily: "var(--font-sans)", fontSize: 9, fontWeight: 500, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 14 }}>The Continent's Pulse</div>
             </Link>
-            <p className="text-primary-foreground/70 text-sm leading-relaxed mb-6">
-              Aggregating the most important stories across the African continent from trusted local and international sources.
+            <p style={{ fontFamily: "var(--font-sans)", fontSize: 13, lineHeight: 1.6, color: "rgba(255,255,255,0.55)", marginBottom: 16 }}>
+              Aggregating the continent's most important stories from 65+ trusted local and international sources.
             </p>
-            <div className="flex gap-4">
-              <a href="#" className="w-8 h-8 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-accent hover:text-white transition-colors">
-                <Twitter className="w-4 h-4" />
-              </a>
-              <a href="#" className="w-8 h-8 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-accent hover:text-white transition-colors">
-                <Facebook className="w-4 h-4" />
-              </a>
-              <a href="#" className="w-8 h-8 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-accent hover:text-white transition-colors">
-                <Instagram className="w-4 h-4" />
-              </a>
+            <div style={{ display: "flex", gap: 10 }}>
+              {["𝕏", "f", "in"].map((s, i) => (
+                <a key={i} href="#" style={{ width: 32, height: 32, borderRadius: "50%", background: "rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(255,255,255,0.6)", fontFamily: "var(--font-sans)", fontSize: 12, textDecoration: "none", transition: "background 0.2s" }}
+                  onMouseEnter={e => (e.currentTarget.style.background = "var(--accent)")}
+                  onMouseLeave={e => (e.currentTarget.style.background = "rgba(255,255,255,0.1)")}
+                >
+                  {s}
+                </a>
+              ))}
             </div>
           </div>
 
           {/* Sections */}
           <div>
-            <h3 className="font-serif font-bold text-lg mb-6 flex items-center gap-2">
-              <Globe className="w-4 h-4 text-accent" /> Sections
-            </h3>
-            <ul className="space-y-3 text-sm text-primary-foreground/80">
-              <li><Link href="/category/Politics" className="hover:text-accent transition-colors">Politics</Link></li>
-              <li><Link href="/category/Business" className="hover:text-accent transition-colors">Business</Link></li>
-              <li><Link href="/category/Technology" className="hover:text-accent transition-colors">Technology</Link></li>
-              <li><Link href="/category/Economy" className="hover:text-accent transition-colors">Economy</Link></li>
-              <li><Link href="/category/Society" className="hover:text-accent transition-colors">Society</Link></li>
-              <li><Link href="/category/Environment" className="hover:text-accent transition-colors">Environment</Link></li>
-              <li><Link href="/category/International" className="hover:text-accent transition-colors">International</Link></li>
-            </ul>
+            <h4 style={{ fontFamily: "var(--font-sans)", fontSize: 11, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 14 }}>
+              Sections
+            </h4>
+            {["Politics", "Business", "Technology", "Economy", "Society", "Environment", "International"].map(cat => (
+              <Link key={cat} href={`/category/${cat}`} style={{ display: "block", fontFamily: "var(--font-sans)", fontSize: 13, color: "rgba(255,255,255,0.65)", padding: "4px 0", textDecoration: "none", transition: "color 0.2s" }}
+                onMouseEnter={e => (e.currentTarget.style.color = "#fff")}
+                onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.65)")}
+              >
+                {cat}
+              </Link>
+            ))}
           </div>
 
-          {/* Regions — now link to /countries?region=X */}
+          {/* Regions & Platform */}
           <div>
-            <h3 className="font-serif font-bold text-lg mb-6">Regions</h3>
-            <ul className="space-y-3 text-sm text-primary-foreground/80">
-              <li><Link href="/countries?region=West Africa" className="hover:text-accent transition-colors">West Africa</Link></li>
-              <li><Link href="/countries?region=East Africa" className="hover:text-accent transition-colors">East Africa</Link></li>
-              <li><Link href="/countries?region=Southern Africa" className="hover:text-accent transition-colors">Southern Africa</Link></li>
-              <li><Link href="/countries?region=North Africa" className="hover:text-accent transition-colors">North Africa</Link></li>
-              <li><Link href="/countries?region=Central Africa" className="hover:text-accent transition-colors">Central Africa</Link></li>
-              <li><Link href="/countries" className="hover:text-accent transition-colors">All Countries</Link></li>
-            </ul>
-            <div className="mt-6 space-y-2 text-sm text-primary-foreground/80">
-              <Link href="/advertise" className="block hover:text-accent transition-colors">Advertise With Us</Link>
-              <Link href="/api-access" className="block hover:text-accent transition-colors">API Access</Link>
+            <h4 style={{ fontFamily: "var(--font-sans)", fontSize: 11, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 14 }}>
+              Regions
+            </h4>
+            {["West Africa", "East Africa", "North Africa", "Southern Africa", "Central Africa"].map(r => (
+              <Link key={r} href={`/countries?region=${encodeURIComponent(r)}`} style={{ display: "block", fontFamily: "var(--font-sans)", fontSize: 13, color: "rgba(255,255,255,0.65)", padding: "4px 0", textDecoration: "none", transition: "color 0.2s" }}
+                onMouseEnter={e => (e.currentTarget.style.color = "#fff")}
+                onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.65)")}
+              >
+                {r}
+              </Link>
+            ))}
+            <div style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.1)" }}>
+              <h4 style={{ fontFamily: "var(--font-sans)", fontSize: 11, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 10 }}>Platform</h4>
+              <Link href="/advertise" style={{ display: "block", fontFamily: "var(--font-sans)", fontSize: 13, color: "rgba(255,255,255,0.65)", padding: "4px 0", textDecoration: "none" }}
+                onMouseEnter={e => (e.currentTarget.style.color = "#fff")}
+                onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.65)")}
+              >Advertise With Us</Link>
+              <Link href="/api-access" style={{ display: "block", fontFamily: "var(--font-sans)", fontSize: 13, color: "rgba(255,255,255,0.65)", padding: "4px 0", textDecoration: "none" }}
+                onMouseEnter={e => (e.currentTarget.style.color = "#fff")}
+                onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.65)")}
+              >API Access</Link>
             </div>
           </div>
 
           {/* Newsletter */}
-          <div>
-            <h3 className="font-serif font-bold text-lg mb-6">Daily Digest</h3>
-            <p className="text-sm text-primary-foreground/70 mb-4">
-              Get the top stories from across Africa delivered to your inbox every morning.
+          <div id="footer-newsletter">
+            <h4 style={{ fontFamily: "var(--font-sans)", fontSize: 11, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 14 }}>
+              Daily Digest
+            </h4>
+            <p style={{ fontFamily: "var(--font-sans)", fontSize: 13, color: "rgba(255,255,255,0.55)", marginBottom: 14, lineHeight: 1.6 }}>
+              Top stories from across Africa delivered every morning.
             </p>
             {subscribed ? (
-              <div className="flex items-center gap-2 text-green-400 font-medium text-sm py-3">
-                <CheckCircle2 className="w-5 h-5" />
-                You're subscribed — welcome aboard!
+              <div style={{ fontFamily: "var(--font-sans)", fontSize: 13, color: "#4ade80", fontWeight: 500 }}>
+                ✓ You're subscribed! Welcome aboard.
               </div>
             ) : (
-              <form className="flex flex-col gap-2" onSubmit={handleSubscribe}>
-                <div className="relative">
-                  <Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                  <input
-                    type="email"
-                    placeholder="Your email address"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-primary-foreground/10 border border-primary-foreground/20 rounded-md py-2 pl-10 pr-4 text-sm text-white placeholder:text-primary-foreground/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all"
-                  />
-                </div>
-                <Button
+              <form onSubmit={handleSubscribe} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                <input
+                  type="email"
+                  placeholder="your@email.com"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "10px 12px",
+                    background: "rgba(255,255,255,0.08)",
+                    border: "1px solid rgba(255,255,255,0.15)",
+                    borderRadius: 5,
+                    fontFamily: "var(--font-sans)",
+                    fontSize: 13,
+                    color: "#fff",
+                    outline: "none",
+                  }}
+                />
+                <button
                   type="submit"
-                  disabled={subscribing}
-                  className="w-full bg-accent hover:bg-accent/90 text-white border-none shadow-none"
+                  disabled={submitting}
+                  style={{
+                    padding: "10px",
+                    background: "var(--accent)",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: 5,
+                    fontFamily: "var(--font-sans)",
+                    fontSize: 13,
+                    fontWeight: 500,
+                    cursor: "pointer",
+                  }}
                 >
-                  {subscribing ? "Subscribing…" : "Subscribe Free"}
-                </Button>
+                  {submitting ? "Subscribing…" : "Subscribe — it's free"}
+                </button>
               </form>
             )}
           </div>
         </div>
 
-        <div className="pt-8 border-t border-primary-foreground/10 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-primary-foreground/50">
-          <p>© {new Date().getFullYear()} AfricaNews Aggregator. All rights reserved.</p>
-          <div className="flex items-center gap-6">
-            <Link href="/about" className="hover:text-white transition-colors">About</Link>
-            <Link href="/advertise" className="hover:text-white transition-colors">Advertise</Link>
-            <Link href="/api-access" className="hover:text-white transition-colors">API</Link>
-            <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
-            <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
+        {/* Bottom bar */}
+        <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: 24, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+          <p style={{ fontFamily: "var(--font-sans)", fontSize: 12, color: "rgba(255,255,255,0.35)" }}>
+            © {new Date().getFullYear()} AfricaNews Aggregator. All rights reserved.
+          </p>
+          <div style={{ display: "flex", alignItems: "center", gap: 20, flexWrap: "wrap" }}>
+            {["About", "Sources", "Privacy", "Terms"].map(item => (
+              <Link key={item} href={`/${item.toLowerCase()}`} style={{ fontFamily: "var(--font-sans)", fontSize: 12, color: "rgba(255,255,255,0.35)", textDecoration: "none", transition: "color 0.2s" }}
+                onMouseEnter={e => (e.currentTarget.style.color = "#fff")}
+                onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.35)")}
+              >
+                {item}
+              </Link>
+            ))}
             <button
               onClick={() => triggerIngestion.mutate()}
               disabled={triggerIngestion.isPending}
-              className="opacity-20 hover:opacity-100 transition-opacity flex items-center gap-1"
-              title="Admin: Trigger Ingestion"
+              style={{ fontFamily: "var(--font-sans)", fontSize: 12, color: "rgba(255,255,255,0.35)", background: "none", border: "none", cursor: "pointer", opacity: 0.3, transition: "opacity 0.2s" }}
+              title="Admin: Force Update"
+              onMouseEnter={e => (e.currentTarget.style.opacity = "1")}
+              onMouseLeave={e => (e.currentTarget.style.opacity = "0.3")}
             >
-              {triggerIngestion.isPending ? "Updating..." : "Force Update"}
+              {triggerIngestion.isPending ? "Updating…" : "Force Update"}
             </button>
           </div>
         </div>

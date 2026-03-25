@@ -1,86 +1,203 @@
+import { useState } from "react";
 import { Link } from "wouter";
-import { TrendingUp, Globe2, Activity } from "lucide-react";
 import { useGetTrendingArticles, useListCountries } from "@workspace/api-client-react";
-import { Skeleton } from "@/components/ui/skeleton";
 import { ArticleCard } from "./ArticleCard";
-import { Badge } from "@/components/ui/badge";
+import { COUNTRY_REGIONS } from "@/lib/countries";
+
+const REGIONS = [
+  { label: "North Africa", key: "North Africa", color: "var(--region-north)" },
+  { label: "West Africa", key: "West Africa", color: "var(--region-west)" },
+  { label: "East Africa", key: "East Africa", color: "var(--region-east)" },
+  { label: "Central Africa", key: "Central Africa", color: "var(--region-central)" },
+  { label: "Southern Africa", key: "Southern Africa", color: "var(--region-south)" },
+];
+
+function WidgetHeader({ dot, title }: { dot?: boolean; title: string }) {
+  return (
+    <div style={{ padding: "14px 18px", borderBottom: "1px solid var(--paper-2)", display: "flex", alignItems: "center", gap: 8 }}>
+      {dot && (
+        <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--accent)", animation: "pulse-dot 1.4s ease-in-out infinite", display: "inline-block" }} />
+      )}
+      <h3 style={{ fontFamily: "var(--font-sans)", fontSize: 12, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--ink-2)" }}>
+        {title}
+      </h3>
+    </div>
+  );
+}
+
+function Widget({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{ background: "#fff", border: "1px solid var(--paper-3)", borderRadius: 10, overflow: "hidden" }}>
+      {children}
+    </div>
+  );
+}
 
 export function Sidebar() {
   const { data: trendingData, isLoading: trendingLoading } = useGetTrendingArticles({ limit: 5 });
-  const { data: countries, isLoading: countriesLoading } = useListCountries();
+  const { data: countries } = useListCountries();
+  const [email, setEmail] = useState("");
+  const [subscribed, setSubscribed] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
+  const regionCounts = REGIONS.reduce<Record<string, number>>((acc, { key }) => {
+    acc[key] = (countries ?? []).filter(c => COUNTRY_REGIONS[c.country] === key)
+      .reduce((sum, c) => sum + c.articleCount, 0);
+    return acc;
+  }, {});
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setSubmitting(true);
+    try {
+      const base = import.meta.env.BASE_URL?.replace(/\/$/, "") || "";
+      const res = await fetch(`${base}/api/newsletter/subscribe`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+      if (res.ok) { setSubscribed(true); setEmail(""); }
+    } catch {}
+    setSubmitting(false);
+  };
 
   return (
-    <aside className="w-full space-y-10">
-      {/* Trending Section */}
-      <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
-        <div className="flex items-center gap-2 mb-6 pb-4 border-b border-border">
-          <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center">
-            <TrendingUp className="w-4 h-4 text-accent" />
-          </div>
-          <h3 className="font-serif font-bold text-xl">Trending Now</h3>
-        </div>
-        
-        <div className="flex flex-col">
-          {trendingLoading ? (
-            Array(5).fill(0).map((_, i) => (
-              <div key={i} className="flex gap-4 py-4 border-b border-border last:border-0">
-                <Skeleton className="w-24 h-24 rounded-md shrink-0" />
-                <div className="flex-1 space-y-2">
-                  <Skeleton className="h-3 w-16" />
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-4 w-4/5" />
+    <aside style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+      {/* Trending Now */}
+      <Widget>
+        <WidgetHeader dot title="Trending Now" />
+        <div>
+          {trendingLoading
+            ? Array(4).fill(0).map((_, i) => (
+                <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 56px", gap: 10, padding: "14px 18px", borderBottom: "1px solid var(--paper-2)" }}>
+                  <div>
+                    <div className="an-skeleton" style={{ width: 60, height: 11, marginBottom: 4 }} />
+                    <div className="an-skeleton" style={{ height: 13, marginBottom: 4 }} />
+                    <div className="an-skeleton" style={{ width: "80%", height: 13 }} />
+                  </div>
+                  <div className="an-skeleton" style={{ width: 56, height: 56, borderRadius: 6 }} />
                 </div>
-              </div>
-            ))
-          ) : trendingData?.articles && trendingData.articles.length > 0 ? (
-            trendingData.articles.map((article) => (
-              <ArticleCard key={article.id} article={article} compact />
-            ))
-          ) : (
-            <p className="text-sm text-muted-foreground text-center py-4">No trending articles right now.</p>
-          )}
+              ))
+            : (trendingData?.articles ?? []).map((article, i) => (
+                <div key={article.id} style={{ position: "relative" }}>
+                  <span style={{
+                    position: "absolute",
+                    top: 14,
+                    left: 18,
+                    fontFamily: "var(--font-sans)",
+                    fontSize: 10,
+                    fontWeight: 600,
+                    color: "var(--accent)",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.06em",
+                    zIndex: 1,
+                    pointerEvents: "none",
+                  }}>
+                    #{i + 1}
+                  </span>
+                  <div style={{ paddingLeft: 28 }}>
+                    <ArticleCard article={article} compact />
+                  </div>
+                </div>
+              ))}
         </div>
-      </div>
+      </Widget>
 
-      {/* Top Countries */}
-      <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
-        <div className="flex items-center gap-2 mb-6 pb-4 border-b border-border">
-          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-            <Globe2 className="w-4 h-4 text-primary" />
-          </div>
-          <h3 className="font-serif font-bold text-xl">Top Regions</h3>
+      {/* Browse by Region */}
+      <Widget>
+        <WidgetHeader title="Browse by Region" />
+        <div style={{ padding: "16px 18px" }}>
+          {REGIONS.map(({ label, key, color }) => (
+            <Link
+              key={key}
+              href={`/countries?region=${encodeURIComponent(key)}`}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: "10px 0",
+                borderBottom: "1px solid var(--paper-2)",
+                textDecoration: "none",
+                transition: "opacity 0.2s",
+              }}
+              onMouseEnter={e => (e.currentTarget.style.opacity = "0.7")}
+              onMouseLeave={e => (e.currentTarget.style.opacity = "1")}
+            >
+              <span style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-sans)", fontSize: 13, color: "var(--ink-2)" }}>
+                <span style={{ width: 8, height: 8, borderRadius: "50%", background: color, flexShrink: 0 }} />
+                {label}
+              </span>
+              <span style={{ fontFamily: "var(--font-sans)", fontSize: 12, color: "var(--ink-4)", background: "var(--paper-2)", padding: "2px 8px", borderRadius: 20 }}>
+                {regionCounts[key]?.toLocaleString() ?? "—"}
+              </span>
+            </Link>
+          ))}
         </div>
-        
-        <div className="flex flex-wrap gap-2">
-          {countriesLoading ? (
-            Array(8).fill(0).map((_, i) => (
-              <Skeleton key={i} className="h-8 w-24 rounded-full" />
-            ))
-          ) : countries ? (
-            countries.slice(0, 12).map((country) => (
-              <Link key={country.country} href={`/country/${country.country}`}>
-                <Badge variant="secondary" className="px-3 py-1 hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer text-sm font-medium">
-                  {country.country}
-                  <span className="ml-1.5 opacity-50 text-xs">{country.articleCount}</span>
-                </Badge>
-              </Link>
-            ))
-          ) : null}
-        </div>
-      </div>
+      </Widget>
 
-      {/* Newsletter Promo */}
-      <div className="bg-gradient-to-br from-primary to-primary/90 text-primary-foreground rounded-xl p-6 shadow-md relative overflow-hidden">
-        <div className="absolute top-0 right-0 p-4 opacity-10">
-          <Activity className="w-24 h-24" />
-        </div>
-        <h3 className="font-serif font-bold text-xl mb-2 relative z-10">Morning Briefing</h3>
-        <p className="text-primary-foreground/80 text-sm mb-4 relative z-10">
-          Start your day with the most important stories from across the continent.
+      {/* Newsletter */}
+      <div
+        id="sidebar-newsletter"
+        style={{
+          background: "var(--ink)",
+          color: "#fff",
+          borderRadius: 10,
+          padding: 20,
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 18, fontWeight: 700, marginBottom: 8, color: "#fff" }}>
+          Africa in Your Inbox
+        </h3>
+        <p style={{ fontFamily: "var(--font-sans)", fontSize: 13, opacity: 0.7, marginBottom: 16, lineHeight: 1.5 }}>
+          Daily digest of the continent's most important stories, curated from 65+ sources.
         </p>
-        <button className="w-full bg-white text-primary font-bold py-2.5 rounded-md hover:bg-accent hover:text-white transition-colors relative z-10 shadow-sm">
-          Sign Up Free
-        </button>
+        {subscribed ? (
+          <div style={{ fontFamily: "var(--font-sans)", fontSize: 13, color: "#4ade80", fontWeight: 500 }}>
+            ✓ You're subscribed! Check your inbox.
+          </div>
+        ) : (
+          <form onSubmit={handleSubscribe} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <input
+              type="email"
+              placeholder="your@email.com"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              required
+              style={{
+                width: "100%",
+                padding: "10px 12px",
+                background: "rgba(255,255,255,0.1)",
+                border: "1px solid rgba(255,255,255,0.2)",
+                borderRadius: 5,
+                fontFamily: "var(--font-sans)",
+                fontSize: 13,
+                color: "#fff",
+                outline: "none",
+              }}
+            />
+            <button
+              type="submit"
+              disabled={submitting}
+              style={{
+                width: "100%",
+                padding: "10px",
+                background: "var(--accent)",
+                color: "#fff",
+                border: "none",
+                borderRadius: 5,
+                fontFamily: "var(--font-sans)",
+                fontSize: 13,
+                fontWeight: 500,
+                cursor: "pointer",
+              }}
+            >
+              {submitting ? "Subscribing…" : "Subscribe — it's free"}
+            </button>
+          </form>
+        )}
       </div>
     </aside>
   );

@@ -8,9 +8,9 @@ interface AppLayoutProps {
 
 export function AppLayout({ children }: AppLayoutProps) {
   return (
-    <div className="min-h-screen flex flex-col font-sans bg-background text-foreground selection:bg-accent/20">
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: "var(--paper)", color: "var(--ink)" }}>
       <Navbar />
-      <main className="flex-grow w-full">
+      <main style={{ flex: 1 }}>
         {children}
       </main>
       <Footer />
