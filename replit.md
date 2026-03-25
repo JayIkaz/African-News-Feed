@@ -101,7 +101,7 @@ Nigeria, South Africa, Kenya, Egypt, Ghana, Morocco, Ethiopia, Tanzania, Uganda,
 - **Category pills**: Inline filter (no routing) with emoji icons
 - **Sidebar**: Trending #1–5, Region article counts, Newsletter signup
 - **Monetization**: `/advertise` + `/api-access` pages; ad banner slots
-- **Newsletter**: DB subscriber table + POST `/api/newsletter/subscribe`
+- **Newsletter**: DB subscriber table + POST `/api/newsletter/subscribe`; welcome email via Resend (RESEND_API_KEY secret; sends from `onboarding@resend.dev` — add a verified domain in Resend dashboard to use a custom from address)
 - **Countries dropdown**: 5-column Navbar dropdown by region
 - **Pagination**: Page-based with smooth scroll-to-top
 
