@@ -198,6 +198,7 @@ export function Navbar() {
           style={{ borderTop: "1px solid var(--paper-3)", background: "var(--paper)" }}
           className="hidden md:block"
         >
+          {/* Outer wrapper: NO overflow here — dropdown must escape this container */}
           <div
             style={{
               maxWidth: 1320,
@@ -207,21 +208,23 @@ export function Navbar() {
               alignItems: "center",
               height: 56,
               gap: 0,
-              overflowX: "auto",
             }}
           >
-            <NavLink href="/" active={isHome}>Home</NavLink>
-            {CATEGORIES.map(cat => (
-              <NavLink key={cat} href={`/category/${cat}`} active={activeCategory === cat}>
-                {cat}
-              </NavLink>
-            ))}
+            {/* Inner scroll area: only the category links scroll on narrow viewports */}
+            <div style={{ display: "flex", alignItems: "center", flex: 1, overflowX: "auto", minWidth: 0 }}>
+              <NavLink href="/" active={isHome}>Home</NavLink>
+              {CATEGORIES.map(cat => (
+                <NavLink key={cat} href={`/category/${cat}`} active={activeCategory === cat}>
+                  {cat}
+                </NavLink>
+              ))}
+            </div>
 
-            {/* Divider */}
+            {/* Divider — outside scroll area */}
             <div style={{ width: 1, height: 20, background: "var(--paper-3)", flexShrink: 0, margin: "0 8px" }} />
 
-            {/* Countries dropdown */}
-            <div style={{ position: "relative" }} ref={dropdownRef}>
+            {/* Countries dropdown — outside scroll area so position:absolute is never clipped */}
+            <div style={{ position: "relative", flexShrink: 0 }} ref={dropdownRef}>
               <button
                 onClick={() => setCountriesOpen(!countriesOpen)}
                 style={{
@@ -266,7 +269,7 @@ export function Navbar() {
                     boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
                     minWidth: 580,
                     padding: 20,
-                    zIndex: 200,
+                    zIndex: 999,
                   }}
                 >
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 12, marginBottom: 12 }}>
