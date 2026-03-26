@@ -103,10 +103,10 @@ export function Navbar() {
               </svg>
             </div>
             <div style={{ lineHeight: 1.1 }}>
-              <div style={{ fontFamily: "var(--font-serif)", fontSize: 22, fontWeight: 700, color: "var(--ink)", letterSpacing: "-0.02em" }}>
+              <div style={{ fontFamily: "var(--font-headline)", fontSize: 22, fontWeight: 700, color: "var(--ink)", letterSpacing: "-0.02em" }}>
                 AfricaNews
               </div>
-              <div style={{ fontFamily: "var(--font-sans)", fontSize: 9.5, fontWeight: 500, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink-4)" }}>
+              <div style={{ fontFamily: "var(--font-ui)", fontSize: 9.5, fontWeight: 500, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink-4)" }}>
                 The Continent's Pulse
               </div>
             </div>
@@ -130,7 +130,7 @@ export function Navbar() {
                 border: "1.5px solid transparent",
                 borderRadius: 6,
                 padding: "0 40px 0 14px",
-                fontFamily: "var(--font-sans)",
+                fontFamily: "var(--font-ui)",
                 fontSize: 13.5,
                 color: "var(--ink)",
                 outline: "none",
@@ -164,7 +164,7 @@ export function Navbar() {
                 borderRadius: 5,
                 padding: "0 16px",
                 height: 36,
-                fontFamily: "var(--font-sans)",
+                fontFamily: "var(--font-ui)",
                 fontSize: 12.5,
                 fontWeight: 500,
                 cursor: "pointer",
@@ -225,7 +225,7 @@ export function Navbar() {
               <button
                 onClick={() => setCountriesOpen(!countriesOpen)}
                 style={{
-                  fontFamily: "var(--font-sans)",
+                  fontFamily: "var(--font-ui)",
                   fontSize: 13,
                   fontWeight: 500,
                   color: isCountries ? "var(--accent)" : "var(--ink-3)",
@@ -274,7 +274,7 @@ export function Navbar() {
                       <div key={region}>
                         <h4
                           style={{
-                            fontFamily: "var(--font-sans)",
+                            fontFamily: "var(--font-ui)",
                             fontSize: 10,
                             fontWeight: 600,
                             letterSpacing: "0.1em",
@@ -297,7 +297,7 @@ export function Navbar() {
                               alignItems: "center",
                               gap: 6,
                               padding: "4px 0",
-                              fontFamily: "var(--font-sans)",
+                              fontFamily: "var(--font-ui)",
                               fontSize: 12.5,
                               color: "var(--ink-2)",
                               cursor: "pointer",
@@ -320,7 +320,7 @@ export function Navbar() {
                     <Link
                       href="/countries"
                       onClick={() => setCountriesOpen(false)}
-                      style={{ fontFamily: "var(--font-sans)", fontSize: 12.5, color: "var(--accent)", fontWeight: 500 }}
+                      style={{ fontFamily: "var(--font-ui)", fontSize: 12.5, color: "var(--accent)", fontWeight: 500 }}
                     >
                       View all countries →
                     </Link>
@@ -354,7 +354,7 @@ export function Navbar() {
                   border: "1.5px solid var(--paper-3)",
                   borderRadius: 6,
                   padding: "0 14px",
-                  fontFamily: "var(--font-sans)",
+                  fontFamily: "var(--font-ui)",
                   fontSize: 13.5,
                   color: "var(--ink)",
                   outline: "none",
@@ -370,7 +370,7 @@ export function Navbar() {
                     href={href}
                     onClick={() => setMobileOpen(false)}
                     style={{
-                      fontFamily: "var(--font-sans)",
+                      fontFamily: "var(--font-ui)",
                       fontSize: 14,
                       fontWeight: 500,
                       color: "var(--ink-2)",
@@ -396,7 +396,7 @@ function NavLink({ href, active, children }: { href: string; active: boolean; ch
     <Link
       href={href}
       style={{
-        fontFamily: "var(--font-sans)",
+        fontFamily: "var(--font-ui)",
         fontSize: 13,
         fontWeight: active ? 600 : 500,
         color: active ? "var(--accent)" : "var(--ink-3)",

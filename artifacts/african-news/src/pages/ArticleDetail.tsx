@@ -1,12 +1,11 @@
 import { useParams, Link } from "wouter";
 import { format } from "date-fns";
-import { Clock, MapPin, Share2, BookmarkPlus, ArrowLeft, ExternalLink, Sparkles } from "lucide-react";
+import { Share2, BookmarkPlus, ArrowLeft, ExternalLink } from "lucide-react";
 import { useGetArticle, useListArticles } from "@workspace/api-client-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { getArticleImage } from "@/lib/unsplash";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
 import { ArticleCard } from "@/components/article/ArticleCard";
+import { CAT_COLORS } from "@/components/article/ArticleCard";
 
 export default function ArticleDetail() {
   const { id } = useParams<{ id: string }>();
@@ -16,29 +15,18 @@ export default function ArticleDetail() {
     query: { enabled: !isNaN(articleId) && articleId > 0 }
   });
 
-  // Fetch related articles from same category
   const { data: relatedData } = useListArticles(
-    { category: article?.category, limit: 3 },
+    { category: article?.category, limit: 4 },
     { query: { enabled: !!article?.category } }
   );
 
   if (isLoading) {
     return (
       <AppLayout>
-        <div className="max-w-4xl mx-auto px-4 py-12">
-          <Skeleton className="h-6 w-32 mb-6" />
-          <Skeleton className="h-12 w-full mb-4" />
-          <Skeleton className="h-12 w-3/4 mb-8" />
-          <div className="flex gap-4 mb-8">
-            <Skeleton className="h-10 w-40" />
-            <Skeleton className="h-10 w-32" />
-          </div>
-          <Skeleton className="h-[400px] w-full rounded-xl mb-10" />
-          <div className="space-y-4">
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-5/6" />
-          </div>
+        <div style={{ maxWidth: 800, margin: "0 auto", padding: "48px 24px" }}>
+          {[60, 100, "80%", 40, 400, 16, 16, "70%"].map((w, i) => (
+            <div key={i} className="an-skeleton" style={{ height: typeof w === "number" && w > 100 ? w : 16, width: typeof w === "string" ? w : "100%", marginBottom: 16, borderRadius: 6 }} />
+          ))}
         </div>
       </AppLayout>
     );
@@ -47,11 +35,12 @@ export default function ArticleDetail() {
   if (error || !article) {
     return (
       <AppLayout>
-        <div className="max-w-4xl mx-auto px-4 py-24 text-center">
-          <h1 className="text-3xl font-serif font-bold text-foreground mb-4">Article Not Found</h1>
-          <p className="text-muted-foreground mb-8">We couldn't find the article you were looking for.</p>
-          <Link href="/">
-            <Button>Return to Home</Button>
+        <div style={{ maxWidth: 800, margin: "0 auto", padding: "96px 24px", textAlign: "center" }}>
+          <div style={{ fontSize: 48, marginBottom: 16 }}>📭</div>
+          <h1 style={{ fontFamily: "var(--font-headline)", fontSize: 28, fontWeight: 700, color: "var(--ink)", marginBottom: 12 }}>Article Not Found</h1>
+          <p style={{ fontFamily: "var(--font-ui)", fontSize: 15, color: "var(--ink-3)", marginBottom: 24 }}>We couldn't find the article you were looking for.</p>
+          <Link href="/" style={{ display: "inline-block", background: "var(--ink)", color: "#fff", padding: "12px 24px", borderRadius: 6, fontFamily: "var(--font-ui)", fontSize: 14, fontWeight: 500 }}>
+            Return to Home
           </Link>
         </div>
       </AppLayout>
@@ -59,132 +48,132 @@ export default function ArticleDetail() {
   }
 
   const imageUrl = getArticleImage(article);
-  const relatedArticles = relatedData?.articles.filter(a => a.id !== article.id).slice(0, 3) || [];
+  const relatedArticles = relatedData?.articles.filter(a => a.id !== article.id).slice(0, 3) ?? [];
+  const catColor = CAT_COLORS[article.category ?? "General"] ?? "#5a5750";
 
   return (
     <AppLayout>
-      <article className="bg-background pb-16">
-        {/* Editorial Header */}
-        <header className="max-w-4xl mx-auto px-4 sm:px-6 pt-10 pb-8">
+      <article style={{ background: "var(--paper)", paddingBottom: 64 }}>
+
+        {/* ── Editorial Header ── */}
+        <header style={{ maxWidth: 800, margin: "0 auto", padding: "36px 24px 28px" }}>
           <button
             onClick={() => window.history.length > 1 ? window.history.back() : (window.location.href = "/")}
-            className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-primary mb-8 transition-colors"
+            style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: "var(--font-ui)", fontSize: 13, fontWeight: 400, color: "var(--ink-3)", background: "none", border: "none", cursor: "pointer", padding: 0, marginBottom: 28, transition: "color 0.2s" }}
+            onMouseEnter={e => (e.currentTarget.style.color = "var(--ink)")}
+            onMouseLeave={e => (e.currentTarget.style.color = "var(--ink-3)")}
           >
-            <ArrowLeft className="w-4 h-4 mr-2" /> Back
+            <ArrowLeft size={15} /> Back
           </button>
-          
-          <div className="flex items-center gap-3 mb-6">
+
+          {/* Category + Country */}
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
             <Link href={`/category/${article.category}`}>
-              <span className="bg-accent/10 text-accent hover:bg-accent hover:text-white transition-colors text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-sm cursor-pointer">
+              <span style={{ display: "inline-block", background: catColor, color: "#fff", fontFamily: "var(--font-ui)", fontSize: 9.5, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", padding: "4px 10px", borderRadius: 3, cursor: "pointer" }}>
                 {article.category}
               </span>
             </Link>
-            <Link href={`/country/${article.country}`}>
-              <span className="text-sm font-medium text-muted-foreground flex items-center gap-1 hover:text-primary transition-colors cursor-pointer">
-                <MapPin className="w-3.5 h-3.5" /> {article.country}
-              </span>
+            <Link href={`/country/${article.country}`} style={{ fontFamily: "var(--font-ui)", fontSize: 12, color: "var(--ink-3)", textDecoration: "none" }}
+              onMouseEnter={e => (e.currentTarget.style.color = "var(--ink)")}
+              onMouseLeave={e => (e.currentTarget.style.color = "var(--ink-3)")}
+            >
+              {article.country}
             </Link>
           </div>
 
-          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-black text-foreground leading-tight md:leading-[1.1] mb-6 tracking-tight">
+          {/* Title */}
+          <h1 style={{ fontFamily: "var(--font-headline)", fontSize: "clamp(28px, 4vw, 40px)", fontWeight: 700, color: "var(--ink)", lineHeight: 1.2, letterSpacing: "-0.025em", marginBottom: 16 }}>
             {article.title}
           </h1>
 
-          <p className="text-xl md:text-2xl text-muted-foreground font-article mb-8 leading-relaxed">
-            {article.summary}
-          </p>
+          {/* Deck / Summary */}
+          {article.summary && (
+            <p style={{ fontFamily: "var(--font-body)", fontSize: 16, fontWeight: 300, fontStyle: "italic", color: "var(--ink-2)", lineHeight: 1.7, marginBottom: 24 }}>
+              {article.summary}
+            </p>
+          )}
 
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between py-6 border-y border-border gap-4">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-secondary rounded-full flex items-center justify-center text-muted-foreground font-serif font-bold text-xl border border-border">
-                {article.sourceName.charAt(0)}
+          {/* Byline row */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 0", borderTop: "1px solid var(--paper-3)", borderBottom: "1px solid var(--paper-3)", gap: 12, flexWrap: "wrap" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <div style={{ width: 40, height: 40, background: "var(--paper-3)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-headline)", fontWeight: 700, fontSize: 16, color: "var(--ink-2)", flexShrink: 0 }}>
+                {article.sourceName?.charAt(0) ?? "N"}
               </div>
               <div>
-                <p className="font-bold text-foreground text-sm uppercase tracking-wide">{article.sourceName}</p>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
-                  {article.author && <span>By {article.author}</span>}
-                  {article.author && <span>•</span>}
-                  <span className="flex items-center gap-1">
-                    <Clock className="w-3 h-3" /> 
-                    {format(new Date(article.publishedDate), 'MMMM d, yyyy')}
-                  </span>
+                <div style={{ fontFamily: "var(--font-ui)", fontSize: 10.5, fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--ink-2)", marginBottom: 2 }}>
+                  {article.sourceName}
+                </div>
+                <div style={{ fontFamily: "var(--font-ui)", fontSize: 11, color: "var(--ink-4)", display: "flex", alignItems: "center", gap: 6 }}>
+                  {article.author && <><span>By {article.author}</span><span>·</span></>}
+                  <span>{format(new Date(article.publishedDate), 'MMMM d, yyyy')}</span>
                 </div>
               </div>
             </div>
-
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="icon" className="rounded-full">
-                <Share2 className="w-4 h-4" />
-              </Button>
-              <Button variant="outline" size="icon" className="rounded-full">
-                <BookmarkPlus className="w-4 h-4" />
-              </Button>
+            <div style={{ display: "flex", gap: 8 }}>
+              {[<Share2 size={15} />, <BookmarkPlus size={15} />].map((icon, i) => (
+                <button key={i} style={{ width: 34, height: 34, borderRadius: "50%", border: "1px solid var(--paper-3)", background: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--ink-3)", transition: "border-color 0.2s" }}
+                  onMouseEnter={e => (e.currentTarget.style.borderColor = "var(--ink-3)")}
+                  onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--paper-3)")}
+                >
+                  {icon}
+                </button>
+              ))}
             </div>
           </div>
         </header>
 
-        {/* Hero Image */}
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 mb-12">
-          <div className="aspect-[21/9] w-full rounded-2xl overflow-hidden bg-secondary shadow-lg">
-            <img src={imageUrl} alt={article.title} className="w-full h-full object-cover" />
+        {/* ── Hero Image ── */}
+        <div style={{ maxWidth: 1000, margin: "0 auto 40px", padding: "0 24px" }}>
+          <div style={{ aspectRatio: "21/9", borderRadius: 12, overflow: "hidden", background: "var(--paper-2)", boxShadow: "0 4px 24px rgba(0,0,0,0.08)" }}>
+            <img src={imageUrl} alt={article.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </div>
-          <p className="text-xs text-right text-muted-foreground mt-2 italic">Image representation for {article.category}</p>
+          <p style={{ fontFamily: "var(--font-ui)", fontSize: 11, color: "var(--ink-4)", textAlign: "right", marginTop: 6, fontStyle: "italic" }}>
+            Image representation for {article.category}
+          </p>
         </div>
 
-        {/* Content Body */}
-        <div className="max-w-3xl mx-auto px-4 sm:px-6">
-          
-          {/* AI Summary Box */}
-          {article.aiSummary && (
-            <div className="bg-primary/5 border border-primary/10 rounded-xl p-6 md:p-8 mb-10 relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-4 opacity-5">
-                <Sparkles className="w-32 h-32" />
-              </div>
-              <div className="flex items-center gap-2 mb-4 relative z-10">
-                <Sparkles className="w-5 h-5 text-accent" />
-                <h3 className="font-serif font-bold text-lg text-primary">AI Quick Summary</h3>
-              </div>
-              <p className="text-foreground/80 font-article leading-relaxed relative z-10">
-                {article.aiSummary}
-              </p>
-            </div>
-          )}
+        {/* ── Article Body ── */}
+        <div style={{ maxWidth: 680, margin: "0 auto", padding: "0 24px" }}>
 
-          <div className="article-content space-y-6">
-            {/* Since the API doesn't provide full body text in this simplified schema, 
-                we display the summary and prompt to read the full source. */}
-            <p className="first-letter:text-7xl first-letter:font-serif first-letter:font-bold first-letter:text-primary first-letter:mr-3 first-letter:float-left">
-              {article.summary}
-            </p>
-            
-            <p>
-              This story was originally published by <strong>{article.sourceName}</strong> on {format(new Date(article.publishedDate), 'MMM d, yyyy')}. 
-              The aggregation system has categorized it under {article.category} relevant to {article.country}.
-            </p>
+          {/* Drop-cap paragraph */}
+          <div style={{ fontFamily: "var(--font-body)", fontSize: 17, fontWeight: 400, lineHeight: 1.75, color: "var(--ink-2)", marginBottom: 24, position: "relative" }}>
+            <span style={{ fontFamily: "var(--font-headline)", fontSize: 68, fontWeight: 700, color: "var(--ink)", float: "left", lineHeight: 0.8, marginRight: 8, marginTop: 8 }}>
+              {article.summary?.charAt(0) ?? "T"}
+            </span>
+            {article.summary?.slice(1)}
           </div>
 
-          <div className="mt-12 pt-8 border-t border-border flex justify-center">
-            <a 
-              href={article.url} 
-              target="_blank" 
+          <div style={{ fontFamily: "var(--font-body)", fontSize: 17, fontWeight: 400, lineHeight: 1.75, color: "var(--ink-2)", marginBottom: 24 }}>
+            This story was originally published by <strong style={{ fontWeight: 600 }}>{article.sourceName}</strong> on {format(new Date(article.publishedDate), 'MMMM d, yyyy')}. It has been aggregated and classified under <em>{article.category}</em>, relevant to news from {article.country}.
+          </div>
+
+          {/* Read full CTA */}
+          <div style={{ marginTop: 40, paddingTop: 32, borderTop: "1px solid var(--paper-3)", textAlign: "center" }}>
+            <a
+              href={article.url}
+              target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-white bg-primary hover:bg-accent transition-colors rounded-full shadow-md hover:-translate-y-1 duration-200 gap-2"
+              style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "var(--ink)", color: "#fff", padding: "14px 28px", borderRadius: 100, fontFamily: "var(--font-ui)", fontSize: 14, fontWeight: 500, textDecoration: "none", transition: "background 0.2s, transform 0.2s" }}
+              onMouseEnter={e => { e.currentTarget.style.background = "var(--accent)"; e.currentTarget.style.transform = "translateY(-2px)"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "var(--ink)"; e.currentTarget.style.transform = "none"; }}
             >
-              Read full article on {article.sourceName} <ExternalLink className="w-4 h-4" />
+              Read full article on {article.sourceName} <ExternalLink size={14} />
             </a>
           </div>
         </div>
       </article>
 
-      {/* Related Articles Section */}
+      {/* ── Related Articles ── */}
       {relatedArticles.length > 0 && (
-        <section className="bg-secondary/30 py-16 border-t border-border">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="font-serif text-3xl font-bold mb-8 flex items-center gap-2">
-              <span className="w-2 h-6 bg-primary inline-block rounded-sm"></span>
-              More in {article.category}
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <section style={{ background: "var(--paper-2)", paddingTop: 48, paddingBottom: 64, borderTop: "1px solid var(--paper-3)", marginTop: 0 }}>
+          <div style={{ maxWidth: 1320, margin: "0 auto", padding: "0 24px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 24 }}>
+              <div style={{ width: 4, height: 22, background: "var(--accent)", borderRadius: 2 }} />
+              <h2 style={{ fontFamily: "var(--font-headline)", fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em" }}>
+                More in {article.category}
+              </h2>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 }}>
               {relatedArticles.map(related => (
                 <ArticleCard key={related.id} article={related} />
               ))}

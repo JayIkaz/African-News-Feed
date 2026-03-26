@@ -18,7 +18,7 @@ function WidgetHeader({ dot, title }: { dot?: boolean; title: string }) {
       {dot && (
         <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--accent)", animation: "pulse-dot 1.4s ease-in-out infinite", display: "inline-block" }} />
       )}
-      <h3 style={{ fontFamily: "var(--font-sans)", fontSize: 12, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--ink-2)" }}>
+      <h3 style={{ fontFamily: "var(--font-ui)", fontSize: 12, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--ink-2)" }}>
         {title}
       </h3>
     </div>
@@ -85,7 +85,7 @@ export function Sidebar() {
                     position: "absolute",
                     top: 14,
                     left: 18,
-                    fontFamily: "var(--font-sans)",
+                    fontFamily: "var(--font-ui)",
                     fontSize: 10,
                     fontWeight: 600,
                     color: "var(--accent)",
@@ -124,11 +124,11 @@ export function Sidebar() {
               onMouseEnter={e => (e.currentTarget.style.opacity = "0.7")}
               onMouseLeave={e => (e.currentTarget.style.opacity = "1")}
             >
-              <span style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-sans)", fontSize: 13, color: "var(--ink-2)" }}>
+              <span style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-ui)", fontSize: 13, color: "var(--ink-2)" }}>
                 <span style={{ width: 8, height: 8, borderRadius: "50%", background: color, flexShrink: 0 }} />
                 {label}
               </span>
-              <span style={{ fontFamily: "var(--font-sans)", fontSize: 12, color: "var(--ink-4)", background: "var(--paper-2)", padding: "2px 8px", borderRadius: 20 }}>
+              <span style={{ fontFamily: "var(--font-ui)", fontSize: 12, color: "var(--ink-4)", background: "var(--paper-2)", padding: "2px 8px", borderRadius: 20 }}>
                 {regionCounts[key]?.toLocaleString() ?? "—"}
               </span>
             </Link>
@@ -148,14 +148,14 @@ export function Sidebar() {
           overflow: "hidden",
         }}
       >
-        <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 18, fontWeight: 700, marginBottom: 8, color: "#fff" }}>
+        <h3 style={{ fontFamily: "var(--font-headline)", fontSize: 18, fontWeight: 700, marginBottom: 8, color: "#fff" }}>
           Africa in Your Inbox
         </h3>
-        <p style={{ fontFamily: "var(--font-sans)", fontSize: 13, opacity: 0.7, marginBottom: 16, lineHeight: 1.5 }}>
+        <p style={{ fontFamily: "var(--font-ui)", fontSize: 13, opacity: 0.7, marginBottom: 16, lineHeight: 1.5 }}>
           Daily digest of the continent's most important stories, curated from 65+ sources.
         </p>
         {subscribed ? (
-          <div style={{ fontFamily: "var(--font-sans)", fontSize: 13, color: "#4ade80", fontWeight: 500 }}>
+          <div style={{ fontFamily: "var(--font-ui)", fontSize: 13, color: "#4ade80", fontWeight: 500 }}>
             ✓ You're subscribed! Check your inbox.
           </div>
         ) : (
@@ -172,7 +172,7 @@ export function Sidebar() {
                 background: "rgba(255,255,255,0.1)",
                 border: "1px solid rgba(255,255,255,0.2)",
                 borderRadius: 5,
-                fontFamily: "var(--font-sans)",
+                fontFamily: "var(--font-ui)",
                 fontSize: 13,
                 color: "#fff",
                 outline: "none",
@@ -188,7 +188,7 @@ export function Sidebar() {
                 color: "#fff",
                 border: "none",
                 borderRadius: 5,
-                fontFamily: "var(--font-sans)",
+                fontFamily: "var(--font-ui)",
                 fontSize: 13,
                 fontWeight: 500,
                 cursor: "pointer",

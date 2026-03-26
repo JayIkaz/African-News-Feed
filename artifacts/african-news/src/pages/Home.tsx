@@ -39,24 +39,24 @@ export default function Home() {
       {/* ── Dark Stats Strip ── */}
       <div style={{ background: "var(--ink)", color: "#fff" }}>
         <div style={{ maxWidth: 1320, margin: "0 auto", padding: "0 24px", height: 44, display: "flex", alignItems: "center", gap: 32 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-sans)", fontSize: 12 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-ui)", fontSize: 12 }}>
             <span style={{ opacity: 0.6, fontSize: 13 }}>🌍</span>
             <span style={{ fontWeight: 600, fontSize: 13 }}>{countryCount > 0 ? countryCount : "25"}+</span>
             <span style={{ opacity: 0.65 }}>African countries</span>
           </div>
           <div style={{ width: 1, height: 16, background: "rgba(255,255,255,0.2)" }} />
-          <div style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-sans)", fontSize: 12 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-ui)", fontSize: 12 }}>
             <span style={{ opacity: 0.6, fontSize: 13 }}>📡</span>
             <span style={{ fontWeight: 600, fontSize: 13 }}>65+</span>
             <span style={{ opacity: 0.65 }}>news sources</span>
           </div>
           <div style={{ width: 1, height: 16, background: "rgba(255,255,255,0.2)" }} />
-          <div style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-sans)", fontSize: 12 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-ui)", fontSize: 12 }}>
             <span style={{ opacity: 0.6, fontSize: 13 }}>📰</span>
             <span style={{ fontWeight: 600, fontSize: 13 }}>{totalArticles > 0 ? totalArticles.toLocaleString() : "1,000"}+</span>
             <span style={{ opacity: 0.65 }}>articles indexed</span>
           </div>
-          <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 6, fontFamily: "var(--font-sans)", fontSize: 11.5, opacity: 0.7 }}>
+          <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 6, fontFamily: "var(--font-ui)", fontSize: 11.5, opacity: 0.7 }}>
             <span style={{ width: 6, height: 6, background: "#4ade80", borderRadius: "50%", animation: "pulse-dot 2s ease-in-out infinite", display: "inline-block" }} />
             Updated every hour
           </div>
@@ -69,7 +69,7 @@ export default function Home() {
         <section style={{ paddingTop: 36 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
             <div style={{ width: 4, height: 22, background: "var(--accent)", borderRadius: 2 }} />
-            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em" }}>Top Stories</h2>
+            <h2 style={{ fontFamily: "var(--font-headline)", fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em" }}>Top Stories</h2>
           </div>
 
           <div
@@ -104,7 +104,7 @@ export default function Home() {
                 )}
               </>
             ) : (
-              <div style={{ gridColumn: "1/3", display: "flex", alignItems: "center", justifyContent: "center", padding: 40, color: "var(--ink-4)", fontFamily: "var(--font-sans)", fontSize: 14 }}>
+              <div style={{ gridColumn: "1/3", display: "flex", alignItems: "center", justifyContent: "center", padding: 40, color: "var(--ink-4)", fontFamily: "var(--font-ui)", fontSize: 14 }}>
                 No top stories available.
               </div>
             )}
@@ -131,7 +131,7 @@ export default function Home() {
                   padding: "8px 16px",
                   borderRadius: 100,
                   border: `1.5px solid ${isActive ? "var(--ink)" : "var(--paper-3)"}`,
-                  fontFamily: "var(--font-sans)",
+                  fontFamily: "var(--font-ui)",
                   fontSize: 13,
                   fontWeight: 500,
                   color: isActive ? "#fff" : "var(--ink-3)",
@@ -157,11 +157,11 @@ export default function Home() {
             <div>
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
                 <div style={{ width: 4, height: 22, background: "var(--accent)", borderRadius: 2 }} />
-                <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em" }}>
+                <h2 style={{ fontFamily: "var(--font-headline)", fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em" }}>
                   {activeCat ? `${activeCat} News` : "Latest News"}
                 </h2>
                 {latestNews && (
-                  <span style={{ marginLeft: "auto", fontFamily: "var(--font-sans)", fontSize: 12, color: "var(--ink-4)" }}>
+                  <span style={{ marginLeft: "auto", fontFamily: "var(--font-ui)", fontSize: 12, color: "var(--ink-4)" }}>
                     {latestNews.total?.toLocaleString()} articles
                   </span>
                 )}
@@ -186,8 +186,8 @@ export default function Home() {
                 ) : (
                   <div style={{ gridColumn: "1/4", textAlign: "center", padding: "60px 24px", color: "var(--ink-4)" }}>
                     <div style={{ fontSize: 48, marginBottom: 16 }}>📭</div>
-                    <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 20, color: "var(--ink-3)", marginBottom: 8 }}>No articles found</h3>
-                    <p style={{ fontFamily: "var(--font-sans)", fontSize: 14 }}>Try a different category or check back soon.</p>
+                    <h3 style={{ fontFamily: "var(--font-headline)", fontSize: 20, color: "var(--ink-3)", marginBottom: 8 }}>No articles found</h3>
+                    <p style={{ fontFamily: "var(--font-ui)", fontSize: 14 }}>Try a different category or check back soon.</p>
                   </div>
                 )}
               </div>
@@ -248,7 +248,7 @@ function PagBtn({ children, onClick, disabled, active }: { children: React.React
         border: `1px solid ${active ? "var(--ink)" : "var(--paper-3)"}`,
         background: active ? "var(--ink)" : "#fff",
         color: active ? "#fff" : disabled ? "var(--ink-4)" : "var(--ink-2)",
-        fontFamily: "var(--font-sans)",
+        fontFamily: "var(--font-ui)",
         fontSize: 13,
         fontWeight: 500,
         cursor: disabled ? "default" : "pointer",

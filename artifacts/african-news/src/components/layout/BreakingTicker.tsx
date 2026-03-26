@@ -28,7 +28,7 @@ export function BreakingTicker() {
           display: "flex",
           alignItems: "center",
           padding: "0 16px",
-          fontFamily: "var(--font-sans)",
+          fontFamily: "var(--font-ui)",
           fontSize: 11,
           fontWeight: 600,
           letterSpacing: "0.1em",
@@ -58,7 +58,7 @@ export function BreakingTicker() {
             <span
               key={i}
               style={{
-                fontFamily: "var(--font-sans)",
+                fontFamily: "var(--font-ui)",
                 fontSize: 12.5,
                 fontWeight: 400,
                 whiteSpace: "nowrap",

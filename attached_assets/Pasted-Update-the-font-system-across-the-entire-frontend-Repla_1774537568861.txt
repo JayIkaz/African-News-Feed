@@ -1,0 +1,43 @@
+Update the font system across the entire frontend. Replace all current fonts with the following three-family system:
+
+1. Add this Google Fonts import to the <head> of index.html (replace any existing font imports):
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,600;0,700;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Serif:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+
+2. Update the CSS variables to:
+--font-headline: 'Lora', Georgia, serif;
+--font-body: 'IBM Plex Serif', Georgia, serif;
+--font-ui: 'IBM Plex Sans', system-ui, sans-serif;
+
+3. Apply fonts as follows across ALL pages and components:
+
+HEADLINES (use Lora, font-weight: 700):
+- Site logo / wordmark
+- Hero article title (28–34px)
+- Category page title (32–52px)
+- Section headings like "Top Stories" (20–22px)
+- Article card titles (15–16px, weight 600)
+- Article detail page h1 (28–40px)
+
+BODY & SUMMARIES (use IBM Plex Serif):
+- Article detail body text (17–18px, weight 400, line-height 1.75)
+- Article summary/deck text (15–16px, weight 300, font-style italic)
+- Card summary snippets (13–14px, weight 400)
+
+ALL UI ELEMENTS (use IBM Plex Sans):
+- Navigation links (13px, weight 400–500)
+- Category badges and pills (9.5–10px, weight 600, letter-spacing 0.08em, uppercase)
+- Country names and metadata (11–12px, weight 400)
+- Timestamps and "X ago" labels (11px, weight 400)
+- Source names (10.5px, weight 500, uppercase, letter-spacing 0.06em)
+- Stats strip numbers (13px, weight 600)
+- Stats strip labels (12px, weight 400)
+- Breaking news ticker (12px, weight 400)
+- Search input placeholder and text (13.5px, weight 400)
+- Newsletter form text and button (13px, weight 500–600)
+- Footer links and labels (13px, weight 400)
+- Pagination buttons (13px, weight 500)
+- "Browse by region" sidebar items (13px, weight 500)
+- All button text (12.5–14px, weight 500–600)
+- Logo tagline "The Continent's Pulse" (9–9.5px, weight 500, letter-spacing 0.18em, uppercase)
+
+Do not change any colours, layout, spacing, or functionality — only font-family, font-weight, font-size, and line-height values where specified above.

@@ -49,13 +49,13 @@ export function ArticleCard({ article, featured = false, compact = false, side =
         onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
       >
         <div>
-          <div style={{ fontFamily: "var(--font-sans)", fontSize: 10, fontWeight: 600, color: catColor, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 3 }}>
+          <div style={{ fontFamily: "var(--font-ui)", fontSize: 10, fontWeight: 600, color: catColor, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 3 }}>
             {article.category}
           </div>
-          <div style={{ fontFamily: "var(--font-serif)", fontSize: 13.5, fontWeight: 700, lineHeight: 1.3, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+          <div style={{ fontFamily: "var(--font-headline)", fontSize: 13.5, fontWeight: 600, lineHeight: 1.3, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
             {article.title}
           </div>
-          <div style={{ fontFamily: "var(--font-sans)", fontSize: 11, color: "var(--ink-4)", marginTop: 4, display: "flex", gap: 4, alignItems: "center" }}>
+          <div style={{ fontFamily: "var(--font-ui)", fontSize: 11, color: "var(--ink-4)", marginTop: 4, display: "flex", gap: 4, alignItems: "center" }}>
             <span>{flag}</span>
             <span>{article.country}</span>
             <span>·</span>
@@ -93,18 +93,18 @@ export function ArticleCard({ article, featured = false, compact = false, side =
         />
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.3) 50%, transparent 100%)" }} />
         <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: 28, color: "#fff" }}>
-          <div style={{ display: "inline-block", background: catColor, color: "#fff", fontFamily: "var(--font-sans)", fontSize: 10, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", padding: "3px 8px", borderRadius: 3, marginBottom: 12 }}>
+          <div style={{ display: "inline-block", background: catColor, color: "#fff", fontFamily: "var(--font-ui)", fontSize: 10, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", padding: "3px 8px", borderRadius: 3, marginBottom: 12 }}>
             {article.category}
           </div>
-          <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(22px, 2.5vw, 30px)", fontWeight: 700, lineHeight: 1.25, marginBottom: 10, letterSpacing: "-0.02em" }}>
+          <h2 style={{ fontFamily: "var(--font-headline)", fontSize: "clamp(22px, 2.5vw, 30px)", fontWeight: 700, lineHeight: 1.25, marginBottom: 10, letterSpacing: "-0.02em" }}>
             {article.title}
           </h2>
           {article.summary && (
-            <p style={{ fontFamily: "var(--font-article)", fontSize: 14, opacity: 0.85, marginBottom: 14, lineHeight: 1.5, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+            <p style={{ fontFamily: "var(--font-body)", fontSize: 15, fontWeight: 300, fontStyle: "italic", opacity: 0.85, marginBottom: 14, lineHeight: 1.55, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
               {article.summary}
             </p>
           )}
-          <div style={{ display: "flex", alignItems: "center", gap: 12, fontFamily: "var(--font-sans)", fontSize: 12, opacity: 0.75 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, fontFamily: "var(--font-ui)", fontSize: 12, opacity: 0.75 }}>
             <span>{flag} {article.country}</span>
             <span>·</span>
             <span>{dateStr}</span>
@@ -138,13 +138,13 @@ export function ArticleCard({ article, featured = false, compact = false, side =
         <div style={{ width: "100%", height: 140, borderRadius: 6, overflow: "hidden", background: "var(--paper-3)", flexShrink: 0 }}>
           <img src={imageUrl} alt={article.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
         </div>
-        <div style={{ display: "inline-block", background: catColor, color: "#fff", fontFamily: "var(--font-sans)", fontSize: 9.5, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", padding: "2px 7px", borderRadius: 3, alignSelf: "flex-start" }}>
+        <div style={{ display: "inline-block", background: catColor, color: "#fff", fontFamily: "var(--font-ui)", fontSize: 9.5, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", padding: "2px 7px", borderRadius: 3, alignSelf: "flex-start" }}>
           {article.category}
         </div>
-        <div style={{ fontFamily: "var(--font-serif)", fontSize: 16, fontWeight: 700, lineHeight: 1.3, letterSpacing: "-0.01em", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+        <div style={{ fontFamily: "var(--font-headline)", fontSize: 16, fontWeight: 600, lineHeight: 1.3, letterSpacing: "-0.01em", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
           {article.title}
         </div>
-        <div style={{ marginTop: "auto", display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-sans)", fontSize: 11.5, color: "var(--ink-4)" }}>
+        <div style={{ marginTop: "auto", display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-ui)", fontSize: 11.5, color: "var(--ink-4)" }}>
           <span>{flag}</span>
           <span>{article.country}</span>
           <span>·</span>
@@ -189,24 +189,24 @@ export function ArticleCard({ article, featured = false, compact = false, side =
           style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.4s cubic-bezier(0.4,0,0.2,1)" }}
           loading="lazy"
         />
-        <div style={{ position: "absolute", top: 10, left: 10, background: catColor, color: "#fff", fontFamily: "var(--font-sans)", fontSize: 9.5, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", padding: "3px 8px", borderRadius: 3 }}>
+        <div style={{ position: "absolute", top: 10, left: 10, background: catColor, color: "#fff", fontFamily: "var(--font-ui)", fontSize: 9.5, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", padding: "3px 8px", borderRadius: 3 }}>
           {article.category}
         </div>
       </div>
       <div style={{ padding: 16, flex: 1, display: "flex", flexDirection: "column", gap: 8 }}>
-        <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 15.5, fontWeight: 700, lineHeight: 1.35, letterSpacing: "-0.01em", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden", color: "var(--ink)" }}>
+        <h3 style={{ fontFamily: "var(--font-headline)", fontSize: 15.5, fontWeight: 600, lineHeight: 1.35, letterSpacing: "-0.01em", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden", color: "var(--ink)" }}>
           {article.title}
         </h3>
         {article.summary && (
-          <p style={{ fontFamily: "var(--font-article)", fontSize: 13, color: "var(--ink-3)", lineHeight: 1.5, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", flex: 1 }}>
+          <p style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "var(--ink-3)", lineHeight: 1.5, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", flex: 1 }}>
             {article.summary}
           </p>
         )}
         <div style={{ display: "flex", alignItems: "center", gap: 8, paddingTop: 10, borderTop: "1px solid var(--paper-2)", marginTop: "auto" }}>
           <span style={{ fontSize: 15, lineHeight: 1 }}>{flag}</span>
-          <span style={{ fontFamily: "var(--font-sans)", fontSize: 11.5, fontWeight: 500, color: "var(--ink-2)" }}>{article.country}</span>
+          <span style={{ fontFamily: "var(--font-ui)", fontSize: 11.5, fontWeight: 500, color: "var(--ink-2)" }}>{article.country}</span>
           <span style={{ color: "var(--paper-3)" }}>·</span>
-          <span style={{ fontFamily: "var(--font-sans)", fontSize: 11, color: "var(--ink-4)", marginLeft: "auto" }}>{dateStr}</span>
+          <span style={{ fontFamily: "var(--font-ui)", fontSize: 11, color: "var(--ink-4)", marginLeft: "auto" }}>{dateStr}</span>
         </div>
       </div>
     </Link>
