@@ -66,7 +66,7 @@ export default function Advertise() {
             Put your brand in front of a highly engaged, pan-continental audience.
           </p>
           <a
-            href="mailto:advertise@africanews.com"
+            href="mailto:advertise@africannewsfeed.com"
             className="inline-flex items-center gap-2 mt-8 px-8 py-4 bg-accent text-white font-bold rounded-full shadow-lg hover:bg-accent/90 transition-all hover:-translate-y-1 duration-200"
           >
             <Mail className="w-5 h-5" /> Get a Media Kit
@@ -162,10 +162,10 @@ export default function Advertise() {
             Contact us for a media kit, rate card, and custom campaign planning.
           </p>
           <a
-            href="mailto:advertise@africanews.com"
+            href="mailto:advertise@africannewsfeed.com"
             className="inline-flex items-center gap-2 px-8 py-4 bg-accent text-white font-bold rounded-full shadow-lg hover:bg-accent/90 transition-all"
           >
-            <Mail className="w-5 h-5" /> advertise@africanews.com
+            <Mail className="w-5 h-5" /> advertise@africannewsfeed.com
           </a>
         </div>
       </section>
