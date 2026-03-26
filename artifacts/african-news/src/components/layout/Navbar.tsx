@@ -226,7 +226,10 @@ export function Navbar() {
             {/* Countries dropdown — outside scroll area so position:absolute is never clipped */}
             <div style={{ position: "relative", flexShrink: 0 }} ref={dropdownRef}>
               <button
-                onClick={() => setCountriesOpen(!countriesOpen)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCountriesOpen(!countriesOpen);
+                }}
                 style={{
                   fontFamily: "var(--font-ui)",
                   fontSize: 13,
@@ -262,17 +265,18 @@ export function Navbar() {
                   style={{
                     position: "absolute",
                     top: "calc(100% + 4px)",
-                    left: 0,
+                    right: 0,
                     background: "#fff",
                     border: "1px solid var(--paper-3)",
                     borderRadius: 10,
                     boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
-                    minWidth: 580,
+                    maxWidth: "min(600px, 95vw)",
                     padding: 20,
                     zIndex: 999,
+                    overflowX: "hidden",
                   }}
                 >
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 12, marginBottom: 12 }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))", gap: 12, marginBottom: 12 }}>
                     {REGIONS.map((region, idx) => (
                       <div key={region}>
                         <h4

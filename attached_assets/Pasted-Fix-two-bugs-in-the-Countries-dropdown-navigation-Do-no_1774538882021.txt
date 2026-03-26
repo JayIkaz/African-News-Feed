@@ -1,0 +1,49 @@
+Fix two bugs in the Countries dropdown navigation. Do not change anything else.
+
+BUG 2 — Dropdown overflows off the right edge of the screen and Central Africa column is empty:
+
+a) Fix the overflow by anchoring the dropdown to the right side of the Countries button instead of the left. Find the .dropdown-menu CSS and change:
+   left: 0  →  right: 0
+   
+   Also add these properties to .dropdown-menu:
+   max-width: min(600px, 95vw);
+   overflow-x: hidden;
+
+b) Fix the Central Africa empty column. In the REGION_COUNTRIES object in the JavaScript, ensure the Central Africa entry exists and contains countries:
+   'Central Africa': ['DRC', 'Angola', 'Cameroon', 'Gabon', 'Congo', 'Chad']
+   
+   Also ensure these countries exist in the COUNTRY_DATA object with their flags:
+   'DRC': { flag: '🇨🇩', region: 'Central Africa' },
+   'Angola': { flag: '🇦🇴', region: 'Central Africa' },
+   'Cameroon': { flag: '🇨🇲', region: 'Central Africa' },
+   'Gabon': { flag: '🇬🇦', region: 'Central Africa' },
+   'Congo': { flag: '🇨🇬', region: 'Central Africa' },
+   'Chad': { flag: '🇹🇩', region: 'Central Africa' }
+   
+   Then check the buildCountryDropdown() function — it must loop over REGION_COUNTRIES['Central Africa'] and inject buttons into the element with id="central-countries". Make sure that element exists in the HTML.
+
+c) Make the dropdown grid responsive so all 5 columns fit without overflow:
+   Change the .dropdown-regions CSS to:
+   display: grid;
+   grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+   gap: 16px;
+
+BUG 3 — Dropdown closes immediately after opening:
+
+Replace the Countries button click handler with this pattern to prevent the document-level outside-click listener from firing on the same click and immediately closing the dropdown:
+
+const dropdownBtn = document.querySelector('.nav-dropdown-btn');
+const dropdownEl = document.getElementById('countriesDropdown');
+
+dropdownBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  dropdownEl.classList.toggle('open');
+});
+
+document.addEventListener('click', (e) => {
+  if (!dropdownEl.contains(e.target)) {
+    dropdownEl.classList.remove('open');
+  }
+});
+
+Remove any existing onclick="toggleDropdown()" inline handler from the button element in the HTML, as it will conflict with the addEventListener above.
