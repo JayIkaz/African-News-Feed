@@ -1,57 +1,84 @@
 import { Article } from "@workspace/api-client-react";
-import politics1 from "@assets/image_1777898753764.png";
-import politics2 from "@assets/image_1777898781439.png";
-import politics3 from "@assets/image_1777898800970.png";
 
-const IMAGE_COLLECTIONS: Record<string, string[]> = {
+const CATEGORY_SEEDS: Record<string, string[]> = {
   Politics: [
-    politics1,
-    politics2,
-    politics3
+    "parliament-africa",
+    "government-summit",
+    "election-vote",
+    "diplomatic-meeting",
+    "national-assembly",
+    "political-rally",
   ],
   Business: [
-    "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80&fit=crop",
-    "https://images.unsplash.com/photo-1556761175-4b46a572b786?w=800&q=80&fit=crop",
-    "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=800&q=80&fit=crop"
+    "africa-business",
+    "lagos-skyline",
+    "nairobi-office",
+    "trade-market",
+    "corporate-meeting",
+    "economic-hub",
   ],
   Technology: [
-    "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80&fit=crop",
-    "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=800&q=80&fit=crop",
-    "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80&fit=crop"
+    "tech-innovation",
+    "mobile-africa",
+    "digital-future",
+    "startup-hub",
+    "silicon-savanna",
+    "coding-africa",
   ],
   Economy: [
-    "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&q=80&fit=crop",
-    "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=800&q=80&fit=crop",
-    "https://images.unsplash.com/photo-1535320903710-d9938e7aebb3?w=800&q=80&fit=crop"
+    "stock-exchange",
+    "financial-market",
+    "currency-trade",
+    "economic-growth",
+    "banking-africa",
+    "commodity-market",
   ],
   Society: [
-    "https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=800&q=80&fit=crop",
-    "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=800&q=80&fit=crop",
-    "https://images.unsplash.com/photo-1529156069898-49953eb1f5bc?w=800&q=80&fit=crop"
+    "africa-community",
+    "street-market",
+    "urban-africa",
+    "festival-culture",
+    "family-africa",
+    "youth-africa",
   ],
   Environment: [
-    "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80&fit=crop",
-    "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&q=80&fit=crop",
-    "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800&q=80&fit=crop"
+    "african-savanna",
+    "wildlife-africa",
+    "green-landscape",
+    "rainforest-africa",
+    "desert-dunes",
+    "river-africa",
   ],
   International: [
-    "https://images.unsplash.com/photo-1521295121783-8a321d551ad2?w=800&q=80&fit=crop",
-    "https://images.unsplash.com/photo-1494522855154-9297ac14b55f?w=800&q=80&fit=crop",
-    "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80&fit=crop"
+    "united-nations",
+    "world-diplomacy",
+    "global-summit",
+    "international-trade",
+    "africa-globe",
+    "world-flags",
   ],
-  Generic: [
-    "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800&q=80&fit=crop",
-    "https://images.unsplash.com/photo-1495020689067-958852a7765e?w=800&q=80&fit=crop",
-    "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=800&q=80&fit=crop"
-  ]
+  General: [
+    "africa-news",
+    "newspaper-press",
+    "journalism-africa",
+    "breaking-news",
+    "media-africa",
+    "reporter-field",
+  ],
 };
 
-/**
- * Provides a deterministic placeholder image based on the article category and ID
- */
-export function getArticleImage(article: Article): string {
-  const cat = article.category || "Generic";
-  const collection = IMAGE_COLLECTIONS[cat] || IMAGE_COLLECTIONS["Generic"];
-  const index = Math.abs(Number(article.id) || 0) % collection.length;
-  return collection[index] ?? IMAGE_COLLECTIONS["Generic"][0];
+const DIMENSIONS: Record<string, string> = {
+  featured: "900/600",
+  side: "600/400",
+  card: "800/500",
+  compact: "200/200",
+};
+
+export function getArticleImage(article: Article, size: "featured" | "side" | "card" | "compact" = "card"): string {
+  const cat = article.category || "General";
+  const seeds = CATEGORY_SEEDS[cat] ?? CATEGORY_SEEDS["General"];
+  const index = Math.abs(Number(article.id) || 0) % seeds.length;
+  const seed = seeds[index];
+  const dim = DIMENSIONS[size];
+  return `https://picsum.photos/seed/${seed}-${article.id}/${dim}`;
 }

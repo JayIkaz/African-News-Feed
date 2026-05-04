@@ -15,6 +15,26 @@ export const CAT_COLORS: Record<string, string> = {
   General: "#5a5750",
 };
 
+const CAT_FALLBACK_BG: Record<string, string> = {
+  Politics: "#3d0e09",
+  Business: "#0a1f35",
+  Technology: "#0a2e2a",
+  Economy: "#3b2a01",
+  Society: "#1e0f30",
+  Environment: "#0c2218",
+  International: "#2a1505",
+  General: "#1c1a18",
+};
+
+function imgFallback(e: React.SyntheticEvent<HTMLImageElement>, cat?: string | null) {
+  const el = e.currentTarget;
+  el.style.display = "none";
+  const parent = el.parentElement;
+  if (parent) {
+    parent.style.background = CAT_FALLBACK_BG[cat ?? "General"] ?? "#1c1a18";
+  }
+}
+
 interface ArticleCardProps {
   article: Article;
   featured?: boolean;
@@ -23,12 +43,13 @@ interface ArticleCardProps {
 }
 
 export function ArticleCard({ article, featured = false, compact = false, side = false }: ArticleCardProps) {
-  const imageUrl = getArticleImage(article);
+  const imageUrl = getArticleImage(article, featured ? "featured" : side ? "side" : compact ? "compact" : "card");
   const dateStr = article.publishedDate
     ? formatDistanceToNow(new Date(article.publishedDate), { addSuffix: true })
     : "";
   const flag = COUNTRY_FLAGS[article.country ?? ""] ?? "🌍";
   const catColor = CAT_COLORS[article.category ?? "General"] ?? "#5a5750";
+  const fallbackBg = CAT_FALLBACK_BG[article.category ?? "General"] ?? "#1c1a18";
 
   if (compact) {
     return (
@@ -52,7 +73,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
           <div style={{ fontFamily: "var(--font-ui)", fontSize: 10, fontWeight: 600, color: catColor, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 3 }}>
             {article.category}
           </div>
-          <div style={{ fontFamily: "var(--font-headline)", fontSize: 13.5, fontWeight: 600, lineHeight: 1.3, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+          <div style={{ fontFamily: "var(--font-headline)", fontSize: 13.5, fontWeight: 600, lineHeight: 1.3, color: "var(--ink)" }}>
             {article.title}
           </div>
           <div style={{ fontFamily: "var(--font-ui)", fontSize: 11, color: "var(--ink-4)", marginTop: 4, display: "flex", gap: 4, alignItems: "center" }}>
@@ -62,8 +83,14 @@ export function ArticleCard({ article, featured = false, compact = false, side =
             <span>{dateStr}</span>
           </div>
         </div>
-        <div style={{ width: 56, height: 56, borderRadius: 6, overflow: "hidden", background: "var(--paper-3)", flexShrink: 0 }}>
-          <img src={imageUrl} alt={article.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
+        <div style={{ width: 56, height: 56, borderRadius: 6, overflow: "hidden", background: fallbackBg, flexShrink: 0 }}>
+          <img
+            src={imageUrl}
+            alt=""
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            loading="lazy"
+            onError={e => imgFallback(e, article.category)}
+          />
         </div>
       </Link>
     );
@@ -76,7 +103,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
         style={{
           display: "block",
           position: "relative",
-          background: "var(--ink-2)",
+          background: fallbackBg,
           minHeight: 480,
           cursor: "pointer",
           overflow: "hidden",
@@ -88,23 +115,47 @@ export function ArticleCard({ article, featured = false, compact = false, side =
         <img
           className="hero-img"
           src={imageUrl}
-          alt={article.title}
+          alt=""
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.5s cubic-bezier(0.4,0,0.2,1)" }}
+          loading="eager"
+          onError={e => imgFallback(e, article.category)}
         />
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.3) 50%, transparent 100%)" }} />
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.45) 55%, rgba(0,0,0,0.15) 100%)" }} />
         <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: 28, color: "#fff" }}>
           <div style={{ display: "inline-block", background: catColor, color: "#fff", fontFamily: "var(--font-ui)", fontSize: 10, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", padding: "3px 8px", borderRadius: 3, marginBottom: 12 }}>
             {article.category}
           </div>
-          <h2 style={{ fontFamily: "var(--font-headline)", fontSize: "clamp(22px, 2.5vw, 30px)", fontWeight: 700, lineHeight: 1.25, marginBottom: 10, letterSpacing: "-0.02em" }}>
+          <h2 style={{
+            fontFamily: "var(--font-headline)",
+            fontSize: "clamp(22px, 2.5vw, 30px)",
+            fontWeight: 700,
+            lineHeight: 1.25,
+            marginBottom: 10,
+            letterSpacing: "-0.02em",
+            color: "#fff",
+            textShadow: "0 1px 4px rgba(0,0,0,0.6)",
+          }}>
             {article.title}
           </h2>
           {article.summary && (
-            <p style={{ fontFamily: "var(--font-body)", fontSize: 15, fontWeight: 300, fontStyle: "italic", opacity: 0.85, marginBottom: 14, lineHeight: 1.55, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+            <p style={{
+              fontFamily: "var(--font-body)",
+              fontSize: 15,
+              fontWeight: 300,
+              fontStyle: "italic",
+              opacity: 0.9,
+              marginBottom: 14,
+              lineHeight: 1.55,
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+              textShadow: "0 1px 3px rgba(0,0,0,0.5)",
+            }}>
               {article.summary}
             </p>
           )}
-          <div style={{ display: "flex", alignItems: "center", gap: 12, fontFamily: "var(--font-ui)", fontSize: 12, opacity: 0.75 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, fontFamily: "var(--font-ui)", fontSize: 12, opacity: 0.8 }}>
             <span>{flag} {article.country}</span>
             <span>·</span>
             <span>{dateStr}</span>
@@ -135,14 +186,19 @@ export function ArticleCard({ article, featured = false, compact = false, side =
         onMouseEnter={e => (e.currentTarget.style.background = "var(--paper-2)")}
         onMouseLeave={e => (e.currentTarget.style.background = "#fff")}
       >
-        <div style={{ width: "100%", height: 140, borderRadius: 6, overflow: "hidden", background: "var(--paper-3)", flexShrink: 0, position: "relative" }}>
-          <img src={imageUrl} alt={article.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.12), rgba(0,0,0,0))", pointerEvents: "none" }} />
+        <div style={{ width: "100%", height: 140, borderRadius: 6, overflow: "hidden", background: fallbackBg, flexShrink: 0 }}>
+          <img
+            src={imageUrl}
+            alt=""
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            loading="lazy"
+            onError={e => imgFallback(e, article.category)}
+          />
         </div>
         <div style={{ display: "inline-block", background: catColor, color: "#fff", fontFamily: "var(--font-ui)", fontSize: 9.5, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", padding: "2px 7px", borderRadius: 3, alignSelf: "flex-start" }}>
           {article.category}
         </div>
-        <div style={{ fontFamily: "var(--font-headline)", fontSize: 16, fontWeight: 600, lineHeight: 1.3, letterSpacing: "-0.01em", display: "block", overflow: "visible" }}>
+        <div style={{ fontFamily: "var(--font-headline)", fontSize: 16, fontWeight: 600, lineHeight: 1.3, letterSpacing: "-0.01em", color: "var(--ink)" }}>
           {article.title}
         </div>
         <div style={{ marginTop: "auto", display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-ui)", fontSize: 11.5, color: "var(--ink-4)" }}>
@@ -182,24 +238,25 @@ export function ArticleCard({ article, featured = false, compact = false, side =
         if (img) img.style.transform = "scale(1)";
       }}
     >
-      <div style={{ aspectRatio: "16/9", background: "var(--paper-2)", overflow: "hidden", position: "relative", flexShrink: 0 }}>
+      <div style={{ aspectRatio: "16/9", background: fallbackBg, overflow: "hidden", position: "relative", flexShrink: 0 }}>
         <img
           className="card-img"
           src={imageUrl}
-          alt={article.title}
+          alt=""
           style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.4s cubic-bezier(0.4,0,0.2,1)" }}
           loading="lazy"
+          onError={e => imgFallback(e, article.category)}
         />
         <div style={{ position: "absolute", top: 10, left: 10, background: catColor, color: "#fff", fontFamily: "var(--font-ui)", fontSize: 9.5, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", padding: "3px 8px", borderRadius: 3 }}>
           {article.category}
         </div>
       </div>
       <div style={{ padding: 16, flex: 1, display: "flex", flexDirection: "column", gap: 8 }}>
-        <h3 style={{ fontFamily: "var(--font-headline)", fontSize: 15.5, fontWeight: 600, lineHeight: 1.35, letterSpacing: "-0.01em", display: "block", overflow: "visible", color: "var(--ink)" }}>
+        <h3 style={{ fontFamily: "var(--font-headline)", fontSize: 15.5, fontWeight: 600, lineHeight: 1.35, letterSpacing: "-0.01em", color: "var(--ink)", margin: 0 }}>
           {article.title}
         </h3>
         {article.summary && (
-          <p style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "var(--ink-3)", lineHeight: 1.5, display: "block", overflow: "visible", flex: 1 }}>
+          <p style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "var(--ink-3)", lineHeight: 1.5, margin: 0, flex: 1 }}>
             {article.summary}
           </p>
         )}
