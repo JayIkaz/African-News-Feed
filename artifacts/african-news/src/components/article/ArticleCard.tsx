@@ -135,13 +135,14 @@ export function ArticleCard({ article, featured = false, compact = false, side =
         onMouseEnter={e => (e.currentTarget.style.background = "var(--paper-2)")}
         onMouseLeave={e => (e.currentTarget.style.background = "#fff")}
       >
-        <div style={{ width: "100%", height: 140, borderRadius: 6, overflow: "hidden", background: "var(--paper-3)", flexShrink: 0 }}>
+        <div style={{ width: "100%", height: 140, borderRadius: 6, overflow: "hidden", background: "var(--paper-3)", flexShrink: 0, position: "relative" }}>
           <img src={imageUrl} alt={article.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.12), rgba(0,0,0,0))", pointerEvents: "none" }} />
         </div>
         <div style={{ display: "inline-block", background: catColor, color: "#fff", fontFamily: "var(--font-ui)", fontSize: 9.5, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", padding: "2px 7px", borderRadius: 3, alignSelf: "flex-start" }}>
           {article.category}
         </div>
-        <div style={{ fontFamily: "var(--font-headline)", fontSize: 16, fontWeight: 600, lineHeight: 1.3, letterSpacing: "-0.01em", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+        <div style={{ fontFamily: "var(--font-headline)", fontSize: 16, fontWeight: 600, lineHeight: 1.3, letterSpacing: "-0.01em", display: "block", overflow: "visible" }}>
           {article.title}
         </div>
         <div style={{ marginTop: "auto", display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-ui)", fontSize: 11.5, color: "var(--ink-4)" }}>

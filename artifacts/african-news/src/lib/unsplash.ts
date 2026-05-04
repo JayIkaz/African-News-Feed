@@ -1,10 +1,13 @@
 import { Article } from "@workspace/api-client-react";
+import politics1 from "@assets/image_1777898753764.png";
+import politics2 from "@assets/image_1777898781439.png";
+import politics3 from "@assets/image_1777898800970.png";
 
 const IMAGE_COLLECTIONS: Record<string, string[]> = {
   Politics: [
-    "https://images.unsplash.com/photo-1541872516-6814c46f17ed?w=800&q=80&fit=crop",
-    "https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=800&q=80&fit=crop",
-    "https://images.unsplash.com/photo-1572949645841-094f3a9c4c94?w=800&q=80&fit=crop"
+    politics1,
+    politics2,
+    politics3
   ],
   Business: [
     "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80&fit=crop",
@@ -49,6 +52,6 @@ const IMAGE_COLLECTIONS: Record<string, string[]> = {
 export function getArticleImage(article: Article): string {
   const cat = article.category || "Generic";
   const collection = IMAGE_COLLECTIONS[cat] || IMAGE_COLLECTIONS["Generic"];
-  const index = Math.abs(article.id) % collection.length;
+  const index = Math.abs(Number(article.id) || 0) % collection.length;
   return collection[index] ?? IMAGE_COLLECTIONS["Generic"][0];
 }
