@@ -194,11 +194,11 @@ export function ArticleCard({ article, featured = false, compact = false, side =
         </div>
       </div>
       <div style={{ padding: 16, flex: 1, display: "flex", flexDirection: "column", gap: 8 }}>
-        <h3 style={{ fontFamily: "var(--font-headline)", fontSize: 15.5, fontWeight: 600, lineHeight: 1.35, letterSpacing: "-0.01em", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden", color: "var(--ink)" }}>
+        <h3 style={{ fontFamily: "var(--font-headline)", fontSize: 15.5, fontWeight: 600, lineHeight: 1.35, letterSpacing: "-0.01em", display: "block", overflow: "visible", color: "var(--ink)" }}>
           {article.title}
         </h3>
         {article.summary && (
-          <p style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "var(--ink-3)", lineHeight: 1.5, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", flex: 1 }}>
+          <p style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "var(--ink-3)", lineHeight: 1.5, display: "block", overflow: "visible", flex: 1 }}>
             {article.summary}
           </p>
         )}

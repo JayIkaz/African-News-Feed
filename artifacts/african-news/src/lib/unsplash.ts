@@ -47,8 +47,8 @@ const IMAGE_COLLECTIONS: Record<string, string[]> = {
  * Provides a deterministic placeholder image based on the article category and ID
  */
 export function getArticleImage(article: Article): string {
-  const cat = article.category || 'Generic';
-  const collection = IMAGE_COLLECTIONS[cat] || IMAGE_COLLECTIONS['Generic'];
-  const index = article.id % collection.length;
-  return collection[index];
+  const cat = article.category || "Generic";
+  const collection = IMAGE_COLLECTIONS[cat] || IMAGE_COLLECTIONS["Generic"];
+  const index = Math.abs(article.id) % collection.length;
+  return collection[index] ?? IMAGE_COLLECTIONS["Generic"][0];
 }
