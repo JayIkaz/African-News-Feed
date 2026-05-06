@@ -376,6 +376,7 @@ export function Navbar() {
                     key={item}
                     href={href}
                     onClick={() => setMobileOpen(false)}
+                    className="an-mobile-link"
                     style={{
                       fontFamily: "var(--font-ui)",
                       fontSize: 14,
@@ -383,7 +384,6 @@ export function Navbar() {
                       color: "var(--ink-2)",
                       padding: "10px 0",
                       borderBottom: "1px solid var(--paper-3)",
-                      display: "block",
                     }}
                   >
                     {item}

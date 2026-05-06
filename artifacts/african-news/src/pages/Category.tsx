@@ -37,7 +37,7 @@ export default function Category() {
     <AppLayout>
       {/* ── Category Hero ── */}
       <div style={{ background: "var(--ink)", color: "#fff", padding: "36px 0", marginBottom: 0 }}>
-        <div style={{ maxWidth: 1320, margin: "0 auto", padding: "0 24px" }}>
+        <div className="an-container">
           <div style={{ fontFamily: "var(--font-ui)", fontSize: 10, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--accent)", marginBottom: 8 }}>
             Section
           </div>
@@ -56,8 +56,8 @@ export default function Category() {
       </div>
 
       {/* ── Content ── */}
-      <div style={{ maxWidth: 1320, margin: "0 auto", padding: "32px 24px 48px" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 300px", gap: 40, alignItems: "start" }}>
+      <div className="an-container" style={{ paddingTop: 32, paddingBottom: 48 }}>
+        <div className="an-content-with-sidebar">
 
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 24, paddingBottom: 16, borderBottom: "1px solid var(--paper-3)" }}>
@@ -72,7 +72,7 @@ export default function Category() {
               )}
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24, marginBottom: 32 }}>
+            <div className="an-grid-3" style={{ marginBottom: 32 }}>
               {isLoading || isFetching ? (
                 Array(6).fill(0).map((_, i) => (
                   <div key={i} style={{ background: "#fff", borderRadius: 10, overflow: "hidden", border: "1px solid var(--paper-3)" }}>
@@ -120,7 +120,9 @@ export default function Category() {
             )}
           </div>
 
-          <Sidebar />
+          <div className="an-sidebar-col">
+            <Sidebar />
+          </div>
         </div>
       </div>
     </AppLayout>
@@ -132,6 +134,7 @@ function PagBtn({ children, onClick, disabled, active }: { children: React.React
     <button
       onClick={onClick}
       disabled={disabled}
+      className="an-pag-btn"
       style={{
         minWidth: 36,
         height: 36,

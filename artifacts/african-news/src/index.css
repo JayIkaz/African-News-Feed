@@ -141,3 +141,192 @@ h1, h2, h3, h4, h5, h6 {
   animation: shimmer 1.4s ease-in-out infinite;
   border-radius: 4px;
 }
+
+/* ── RESPONSIVE LAYOUT UTILITIES ── */
+
+/* Container with responsive horizontal padding */
+.an-container {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* 3-column article grid → 2 tablet → 1 mobile */
+.an-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+/* Content + sidebar layout: collapses to single column on tablet/mobile */
+.an-content-with-sidebar {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 40px;
+  align-items: start;
+}
+
+/* Stats strip: scrollable on mobile */
+.an-stats-strip-inner {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  height: 44px;
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+/* Hero grid: featured left + 2 side cards stacked right */
+.an-hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  grid-template-rows: 1fr 1fr;
+  gap: 2px;
+  background: var(--paper-3);
+  border-radius: 10px;
+  overflow: hidden;
+  min-height: 480px;
+}
+
+/* Featured card min-height */
+.an-featured-card {
+  min-height: 480px;
+}
+
+/* Side cards container (the two story cards on right of hero) */
+.an-hero-side-cards {
+  display: contents;
+}
+
+/* Article detail responsive padding */
+.an-article-header {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 36px 24px 28px;
+}
+
+.an-article-body {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.an-article-hero-img {
+  max-width: 1000px;
+  margin: 0 auto 40px;
+  padding: 0 24px;
+}
+
+/* ── TABLET (≤1024px) ── */
+@media (max-width: 1024px) {
+  .an-grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .an-content-with-sidebar {
+    grid-template-columns: 1fr;
+  }
+
+  .an-sidebar-col {
+    display: none;
+  }
+}
+
+/* ── MOBILE (≤640px) ── */
+@media (max-width: 640px) {
+  .an-container {
+    padding: 0 16px;
+  }
+
+  .an-article-header {
+    padding: 24px 16px 20px;
+  }
+
+  .an-article-body {
+    padding: 0 16px;
+  }
+
+  .an-article-hero-img {
+    padding: 0 16px;
+    margin-bottom: 24px;
+  }
+
+  /* Reduce hero image aspect ratio on mobile */
+  .an-article-hero-img > div {
+    aspect-ratio: 16/9;
+  }
+
+  /* Ensure tap targets are at least 44px tall */
+  .an-pag-btn {
+    min-height: 44px !important;
+    height: 44px !important;
+  }
+
+  /* Share/bookmark buttons in article detail */
+  .an-icon-btn {
+    width: 44px !important;
+    height: 44px !important;
+  }
+
+  /* Navbar mobile menu links */
+  .an-mobile-link {
+    min-height: 44px !important;
+    display: flex !important;
+    align-items: center;
+  }
+
+  /* Category pills */
+  .an-pill {
+    min-height: 44px !important;
+  }
+
+  .an-grid-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .an-stats-strip-inner {
+    gap: 20px;
+    padding: 0 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    height: auto;
+    min-height: 44px;
+    flex-wrap: nowrap;
+  }
+
+  .an-stats-strip-inner::-webkit-scrollbar {
+    display: none;
+  }
+
+  .an-hero-grid {
+    display: block;
+    min-height: unset;
+  }
+
+  .an-featured-card {
+    min-height: 300px;
+  }
+
+  /* Side cards: stack vertically on mobile, each card becomes image-left/text-right */
+  .an-hero-side-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  /* Override side card to horizontal layout */
+  .an-hero-side-cards > a {
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    height: auto !important;
+    gap: 12px !important;
+    padding: 14px 16px !important;
+  }
+
+  .an-hero-side-cards .side-card-img {
+    width: 88px !important;
+    height: 88px !important;
+    flex-shrink: 0 !important;
+  }
+}

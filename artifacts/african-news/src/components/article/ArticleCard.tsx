@@ -100,11 +100,11 @@ export function ArticleCard({ article, featured = false, compact = false, side =
     return (
       <Link
         href={`/article/${article.id}`}
+        className="an-featured-card"
         style={{
           display: "block",
           position: "relative",
           background: fallbackBg,
-          minHeight: 480,
           cursor: "pointer",
           overflow: "hidden",
           textDecoration: "none",
@@ -186,7 +186,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
         onMouseEnter={e => (e.currentTarget.style.background = "var(--paper-2)")}
         onMouseLeave={e => (e.currentTarget.style.background = "#fff")}
       >
-        <div style={{ width: "100%", height: 140, borderRadius: 6, overflow: "hidden", background: fallbackBg, flexShrink: 0 }}>
+        <div className="side-card-img" style={{ width: "100%", height: 140, borderRadius: 6, overflow: "hidden", background: fallbackBg, flexShrink: 0 }}>
           <img
             src={imageUrl}
             alt=""

@@ -37,33 +37,33 @@ export default function Home() {
   return (
     <AppLayout>
       {/* ── Dark Stats Strip ── */}
-      <div style={{ background: "var(--ink)", color: "#fff" }}>
-        <div style={{ maxWidth: 1320, margin: "0 auto", padding: "0 24px", height: 44, display: "flex", alignItems: "center", gap: 32 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-ui)", fontSize: 12 }}>
+      <div style={{ background: "var(--ink)", color: "#fff", overflow: "hidden" }}>
+        <div className="an-stats-strip-inner" style={{ fontFamily: "var(--font-ui)", fontSize: 12 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
             <span style={{ opacity: 0.6, fontSize: 13 }}>🌍</span>
             <span style={{ fontWeight: 600, fontSize: 13 }}>{countryCount > 0 ? countryCount : "25"}+</span>
             <span style={{ opacity: 0.65 }}>African countries</span>
           </div>
-          <div style={{ width: 1, height: 16, background: "rgba(255,255,255,0.2)" }} />
-          <div style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-ui)", fontSize: 12 }}>
+          <div style={{ width: 1, height: 16, background: "rgba(255,255,255,0.2)", flexShrink: 0 }} />
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
             <span style={{ opacity: 0.6, fontSize: 13 }}>📡</span>
             <span style={{ fontWeight: 600, fontSize: 13 }}>65+</span>
             <span style={{ opacity: 0.65 }}>news sources</span>
           </div>
-          <div style={{ width: 1, height: 16, background: "rgba(255,255,255,0.2)" }} />
-          <div style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-ui)", fontSize: 12 }}>
+          <div style={{ width: 1, height: 16, background: "rgba(255,255,255,0.2)", flexShrink: 0 }} />
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
             <span style={{ opacity: 0.6, fontSize: 13 }}>📰</span>
             <span style={{ fontWeight: 600, fontSize: 13 }}>{totalArticles > 0 ? totalArticles.toLocaleString() : "1,000"}+</span>
             <span style={{ opacity: 0.65 }}>articles indexed</span>
           </div>
-          <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 6, fontFamily: "var(--font-ui)", fontSize: 11.5, opacity: 0.7 }}>
+          <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 6, fontSize: 11.5, opacity: 0.7, flexShrink: 0 }}>
             <span style={{ width: 6, height: 6, background: "#4ade80", borderRadius: "50%", animation: "pulse-dot 2s ease-in-out infinite", display: "inline-block" }} />
             Updated every hour
           </div>
         </div>
       </div>
 
-      <div style={{ maxWidth: 1320, margin: "0 auto", padding: "0 24px" }}>
+      <div className="an-container">
 
         {/* ── Hero / Top Stories ── */}
         <section style={{ paddingTop: 36 }}>
@@ -72,22 +72,10 @@ export default function Home() {
             <h2 style={{ fontFamily: "var(--font-headline)", fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em" }}>Top Stories</h2>
           </div>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 340px",
-              gridTemplateRows: "1fr 1fr",
-              gap: 2,
-              background: "var(--paper-3)",
-              borderRadius: 10,
-              overflow: "hidden",
-              minHeight: 480,
-            }}
-            className="max-md:block"
-          >
+          <div className="an-hero-grid">
             {topLoading ? (
               <>
-                <div className="an-skeleton" style={{ gridRow: "1/3", minHeight: 480 }} />
+                <div className="an-skeleton an-featured-card" style={{ gridRow: "1/3" }} />
                 <div className="an-skeleton" style={{ minHeight: 220 }} />
                 <div className="an-skeleton" style={{ minHeight: 220 }} />
               </>
@@ -96,12 +84,14 @@ export default function Home() {
                 <div style={{ gridRow: "1/3" }}>
                   <ArticleCard article={topStories.articles[0]} featured />
                 </div>
-                {topStories.articles[1] && (
-                  <ArticleCard article={topStories.articles[1]} side />
-                )}
-                {topStories.articles[2] && (
-                  <ArticleCard article={topStories.articles[2]} side />
-                )}
+                <div className="an-hero-side-cards">
+                  {topStories.articles[1] && (
+                    <ArticleCard article={topStories.articles[1]} side />
+                  )}
+                  {topStories.articles[2] && (
+                    <ArticleCard article={topStories.articles[2]} side />
+                  )}
+                </div>
               </>
             ) : (
               <div style={{ gridColumn: "1/3", display: "flex", alignItems: "center", justifyContent: "center", padding: 40, color: "var(--ink-4)", fontFamily: "var(--font-ui)", fontSize: 14 }}>
@@ -124,6 +114,7 @@ export default function Home() {
               <button
                 key={label}
                 onClick={() => handlePill(value)}
+                className="an-pill"
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -151,7 +142,7 @@ export default function Home() {
 
         {/* ── Articles + Sidebar ── */}
         <section style={{ padding: "28px 0 48px" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 300px", gap: 40, alignItems: "start" }}>
+          <div className="an-content-with-sidebar">
 
             {/* Articles main */}
             <div>
@@ -167,7 +158,7 @@ export default function Home() {
                 )}
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 }}>
+              <div className="an-grid-3">
                 {latestLoading || isFetching ? (
                   Array(6).fill(0).map((_, i) => (
                     <div key={i} style={{ background: "#fff", borderRadius: 10, overflow: "hidden", border: "1px solid var(--paper-3)" }}>
@@ -227,7 +218,9 @@ export default function Home() {
             </div>
 
             {/* Sidebar */}
-            <Sidebar />
+            <div className="an-sidebar-col">
+              <Sidebar />
+            </div>
           </div>
         </section>
       </div>
@@ -240,6 +233,7 @@ function PagBtn({ children, onClick, disabled, active }: { children: React.React
     <button
       onClick={onClick}
       disabled={disabled}
+      className="an-pag-btn"
       style={{
         minWidth: 36,
         height: 36,

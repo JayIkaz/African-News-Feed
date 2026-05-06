@@ -63,7 +63,7 @@ export default function Search() {
                 </div>
               )}
 
-              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-10">
+              <div className="an-grid-3 mb-10">
                 {isLoading || isFetching ? (
                   Array(8).fill(0).map((_, i) => (
                     <div key={i} className="flex flex-col h-[350px]">

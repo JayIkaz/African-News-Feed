@@ -23,7 +23,7 @@ export default function ArticleDetail() {
   if (isLoading) {
     return (
       <AppLayout>
-        <div style={{ maxWidth: 800, margin: "0 auto", padding: "48px 24px" }}>
+        <div className="an-article-header" style={{ paddingTop: 48, paddingBottom: 48 }}>
           {[60, 100, "80%", 40, 400, 16, 16, "70%"].map((w, i) => (
             <div key={i} className="an-skeleton" style={{ height: typeof w === "number" && w > 100 ? w : 16, width: typeof w === "string" ? w : "100%", marginBottom: 16, borderRadius: 6 }} />
           ))}
@@ -56,7 +56,7 @@ export default function ArticleDetail() {
       <article style={{ background: "var(--paper)", paddingBottom: 64 }}>
 
         {/* ── Editorial Header ── */}
-        <header style={{ maxWidth: 800, margin: "0 auto", padding: "36px 24px 28px" }}>
+        <header className="an-article-header">
           <button
             onClick={() => window.history.length > 1 ? window.history.back() : (window.location.href = "/")}
             style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: "var(--font-ui)", fontSize: 13, fontWeight: 400, color: "var(--ink-3)", background: "none", border: "none", cursor: "pointer", padding: 0, marginBottom: 28, transition: "color 0.2s" }}
@@ -111,7 +111,7 @@ export default function ArticleDetail() {
             </div>
             <div style={{ display: "flex", gap: 8 }}>
               {[<Share2 size={15} />, <BookmarkPlus size={15} />].map((icon, i) => (
-                <button key={i} style={{ width: 34, height: 34, borderRadius: "50%", border: "1px solid var(--paper-3)", background: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--ink-3)", transition: "border-color 0.2s" }}
+                <button key={i} className="an-icon-btn" style={{ width: 34, height: 34, borderRadius: "50%", border: "1px solid var(--paper-3)", background: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--ink-3)", transition: "border-color 0.2s" }}
                   onMouseEnter={e => (e.currentTarget.style.borderColor = "var(--ink-3)")}
                   onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--paper-3)")}
                 >
@@ -123,7 +123,7 @@ export default function ArticleDetail() {
         </header>
 
         {/* ── Hero Image ── */}
-        <div style={{ maxWidth: 1000, margin: "0 auto 40px", padding: "0 24px" }}>
+        <div className="an-article-hero-img">
           <div style={{ aspectRatio: "21/9", borderRadius: 12, overflow: "hidden", background: "var(--paper-2)", boxShadow: "0 4px 24px rgba(0,0,0,0.08)" }}>
             <img src={imageUrl} alt={article.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </div>
@@ -133,7 +133,7 @@ export default function ArticleDetail() {
         </div>
 
         {/* ── Article Body ── */}
-        <div style={{ maxWidth: 680, margin: "0 auto", padding: "0 24px" }}>
+        <div className="an-article-body">
 
           {/* Drop-cap paragraph */}
           <div style={{ fontFamily: "var(--font-body)", fontSize: 17, fontWeight: 400, lineHeight: 1.75, color: "var(--ink-2)", marginBottom: 24, position: "relative" }}>
@@ -166,14 +166,14 @@ export default function ArticleDetail() {
       {/* ── Related Articles ── */}
       {relatedArticles.length > 0 && (
         <section style={{ background: "var(--paper-2)", paddingTop: 48, paddingBottom: 64, borderTop: "1px solid var(--paper-3)", marginTop: 0 }}>
-          <div style={{ maxWidth: 1320, margin: "0 auto", padding: "0 24px" }}>
+          <div className="an-container">
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 24 }}>
               <div style={{ width: 4, height: 22, background: "var(--accent)", borderRadius: 2 }} />
               <h2 style={{ fontFamily: "var(--font-headline)", fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em" }}>
                 More in {article.category}
               </h2>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 }}>
+            <div className="an-grid-3">
               {relatedArticles.map(related => (
                 <ArticleCard key={related.id} article={related} />
               ))}

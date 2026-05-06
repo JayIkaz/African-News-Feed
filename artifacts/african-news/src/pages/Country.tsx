@@ -151,7 +151,7 @@ export default function Country() {
               )}
             </div>
 
-            <div className="lg:col-span-4">
+            <div className="lg:col-span-4 an-sidebar-col">
               <Sidebar />
             </div>
 
