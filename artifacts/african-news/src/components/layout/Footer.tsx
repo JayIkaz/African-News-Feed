@@ -35,7 +35,7 @@ export function Footer() {
   return (
     <footer style={{ background: "var(--ink)", color: "rgba(255,255,255,0.7)", padding: "48px 0 32px", marginTop: 48 }}>
       <div style={{ maxWidth: 1320, margin: "0 auto", padding: "0 24px" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "240px 1fr 1fr 1fr", gap: 40, marginBottom: 40 }}>
+        <div className="an-footer-grid" style={{ marginBottom: 40 }}>
 
           {/* Brand */}
           <div>

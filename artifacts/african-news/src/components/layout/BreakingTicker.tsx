@@ -10,10 +10,10 @@ export function BreakingTicker() {
 
   return (
     <div
+      className="an-breaking-ticker"
       style={{
         background: "var(--accent)",
         color: "#fff",
-        height: 36,
         display: "flex",
         alignItems: "center",
         overflow: "hidden",
@@ -22,14 +22,13 @@ export function BreakingTicker() {
       }}
     >
       <div
+        className="an-breaking-label"
         style={{
           background: "var(--ink)",
           height: "100%",
           display: "flex",
           alignItems: "center",
-          padding: "0 16px",
           fontFamily: "var(--font-ui)",
-          fontSize: 11,
           fontWeight: 600,
           letterSpacing: "0.1em",
           textTransform: "uppercase",
@@ -45,11 +44,12 @@ export function BreakingTicker() {
             background: "var(--accent-2)",
             borderRadius: "50%",
             animation: "pulse-dot 1.4s ease-in-out infinite",
+            flexShrink: 0,
           }}
         />
-        Breaking
+        <span className="an-breaking-label-text">Breaking</span>
       </div>
-      <div style={{ flex: 1, overflow: "hidden", padding: "0 20px" }}>
+      <div style={{ flex: 1, overflow: "hidden", padding: "0 12px" }}>
         <div
           className="ticker-track"
           style={{ display: "flex", gap: 60, whiteSpace: "nowrap" }}
@@ -57,9 +57,9 @@ export function BreakingTicker() {
           {doubled.map((title, i) => (
             <span
               key={i}
+              className="an-ticker-item"
               style={{
                 fontFamily: "var(--font-ui)",
-                fontSize: 12.5,
                 fontWeight: 400,
                 whiteSpace: "nowrap",
                 cursor: "default",

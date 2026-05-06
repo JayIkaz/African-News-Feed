@@ -95,6 +95,43 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0;
 }
 
+/* ── TICKER ── */
+.an-breaking-ticker {
+  height: 36px;
+}
+
+.an-breaking-label {
+  padding: 0 16px;
+  font-size: 11px;
+}
+
+.an-ticker-item {
+  font-size: 12.5px;
+}
+
+/* ── FOOTER GRID ── */
+.an-footer-grid {
+  display: grid;
+  grid-template-columns: 240px 1fr 1fr 1fr;
+  gap: 40px;
+}
+
+/* ── AD BANNERS ── */
+.an-ad-container {
+  max-width: 100%;
+  width: 100%;
+}
+
+/* Leaderboard visible on desktop, hidden on mobile */
+.an-ad-leaderboard-desktop {
+  display: flex;
+}
+
+/* Mobile banner hidden on desktop */
+.an-ad-mobile-banner {
+  display: none;
+}
+
 /* ── TICKER ANIMATION ── */
 @keyframes ticker {
   from { transform: translateX(0); }
@@ -230,6 +267,11 @@ h1, h2, h3, h4, h5, h6 {
   .an-sidebar-col {
     display: none;
   }
+
+  .an-footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
 }
 
 /* ── MOBILE (≤640px) ── */
@@ -328,5 +370,39 @@ h1, h2, h3, h4, h5, h6 {
     width: 88px !important;
     height: 88px !important;
     flex-shrink: 0 !important;
+  }
+
+  /* ── FOOTER GRID (mobile) ── */
+  .an-footer-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  /* ── TICKER (mobile) ── */
+  .an-breaking-ticker {
+    height: 32px;
+  }
+
+  .an-breaking-label {
+    padding: 0 10px;
+    font-size: 10px;
+  }
+
+  .an-breaking-label-text {
+    display: none;
+  }
+
+  .an-ticker-item {
+    font-size: 11.5px;
+  }
+
+  /* ── AD BANNERS (mobile) ── */
+  /* Hide desktop leaderboard (728×90), show mobile banner (320×50) */
+  .an-ad-leaderboard-desktop {
+    display: none;
+  }
+
+  .an-ad-mobile-banner {
+    display: flex;
   }
 }
