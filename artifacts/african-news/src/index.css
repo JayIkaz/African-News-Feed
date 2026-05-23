@@ -443,6 +443,38 @@ h1, h2, h3, h4, h5, h6 {
     height: 44px !important;
   }
 
+  /* Back button tap target */
+  .an-article-back-btn {
+    min-height: 44px !important;
+    padding: 0 8px !important;
+    margin-left: -8px !important;
+  }
+
+  /* Drop cap: disable float on mobile to avoid narrow text column */
+  .an-drop-cap {
+    float: none !important;
+    font-size: 1em !important;
+    line-height: inherit !important;
+    margin: 0 !important;
+    font-weight: 700;
+  }
+
+  /* Prevent any article content from causing horizontal overflow */
+  .an-article-header,
+  .an-article-body,
+  .an-article-hero-img {
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+
+  /* CTA read-full button: allow wrapping on very narrow screens */
+  .an-article-body a[target="_blank"] {
+    white-space: normal;
+    text-align: center;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
   /* Navbar mobile menu links */
   .an-mobile-link {
     min-height: 44px !important;

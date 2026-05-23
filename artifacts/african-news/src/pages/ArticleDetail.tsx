@@ -58,8 +58,9 @@ export default function ArticleDetail() {
         {/* ── Editorial Header ── */}
         <header className="an-article-header">
           <button
+            className="an-article-back-btn"
             onClick={() => window.history.length > 1 ? window.history.back() : (window.location.href = "/")}
-            style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: "var(--font-ui)", fontSize: 13, fontWeight: 400, color: "var(--ink-3)", background: "none", border: "none", cursor: "pointer", padding: 0, marginBottom: 28, transition: "color 0.2s" }}
+            style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: "var(--font-ui)", fontSize: 13, fontWeight: 400, color: "var(--ink-3)", background: "none", border: "none", cursor: "pointer", padding: "0 4px", marginBottom: 20, transition: "color 0.2s" }}
             onMouseEnter={e => (e.currentTarget.style.color = "var(--ink)")}
             onMouseLeave={e => (e.currentTarget.style.color = "var(--ink-3)")}
           >
@@ -137,7 +138,7 @@ export default function ArticleDetail() {
 
           {/* Drop-cap paragraph */}
           <div style={{ fontFamily: "var(--font-body)", fontSize: 17, fontWeight: 400, lineHeight: 1.75, color: "var(--ink-2)", marginBottom: 24, position: "relative" }}>
-            <span style={{ fontFamily: "var(--font-headline)", fontSize: 68, fontWeight: 700, color: "var(--ink)", float: "left", lineHeight: 0.8, marginRight: 8, marginTop: 8 }}>
+            <span className="an-drop-cap" style={{ fontFamily: "var(--font-headline)", fontSize: 68, fontWeight: 700, color: "var(--ink)", float: "left", lineHeight: 0.8, marginRight: 8, marginTop: 8 }}>
               {article.summary?.charAt(0) ?? "T"}
             </span>
             {article.summary?.slice(1)}
