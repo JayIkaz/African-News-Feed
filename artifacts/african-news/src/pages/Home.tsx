@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useListArticles, useGetTopStories, useListCountries } from "@workspace/api-client-react";
 import { useMediaQuery } from "@/lib/useMediaQuery";
 import { AppLayout } from "@/components/layout/AppLayout";
@@ -21,8 +21,10 @@ const CATEGORY_PILLS = [
 export default function Home() {
   const [activeCat, setActiveCat] = useState<string | null>(null);
   const [page, setPage] = useState(1);
+  const [fadeKey, setFadeKey] = useState(0);
   const isMobile = useMediaQuery("(max-width: 640px)");
   const limit = 9;
+  const pillRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
 
   const { data: topStories, isLoading: topLoading } = useGetTopStories({ limit: 3 });
   const { data: latestNews, isLoading: latestLoading, isFetching } = useListArticles({ page, limit, category: activeCat ?? undefined });
@@ -30,9 +32,13 @@ export default function Home() {
   const totalArticles = (countries ?? []).reduce((sum, c) => sum + c.articleCount, 0);
   const countryCount = (countries ?? []).length;
 
-  const handlePill = (value: string | null) => {
+  const handlePill = (value: string | null, btnEl?: HTMLButtonElement | null) => {
     setActiveCat(value);
     setPage(1);
+    setFadeKey(k => k + 1);
+    if (btnEl) {
+      btnEl.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
+    }
   };
 
   const totalPages = latestNews ? Math.ceil((latestNews.total ?? 0) / limit) : 1;
@@ -126,14 +132,19 @@ export default function Home() {
         </div>
 
         {/* ── Category Pills ── */}
-        <div style={{ display: "flex", gap: 8, padding: "8px 0 4px", flexWrap: "wrap" }}>
+        <div className="an-pill-bar">
           {CATEGORY_PILLS.map(({ label, icon, value }) => {
             const isActive = activeCat === value;
+            const pillKey = value ?? "__all__";
             return (
               <button
                 key={label}
-                onClick={() => handlePill(value)}
-                className="an-pill"
+                ref={el => {
+                  if (el) pillRefs.current.set(pillKey, el);
+                  else pillRefs.current.delete(pillKey);
+                }}
+                onClick={e => handlePill(value, e.currentTarget)}
+                className={`an-pill${isActive ? " an-pill--active" : ""}`}
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -148,6 +159,7 @@ export default function Home() {
                   background: isActive ? "var(--ink)" : "#fff",
                   cursor: "pointer",
                   transition: "all 0.2s",
+                  flexShrink: 0,
                 }}
                 onMouseEnter={e => { if (!isActive) { e.currentTarget.style.borderColor = "var(--ink-3)"; e.currentTarget.style.color = "var(--ink)"; } }}
                 onMouseLeave={e => { if (!isActive) { e.currentTarget.style.borderColor = "var(--paper-3)"; e.currentTarget.style.color = "var(--ink-3)"; } }}
@@ -177,7 +189,7 @@ export default function Home() {
                 )}
               </div>
 
-              <div className="an-grid-3">
+              <div key={fadeKey} className="an-grid-3 an-articles-fade">
                 {latestLoading || isFetching ? (
                   Array(6).fill(0).map((_, i) => (
                     <div key={i} style={{ background: "#fff", borderRadius: 10, overflow: "hidden", border: "1px solid var(--paper-3)" }}>
