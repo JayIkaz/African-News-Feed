@@ -433,7 +433,9 @@ export async function ingestSource(source: typeof sourcesTable.$inferSelect): Pr
             set: {
               summary: article.summary,
               category: article.category,
-              imageUrl: article.imageUrl,
+              imageUrl: article.imageUrl != null
+                ? article.imageUrl
+                : sql`${articlesTable.imageUrl}`,
             },
           });
         inserted++;

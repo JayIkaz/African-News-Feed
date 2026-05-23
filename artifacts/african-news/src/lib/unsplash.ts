@@ -8,37 +8,42 @@ const STOP_WORDS = new Set([
   "into", "than", "more", "also", "about", "out", "up", "down", "per",
 ]);
 
-const CATEGORY_CONTEXT: Record<string, string> = {
-  Politics:      "politics-governance",
-  Business:      "business-economy",
-  Technology:    "technology-digital",
-  Economy:       "economy-finance",
-  Society:       "community-society",
-  Environment:   "environment-nature",
-  International: "international-diplomacy",
-  General:       "africa-news",
+const CATEGORY_TERMS: Record<string, string> = {
+  Politics:      "politics,government",
+  Business:      "business,economy",
+  Technology:    "technology,digital",
+  Economy:       "economy,finance",
+  Society:       "community,people",
+  Environment:   "environment,nature",
+  International: "diplomacy,international",
+  General:       "africa,news",
 };
 
-const DIMENSIONS: Record<string, string> = {
-  featured: "900/600",
-  side:     "600/400",
-  card:     "800/500",
-  compact:  "200/200",
+const DIMENSIONS: Record<string, [number, number]> = {
+  featured: [900, 600],
+  side:     [600, 400],
+  card:     [800, 500],
+  compact:  [200, 200],
 };
 
-function buildContextualSeed(article: Article): string {
-  const titleWords = (article.title || "")
+function buildQueryTerms(article: Article): string {
+  const titleKeywords = (article.title || "")
     .toLowerCase()
     .replace(/[^a-z\s]/g, " ")
     .split(/\s+/)
-    .filter((w) => w.length > 3 && !STOP_WORDS.has(w))
-    .slice(0, 3);
+    .filter((w) => w.length > 4 && !STOP_WORDS.has(w))
+    .slice(0, 2);
 
-  const categoryCtx = CATEGORY_CONTEXT[article.category || "General"] ?? "africa-news";
-  const country = (article.country || "africa").toLowerCase().replace(/\s+/g, "-");
+  const categoryTerms = CATEGORY_TERMS[article.category || "General"] ?? "africa,news";
+  const country = (article.country || "africa")
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .split(",")[0]
+    .trim();
 
-  const parts = [...titleWords, categoryCtx, country].filter(Boolean).join("-");
-  return `${parts}-${article.id}`;
+  return [...titleKeywords, ...categoryTerms.split(","), country]
+    .filter(Boolean)
+    .join(",");
 }
 
 export function getArticleImage(
@@ -49,7 +54,8 @@ export function getArticleImage(
     return article.imageUrl;
   }
 
-  const seed = buildContextualSeed(article);
-  const dim = DIMENSIONS[size];
-  return `https://picsum.photos/seed/${seed}/${dim}`;
+  const [w, h] = DIMENSIONS[size];
+  const query = buildQueryTerms(article);
+  const lock = Math.abs(Number(article.id) || 0);
+  return `https://loremflickr.com/${w}/${h}/${encodeURIComponent(query)}?lock=${lock}`;
 }
