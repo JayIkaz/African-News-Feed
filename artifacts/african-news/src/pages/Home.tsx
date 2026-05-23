@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useListArticles, useGetTopStories, useListCountries } from "@workspace/api-client-react";
+import { useMediaQuery } from "@/lib/useMediaQuery";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { ArticleCard } from "@/components/article/ArticleCard";
+import { TopStoriesCarousel } from "@/components/article/TopStoriesCarousel";
 import { Sidebar } from "@/components/article/Sidebar";
 import { AdBanner } from "@/components/ads/AdBanner";
 
@@ -19,6 +21,7 @@ const CATEGORY_PILLS = [
 export default function Home() {
   const [activeCat, setActiveCat] = useState<string | null>(null);
   const [page, setPage] = useState(1);
+  const isMobile = useMediaQuery("(max-width: 640px)");
   const limit = 9;
 
   const { data: topStories, isLoading: topLoading } = useGetTopStories({ limit: 3 });
@@ -72,33 +75,49 @@ export default function Home() {
             <h2 style={{ fontFamily: "var(--font-headline)", fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em" }}>Top Stories</h2>
           </div>
 
-          <div className="an-hero-grid">
-            {topLoading ? (
-              <>
-                <div className="an-skeleton an-featured-card" style={{ gridRow: "1/3" }} />
-                <div className="an-skeleton" style={{ minHeight: 220 }} />
-                <div className="an-skeleton" style={{ minHeight: 220 }} />
-              </>
+          {isMobile ? (
+            /* Mobile: swipeable carousel */
+            topLoading ? (
+              <div className="an-carousel-root">
+                <div className="an-skeleton" style={{ height: 340 }} />
+              </div>
             ) : topStories?.articles && topStories.articles.length > 0 ? (
-              <>
-                <div style={{ gridRow: "1/3" }}>
-                  <ArticleCard article={topStories.articles[0]} featured />
-                </div>
-                <div className="an-hero-side-cards">
-                  {topStories.articles[1] && (
-                    <ArticleCard article={topStories.articles[1]} side />
-                  )}
-                  {topStories.articles[2] && (
-                    <ArticleCard article={topStories.articles[2]} side />
-                  )}
-                </div>
-              </>
+              <TopStoriesCarousel articles={topStories.articles} />
             ) : (
-              <div style={{ gridColumn: "1/3", display: "flex", alignItems: "center", justifyContent: "center", padding: 40, color: "var(--ink-4)", fontFamily: "var(--font-ui)", fontSize: 14 }}>
+              <div style={{ padding: "40px 24px", textAlign: "center", color: "var(--ink-4)", fontFamily: "var(--font-ui)", fontSize: 14 }}>
                 No top stories available.
               </div>
-            )}
-          </div>
+            )
+          ) : (
+            /* Desktop: featured + 2 side cards grid */
+            <div className="an-hero-grid">
+              {topLoading ? (
+                <>
+                  <div className="an-skeleton an-featured-card" style={{ gridRow: "1/3" }} />
+                  <div className="an-skeleton" style={{ minHeight: 220 }} />
+                  <div className="an-skeleton" style={{ minHeight: 220 }} />
+                </>
+              ) : topStories?.articles && topStories.articles.length > 0 ? (
+                <>
+                  <div style={{ gridRow: "1/3" }}>
+                    <ArticleCard article={topStories.articles[0]} featured />
+                  </div>
+                  <div className="an-hero-side-cards">
+                    {topStories.articles[1] && (
+                      <ArticleCard article={topStories.articles[1]} side />
+                    )}
+                    {topStories.articles[2] && (
+                      <ArticleCard article={topStories.articles[2]} side />
+                    )}
+                  </div>
+                </>
+              ) : (
+                <div style={{ gridColumn: "1/3", display: "flex", alignItems: "center", justifyContent: "center", padding: 40, color: "var(--ink-4)", fontFamily: "var(--font-ui)", fontSize: 14 }}>
+                  No top stories available.
+                </div>
+              )}
+            </div>
+          )}
         </section>
 
         {/* ── Ad Leaderboard ── */}

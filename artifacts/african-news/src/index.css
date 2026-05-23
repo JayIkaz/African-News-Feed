@@ -254,6 +254,121 @@ h1, h2, h3, h4, h5, h6 {
   padding: 0 24px;
 }
 
+/* ── TOP STORIES CAROUSEL (mobile only) ── */
+.an-carousel-root {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  display: none;
+}
+
+.an-carousel-track-wrapper {
+  overflow: hidden;
+  width: 100%;
+}
+
+.an-carousel-track {
+  display: flex;
+  width: 100%;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.an-carousel-slide {
+  position: relative;
+  flex: 0 0 100%;
+  width: 100%;
+  height: 340px;
+  display: block;
+  overflow: hidden;
+  background: #1c1a18;
+  text-decoration: none;
+}
+
+.an-carousel-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.an-carousel-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 55%, rgba(0,0,0,0.1) 100%);
+}
+
+.an-carousel-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px 18px 52px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.an-carousel-cat {
+  display: inline-block;
+  color: #fff;
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 3px;
+  align-self: flex-start;
+}
+
+.an-carousel-title {
+  font-family: var(--font-headline);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.an-carousel-meta {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  opacity: 0.8;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.an-carousel-dots {
+  position: absolute;
+  bottom: 16px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  z-index: 10;
+}
+
+.an-carousel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s, transform 0.2s;
+}
+
 /* ── TABLET (≤1024px) ── */
 @media (max-width: 1024px) {
   .an-grid-3 {
@@ -341,35 +456,13 @@ h1, h2, h3, h4, h5, h6 {
     display: none;
   }
 
+  /* Hide desktop hero grid on mobile, show carousel instead */
   .an-hero-grid {
+    display: none;
+  }
+
+  .an-carousel-root {
     display: block;
-    min-height: unset;
-  }
-
-  .an-featured-card {
-    min-height: 300px;
-  }
-
-  /* Side cards: stack vertically on mobile, each card becomes image-left/text-right */
-  .an-hero-side-cards {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  /* Override side card to horizontal layout */
-  .an-hero-side-cards > a {
-    flex-direction: row !important;
-    align-items: flex-start !important;
-    height: auto !important;
-    gap: 12px !important;
-    padding: 14px 16px !important;
-  }
-
-  .an-hero-side-cards .side-card-img {
-    width: 88px !important;
-    height: 88px !important;
-    flex-shrink: 0 !important;
   }
 
   /* ── FOOTER GRID (mobile) ── */
