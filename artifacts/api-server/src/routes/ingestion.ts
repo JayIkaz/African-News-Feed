@@ -3,6 +3,7 @@ import { db } from "@workspace/db";
 import { sourcesTable, articlesTable } from "@workspace/db/schema";
 import { eq } from "drizzle-orm";
 import { ingestAllSources } from "../lib/ingestion";
+import { backfillImages } from "../lib/backfillImages";
 
 const router: IRouter = Router();
 
@@ -39,6 +40,19 @@ router.get("/status", async (_req, res) => {
   } catch (err) {
     console.error("Error fetching ingestion status:", err);
     res.status(500).json({ error: "internal_error", message: "Failed to fetch ingestion status" });
+  }
+});
+
+router.post("/backfill-images", async (_req, res) => {
+  try {
+    res.json({ message: "Image backfill started in background. Check server logs for progress." });
+
+    backfillImages().catch((err) => {
+      console.error("[backfill-images] Fatal error:", err);
+    });
+  } catch (err) {
+    console.error("[backfill-images] Error starting backfill:", err);
+    res.status(500).json({ error: "internal_error", message: "Failed to start image backfill" });
   }
 });
 
