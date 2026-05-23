@@ -38,6 +38,7 @@ router.get("/", async (req, res) => {
           category: articlesTable.category,
           publishedDate: articlesTable.publishedDate,
           url: articlesTable.url,
+          imageUrl: articlesTable.imageUrl,
           createdAt: articlesTable.createdAt,
           aiSummary: articlesTable.aiSummary,
         })
@@ -64,6 +65,7 @@ router.get("/", async (req, res) => {
         category: r.category,
         publishedDate: r.publishedDate.toISOString(),
         url: r.url,
+        imageUrl: r.imageUrl ?? null,
         createdAt: r.createdAt.toISOString(),
         aiSummary: r.aiSummary ?? null,
       })),

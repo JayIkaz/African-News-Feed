@@ -13,6 +13,7 @@ export const articlesTable = pgTable("articles", {
   category: text("category").notNull().default("General"),
   publishedDate: timestamp("published_date").notNull(),
   url: text("url").notNull().unique(),
+  imageUrl: text("image_url"),
   aiSummary: text("ai_summary"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 }, (table) => ({

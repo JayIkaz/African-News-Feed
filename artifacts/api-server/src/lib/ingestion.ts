@@ -9,6 +9,7 @@ interface RssItem {
   author?: string;
   pubDate?: string;
   category?: string;
+  imageUrl?: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -154,7 +155,6 @@ const RSS_CATEGORY_MAP: [string, string][] = [
 ];
 
 function classifyArticle(title: string, summary: string, rssCategory?: string): string {
-  // 1. RSS-provided category as a strong hint (2-category-point bonus)
   let rssCategoryHint = "";
   if (rssCategory) {
     const rssLower = rssCategory.toLowerCase();
@@ -166,7 +166,6 @@ function classifyArticle(title: string, summary: string, rssCategory?: string): 
     }
   }
 
-  // 2. Keyword scoring — title worth 3x, body worth 1x
   const titleLower = title.toLowerCase();
   const bodyLower = summary.toLowerCase();
   const scores: Record<string, number> = {};
@@ -177,7 +176,7 @@ function classifyArticle(title: string, summary: string, rssCategory?: string): 
       if (titleLower.includes(kw)) score += 3;
       else if (bodyLower.includes(kw)) score += 1;
     }
-    if (rssCategoryHint === category) score += 6; // RSS hint bonus
+    if (rssCategoryHint === category) score += 6;
     scores[category] = score;
   }
 
@@ -186,16 +185,14 @@ function classifyArticle(title: string, summary: string, rssCategory?: string): 
 }
 
 // ---------------------------------------------------------------------------
-// Summary cleaner — strips RSS boilerplate, HTML, and trailing artifacts
+// Summary cleaner
 // ---------------------------------------------------------------------------
 
 function cleanSummary(raw: string, sourceTitle?: string): string {
   let text = raw;
 
-  // 1. Strip HTML tags
   text = text.replace(/<[^>]+>/g, " ");
 
-  // 2. Decode common HTML entities (belt-and-suspenders after extraction)
   text = text
     .replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<")
@@ -206,29 +203,102 @@ function cleanSummary(raw: string, sourceTitle?: string): string {
     .replace(/&#(\d+);/g, (_, c) => String.fromCharCode(parseInt(c, 10)))
     .replace(/&#x([0-9a-fA-F]+);/g, (_, h) => String.fromCharCode(parseInt(h, 16)));
 
-  // 3. Strip "The post … appeared first on …" patterns (WordPress RSS)
   text = text.replace(/\s*The post .{0,300}? appeared first on .{0,150}?\.?\s*$/is, "");
 
-  // 4. Strip "… | Source Name" or "… - Source Name" trailing source attribution
   if (sourceTitle) {
     const escaped = sourceTitle.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     text = text.replace(new RegExp(`\\s*[|\\-–—]\\s*${escaped}\\s*$`, "i"), "");
   }
 
-  // 5. Strip "Read more at …", "Continue reading …", "Click here to read …"
   text = text.replace(/\s*(Read more|Continue reading|Click here to read|Read full story|See also|View more|Learn more)[^.]*\.?\s*$/i, "");
-
-  // 6. Strip trailing "[…]", "[Read More]", "(...)", "[+NNN chars]"
   text = text.replace(/\s*\[\s*(…|\.{3}|Read More|\+\d+ chars?)\s*\]\s*$/i, "");
   text = text.replace(/\s*\(\s*\.\.\.\s*\)\s*$/i, "");
-
-  // 7. Strip bare URLs at the end
   text = text.replace(/\s*https?:\/\/\S+\s*$/i, "");
-
-  // 8. Strip duplicate whitespace / newlines
   text = text.replace(/\s{2,}/g, " ").trim();
 
   return text;
+}
+
+// ---------------------------------------------------------------------------
+// Image extraction from RSS item XML
+// ---------------------------------------------------------------------------
+
+function isImageUrl(url: string): boolean {
+  return /\.(jpg|jpeg|png|gif|webp|avif|bmp|svg)(\?.*)?$/i.test(url) ||
+    url.includes("image") || url.includes("photo") || url.includes("img");
+}
+
+function extractImageFromItemXml(itemXml: string): string | null {
+  // 1. <media:content url="..." medium="image" ...> or type="image/..."
+  const mediaContentPatterns = [
+    /<media:content[^>]+url="([^"]+)"[^>]*medium="image"[^>]*\/?>/i,
+    /<media:content[^>]*medium="image"[^>]*url="([^"]+)"[^>]*\/?>/i,
+    /<media:content[^>]+url="([^"]+)"[^>]*type="image\/[^"]*"[^>]*\/?>/i,
+    /<media:content[^>]*type="image\/[^"]*"[^>]*url="([^"]+)"[^>]*\/?>/i,
+    /<media:content\s+url="([^"]+)"[^>]*\/?>/i,
+  ];
+  for (const pat of mediaContentPatterns) {
+    const m = itemXml.match(pat);
+    if (m?.[1] && m[1].startsWith("http")) return m[1];
+  }
+
+  // 2. <media:thumbnail url="...">
+  const thumbMatch = itemXml.match(/<media:thumbnail[^>]+url="([^"]+)"[^>]*\/?>/i);
+  if (thumbMatch?.[1] && thumbMatch[1].startsWith("http")) return thumbMatch[1];
+
+  // 3. <enclosure url="..." type="image/..."/>
+  const enclosurePatterns = [
+    /<enclosure[^>]+url="([^"]+)"[^>]+type="image\/[^"]*"[^>]*\/?>/i,
+    /<enclosure[^>]+type="image\/[^"]*"[^>]+url="([^"]+)"[^>]*\/?>/i,
+  ];
+  for (const pat of enclosurePatterns) {
+    const m = itemXml.match(pat);
+    if (m?.[1] && m[1].startsWith("http")) return m[1];
+  }
+
+  // 4. First <img src="..."> inside description or content:encoded (raw HTML before entity decode)
+  const rawDescMatch =
+    itemXml.match(/<description[^>]*>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/description>/i)?.[1] ||
+    itemXml.match(/<content:encoded[^>]*>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/content:encoded>/i)?.[1];
+
+  if (rawDescMatch) {
+    const imgSrcMatch = rawDescMatch.match(/<img[^>]+src="([^"]+)"[^>]*\/?>/i);
+    if (imgSrcMatch?.[1] && imgSrcMatch[1].startsWith("http")) return imgSrcMatch[1];
+  }
+
+  return null;
+}
+
+// ---------------------------------------------------------------------------
+// OG image fallback — lightweight fetch with short timeout
+// ---------------------------------------------------------------------------
+
+async function fetchOgImage(articleUrl: string): Promise<string | null> {
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 4000);
+    const resp = await fetch(articleUrl, {
+      signal: controller.signal,
+      headers: {
+        "User-Agent": "AfricaNews-Aggregator/1.0",
+        "Accept": "text/html",
+      },
+    });
+    clearTimeout(timeout);
+    if (!resp.ok) return null;
+    const html = await resp.text();
+    const match =
+      html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i) ||
+      html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i) ||
+      html.match(/<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i) ||
+      html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']twitter:image["']/i);
+    const url = match?.[1];
+    if (url && url.startsWith("http") && isImageUrl(url)) return url;
+    if (url && url.startsWith("http")) return url;
+    return null;
+  } catch {
+    return null;
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -281,6 +351,8 @@ async function parseRss(rssUrl: string): Promise<RssItem[]> {
         itemXml.match(/<link>([^<]+)<\/link>/i) ||
         itemXml.match(/<link[^>]+href="([^"]+)"/i);
 
+      const imageUrl = extractImageFromItemXml(itemXml);
+
       items.push({
         title: extract("title"),
         description: extract("description") || extract("content:encoded") || extract("summary"),
@@ -288,6 +360,7 @@ async function parseRss(rssUrl: string): Promise<RssItem[]> {
         author: extract("author") || extract("dc:creator"),
         pubDate: extract("pubDate") || extract("dc:date") || extract("published"),
         category: extract("category"),
+        imageUrl: imageUrl ?? undefined,
       });
     }
 
@@ -326,6 +399,12 @@ export async function ingestSource(source: typeof sourcesTable.$inferSelect): Pr
         publishedDate = new Date();
       }
 
+      let imageUrl: string | null = item.imageUrl ?? null;
+
+      if (!imageUrl) {
+        imageUrl = await fetchOgImage(item.link);
+      }
+
       const article: InsertArticle = {
         title,
         summary,
@@ -335,6 +414,7 @@ export async function ingestSource(source: typeof sourcesTable.$inferSelect): Pr
         category,
         publishedDate,
         url: item.link.slice(0, 1000),
+        imageUrl: imageUrl?.slice(0, 2000) ?? null,
         aiSummary: null,
       };
 
@@ -347,6 +427,7 @@ export async function ingestSource(source: typeof sourcesTable.$inferSelect): Pr
             set: {
               summary: article.summary,
               category: article.category,
+              imageUrl: article.imageUrl,
             },
           });
         inserted++;

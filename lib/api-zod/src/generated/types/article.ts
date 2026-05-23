@@ -18,5 +18,6 @@ export interface Article {
   publishedDate: Date;
   url: string;
   createdAt: Date;
+  imageUrl?: string | null;
   aiSummary?: string | null;
 }

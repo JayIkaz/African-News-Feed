@@ -75,6 +75,10 @@ const DIMENSIONS: Record<string, string> = {
 };
 
 export function getArticleImage(article: Article, size: "featured" | "side" | "card" | "compact" = "card"): string {
+  if (article.imageUrl) {
+    return article.imageUrl;
+  }
+
   const cat = article.category || "General";
   const seeds = CATEGORY_SEEDS[cat] ?? CATEGORY_SEEDS["General"];
   const index = Math.abs(Number(article.id) || 0) % seeds.length;

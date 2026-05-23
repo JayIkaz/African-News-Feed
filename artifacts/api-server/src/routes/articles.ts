@@ -17,6 +17,7 @@ function buildArticleResponse(article: typeof articlesTable.$inferSelect & { sou
     category: article.category,
     publishedDate: article.publishedDate.toISOString(),
     url: article.url,
+    imageUrl: article.imageUrl ?? null,
     createdAt: article.createdAt.toISOString(),
     aiSummary: article.aiSummary ?? null,
   };
@@ -49,6 +50,7 @@ router.get("/", async (req, res) => {
           category: articlesTable.category,
           publishedDate: articlesTable.publishedDate,
           url: articlesTable.url,
+          imageUrl: articlesTable.imageUrl,
           createdAt: articlesTable.createdAt,
           aiSummary: articlesTable.aiSummary,
         })
@@ -93,6 +95,7 @@ router.get("/trending", async (req, res) => {
         category: articlesTable.category,
         publishedDate: articlesTable.publishedDate,
         url: articlesTable.url,
+        imageUrl: articlesTable.imageUrl,
         createdAt: articlesTable.createdAt,
         aiSummary: articlesTable.aiSummary,
       })
@@ -131,6 +134,7 @@ router.get("/top-stories", async (req, res) => {
         category: articlesTable.category,
         publishedDate: articlesTable.publishedDate,
         url: articlesTable.url,
+        imageUrl: articlesTable.imageUrl,
         createdAt: articlesTable.createdAt,
         aiSummary: articlesTable.aiSummary,
       })
@@ -172,6 +176,7 @@ router.get("/:id", async (req, res) => {
         category: articlesTable.category,
         publishedDate: articlesTable.publishedDate,
         url: articlesTable.url,
+        imageUrl: articlesTable.imageUrl,
         createdAt: articlesTable.createdAt,
         aiSummary: articlesTable.aiSummary,
       })

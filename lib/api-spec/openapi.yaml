@@ -278,6 +278,9 @@ components:
         createdAt:
           type: string
           format: date-time
+        imageUrl:
+          type: string
+          nullable: true
         aiSummary:
           type: string
           nullable: true
