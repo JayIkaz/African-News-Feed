@@ -230,16 +230,22 @@ function isImageUrl(url: string): boolean {
 
 function extractImageFromItemXml(itemXml: string): string | null {
   // 1. <media:content url="..." medium="image" ...> or type="image/..."
+  // Only accept entries explicitly marked as images (medium or MIME type)
   const mediaContentPatterns = [
     /<media:content[^>]+url="([^"]+)"[^>]*medium="image"[^>]*\/?>/i,
     /<media:content[^>]*medium="image"[^>]*url="([^"]+)"[^>]*\/?>/i,
     /<media:content[^>]+url="([^"]+)"[^>]*type="image\/[^"]*"[^>]*\/?>/i,
     /<media:content[^>]*type="image\/[^"]*"[^>]*url="([^"]+)"[^>]*\/?>/i,
-    /<media:content\s+url="([^"]+)"[^>]*\/?>/i,
   ];
   for (const pat of mediaContentPatterns) {
     const m = itemXml.match(pat);
     if (m?.[1] && m[1].startsWith("http")) return m[1];
+  }
+
+  // Fallback: any media:content with url attribute — but only if URL looks like an image
+  const anyMediaContent = itemXml.match(/<media:content\s+url="([^"]+)"[^>]*\/?>/i);
+  if (anyMediaContent?.[1] && anyMediaContent[1].startsWith("http") && isImageUrl(anyMediaContent[1])) {
+    return anyMediaContent[1];
   }
 
   // 2. <media:thumbnail url="...">

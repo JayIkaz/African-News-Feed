@@ -1,88 +1,55 @@
 import { Article } from "@workspace/api-client-react";
 
-const CATEGORY_SEEDS: Record<string, string[]> = {
-  Politics: [
-    "parliament-africa",
-    "government-summit",
-    "election-vote",
-    "diplomatic-meeting",
-    "national-assembly",
-    "political-rally",
-  ],
-  Business: [
-    "africa-business",
-    "lagos-skyline",
-    "nairobi-office",
-    "trade-market",
-    "corporate-meeting",
-    "economic-hub",
-  ],
-  Technology: [
-    "tech-innovation",
-    "mobile-africa",
-    "digital-future",
-    "startup-hub",
-    "silicon-savanna",
-    "coding-africa",
-  ],
-  Economy: [
-    "stock-exchange",
-    "financial-market",
-    "currency-trade",
-    "economic-growth",
-    "banking-africa",
-    "commodity-market",
-  ],
-  Society: [
-    "africa-community",
-    "street-market",
-    "urban-africa",
-    "festival-culture",
-    "family-africa",
-    "youth-africa",
-  ],
-  Environment: [
-    "african-savanna",
-    "wildlife-africa",
-    "green-landscape",
-    "rainforest-africa",
-    "desert-dunes",
-    "river-africa",
-  ],
-  International: [
-    "united-nations",
-    "world-diplomacy",
-    "global-summit",
-    "international-trade",
-    "africa-globe",
-    "world-flags",
-  ],
-  General: [
-    "africa-news",
-    "newspaper-press",
-    "journalism-africa",
-    "breaking-news",
-    "media-africa",
-    "reporter-field",
-  ],
+const STOP_WORDS = new Set([
+  "a", "an", "the", "in", "on", "at", "to", "for", "of", "and", "or", "but",
+  "is", "are", "was", "were", "be", "been", "has", "have", "had", "with",
+  "from", "by", "as", "its", "it", "this", "that", "over", "after", "says",
+  "said", "will", "can", "not", "no", "new", "two", "three", "four", "five",
+  "into", "than", "more", "also", "about", "out", "up", "down", "per",
+]);
+
+const CATEGORY_CONTEXT: Record<string, string> = {
+  Politics:      "politics-governance",
+  Business:      "business-economy",
+  Technology:    "technology-digital",
+  Economy:       "economy-finance",
+  Society:       "community-society",
+  Environment:   "environment-nature",
+  International: "international-diplomacy",
+  General:       "africa-news",
 };
 
 const DIMENSIONS: Record<string, string> = {
   featured: "900/600",
-  side: "600/400",
-  card: "800/500",
-  compact: "200/200",
+  side:     "600/400",
+  card:     "800/500",
+  compact:  "200/200",
 };
 
-export function getArticleImage(article: Article, size: "featured" | "side" | "card" | "compact" = "card"): string {
+function buildContextualSeed(article: Article): string {
+  const titleWords = (article.title || "")
+    .toLowerCase()
+    .replace(/[^a-z\s]/g, " ")
+    .split(/\s+/)
+    .filter((w) => w.length > 3 && !STOP_WORDS.has(w))
+    .slice(0, 3);
+
+  const categoryCtx = CATEGORY_CONTEXT[article.category || "General"] ?? "africa-news";
+  const country = (article.country || "africa").toLowerCase().replace(/\s+/g, "-");
+
+  const parts = [...titleWords, categoryCtx, country].filter(Boolean).join("-");
+  return `${parts}-${article.id}`;
+}
+
+export function getArticleImage(
+  article: Article,
+  size: "featured" | "side" | "card" | "compact" = "card",
+): string {
   if (article.imageUrl) {
     return article.imageUrl;
   }
 
-  const cat = article.category || "General";
-  const seeds = CATEGORY_SEEDS[cat] ?? CATEGORY_SEEDS["General"];
-  const index = Math.abs(Number(article.id) || 0) % seeds.length;
-  const seed = seeds[index];
+  const seed = buildContextualSeed(article);
   const dim = DIMENSIONS[size];
-  return `https://picsum.photos/seed/${seed}-${article.id}/${dim}`;
+  return `https://picsum.photos/seed/${seed}/${dim}`;
 }
