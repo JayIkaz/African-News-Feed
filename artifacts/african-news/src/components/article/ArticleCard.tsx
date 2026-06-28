@@ -40,9 +40,10 @@ interface ArticleCardProps {
   featured?: boolean;
   compact?: boolean;
   side?: boolean;
+  isRead?: boolean;
 }
 
-export function ArticleCard({ article, featured = false, compact = false, side = false }: ArticleCardProps) {
+export function ArticleCard({ article, featured = false, compact = false, side = false, isRead = false }: ArticleCardProps) {
   const imageUrl = getArticleImage(article, featured ? "featured" : side ? "side" : compact ? "compact" : "card");
   const dateStr = article.publishedDate
     ? formatDistanceToNow(new Date(article.publishedDate), { addSuffix: true })
@@ -73,7 +74,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
           <div style={{ fontFamily: "var(--font-ui)", fontSize: 10, fontWeight: 600, color: catColor, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 3 }}>
             {article.category}
           </div>
-          <div style={{ fontFamily: "var(--font-headline)", fontSize: 13.5, fontWeight: 600, lineHeight: 1.3, color: "var(--ink)" }}>
+          <div style={{ fontFamily: "var(--font-headline)", fontSize: 13.5, fontWeight: 600, lineHeight: 1.3, color: isRead ? "var(--ink-4)" : "var(--ink)", opacity: isRead ? 0.7 : 1 }}>
             {article.title}
           </div>
           <div style={{ fontFamily: "var(--font-ui)", fontSize: 11, color: "var(--ink-4)", marginTop: 4, display: "flex", gap: 4, alignItems: "center" }}>
@@ -198,7 +199,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
         <div style={{ display: "inline-block", background: catColor, color: "#fff", fontFamily: "var(--font-ui)", fontSize: 9.5, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", padding: "2px 7px", borderRadius: 3, alignSelf: "flex-start" }}>
           {article.category}
         </div>
-        <div style={{ fontFamily: "var(--font-headline)", fontSize: 16, fontWeight: 600, lineHeight: 1.3, letterSpacing: "-0.01em", color: "var(--ink)" }}>
+        <div style={{ fontFamily: "var(--font-headline)", fontSize: 16, fontWeight: 600, lineHeight: 1.3, letterSpacing: "-0.01em", color: isRead ? "var(--ink-4)" : "var(--ink)", opacity: isRead ? 0.7 : 1 }}>
           {article.title}
         </div>
         <div style={{ marginTop: "auto", display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-ui)", fontSize: 11.5, color: "var(--ink-4)" }}>
@@ -252,8 +253,11 @@ export function ArticleCard({ article, featured = false, compact = false, side =
         </div>
       </div>
       <div style={{ padding: 16, flex: 1, display: "flex", flexDirection: "column", gap: 8 }}>
-        <h3 style={{ fontFamily: "var(--font-headline)", fontSize: 15.5, fontWeight: 600, lineHeight: 1.35, letterSpacing: "-0.01em", color: "var(--ink)", margin: 0 }}>
+        <h3 style={{ fontFamily: "var(--font-headline)", fontSize: 15.5, fontWeight: 600, lineHeight: 1.35, letterSpacing: "-0.01em", color: isRead ? "var(--ink-4)" : "var(--ink)", margin: 0, opacity: isRead ? 0.7 : 1 }}>
           {article.title}
+          {isRead && (
+            <span title="Read" style={{ display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: "var(--ink-4)", marginLeft: 6, verticalAlign: "middle", flexShrink: 0 }} />
+          )}
         </h3>
         {article.summary && (
           <p style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "var(--ink-3)", lineHeight: 1.5, margin: 0, flex: 1 }}>

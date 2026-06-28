@@ -1,4 +1,5 @@
 import { useParams, Link } from "wouter";
+import { useEffect } from "react";
 import { format } from "date-fns";
 import { Share2, BookmarkPlus, ArrowLeft, ExternalLink } from "lucide-react";
 import { useGetArticle, useListArticles } from "@workspace/api-client-react";
@@ -6,14 +7,22 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { getArticleImage } from "@/lib/unsplash";
 import { ArticleCard } from "@/components/article/ArticleCard";
 import { CAT_COLORS } from "@/components/article/ArticleCard";
+import { useReadHistory } from "@/lib/useReadHistory";
 
 export default function ArticleDetail() {
   const { id } = useParams<{ id: string }>();
   const articleId = parseInt(id || "0", 10);
+  const { markRead, isRead } = useReadHistory();
 
   const { data: article, isLoading, error } = useGetArticle(articleId, {
     query: { enabled: !isNaN(articleId) && articleId > 0 }
   });
+
+  useEffect(() => {
+    if (articleId > 0) {
+      markRead(articleId);
+    }
+  }, [articleId, markRead]);
 
   const { data: relatedData } = useListArticles(
     { category: article?.category, limit: 4 },
@@ -176,7 +185,7 @@ export default function ArticleDetail() {
             </div>
             <div className="an-grid-3">
               {relatedArticles.map(related => (
-                <ArticleCard key={related.id} article={related} />
+                <ArticleCard key={related.id} article={related} isRead={isRead(related.id)} />
               ))}
             </div>
           </div>

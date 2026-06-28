@@ -6,6 +6,7 @@ import { ArticleCard } from "@/components/article/ArticleCard";
 import { TopStoriesCarousel } from "@/components/article/TopStoriesCarousel";
 import { Sidebar } from "@/components/article/Sidebar";
 import { AdBanner } from "@/components/ads/AdBanner";
+import { useReadHistory } from "@/lib/useReadHistory";
 
 const CATEGORY_PILLS = [
   { label: "All", icon: "🌐", value: null },
@@ -25,6 +26,7 @@ export default function Home() {
   const isMobile = useMediaQuery("(max-width: 640px)");
   const limit = 9;
   const pillRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
+  const { isRead, markAllRead, clearHistory, readIds } = useReadHistory();
 
   const { data: topStories, isLoading: topLoading } = useGetTopStories({ limit: 3 });
   const { data: latestNews, isLoading: latestLoading, isFetching } = useListArticles({ page, limit, category: activeCat ?? undefined });
@@ -169,6 +171,64 @@ export default function Home() {
               </button>
             );
           })}
+
+          {/* Mark all as read / Clear history */}
+          <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+            {latestNews?.articles && latestNews.articles.length > 0 && (
+              <button
+                onClick={() => markAllRead((latestNews.articles ?? []).map(a => a.id))}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 5,
+                  padding: "8px 14px",
+                  borderRadius: 100,
+                  border: "1.5px solid var(--paper-3)",
+                  fontFamily: "var(--font-ui)",
+                  fontSize: 12,
+                  fontWeight: 500,
+                  color: "var(--ink-3)",
+                  background: "#fff",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                  flexShrink: 0,
+                  whiteSpace: "nowrap",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--ink-3)"; e.currentTarget.style.color = "var(--ink)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--paper-3)"; e.currentTarget.style.color = "var(--ink-3)"; }}
+                title="Mark all visible articles as read"
+              >
+                ✓ Mark all read
+              </button>
+            )}
+            {readIds.size > 0 && (
+              <button
+                onClick={clearHistory}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 5,
+                  padding: "8px 14px",
+                  borderRadius: 100,
+                  border: "1.5px solid var(--paper-3)",
+                  fontFamily: "var(--font-ui)",
+                  fontSize: 12,
+                  fontWeight: 500,
+                  color: "var(--ink-4)",
+                  background: "#fff",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                  flexShrink: 0,
+                  whiteSpace: "nowrap",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--ink-3)"; e.currentTarget.style.color = "var(--ink)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--paper-3)"; e.currentTarget.style.color = "var(--ink-4)"; }}
+                title={`Clear read history (${readIds.size} articles)`}
+              >
+                Clear history
+              </button>
+            )}
+          </div>
         </div>
 
         {/* ── Articles + Sidebar ── */}
@@ -203,7 +263,7 @@ export default function Home() {
                   ))
                 ) : latestNews?.articles && latestNews.articles.length > 0 ? (
                   latestNews.articles.map((article) => (
-                    <ArticleCard key={article.id} article={article} />
+                    <ArticleCard key={article.id} article={article} isRead={isRead(article.id)} />
                   ))
                 ) : (
                   <div style={{ gridColumn: "1/4", textAlign: "center", padding: "60px 24px", color: "var(--ink-4)" }}>
