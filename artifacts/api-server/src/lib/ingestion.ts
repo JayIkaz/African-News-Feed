@@ -389,6 +389,19 @@ export async function ingestSource(source: typeof sourcesTable.$inferSelect): Pr
     const items = await parseRss(source.rssUrl);
     let inserted = 0;
 
+    const candidateLinks = items
+      .slice(0, 50)
+      .map((i) => i.link)
+      .filter(Boolean) as string[];
+
+    const existingRows = candidateLinks.length
+      ? await db
+          .select({ url: articlesTable.url })
+          .from(articlesTable)
+          .where(sql`${articlesTable.url} = ANY(${candidateLinks})`)
+      : [];
+    const existingUrls = new Set(existingRows.map((r) => r.url));
+
     for (const item of items.slice(0, 50)) {
       if (!item.title || !item.link) continue;
 
@@ -407,7 +420,7 @@ export async function ingestSource(source: typeof sourcesTable.$inferSelect): Pr
 
       let imageUrl: string | null = item.imageUrl ?? null;
 
-      if (!imageUrl) {
+      if (!imageUrl && !existingUrls.has(item.link)) {
         imageUrl = await fetchOgImage(item.link);
       }
 
@@ -467,8 +480,15 @@ export async function ingestSource(source: typeof sourcesTable.$inferSelect): Pr
 // ---------------------------------------------------------------------------
 
 export async function ingestAllSources(sources: (typeof sourcesTable.$inferSelect)[]): Promise<void> {
-  const promises = sources.filter((s) => s.isActive && s.rssUrl).map((s) => ingestSource(s));
-  await Promise.allSettled(promises);
+  const active = sources.filter((s) => s.isActive && s.rssUrl);
+  const BATCH = 5;
+  for (let i = 0; i < active.length; i += BATCH) {
+    const batch = active.slice(i, i + BATCH);
+    await Promise.allSettled(batch.map((s) => ingestSource(s)));
+    if (i + BATCH < active.length) {
+      await new Promise((r) => setTimeout(r, 300));
+    }
+  }
   console.log("[ingestion] All sources processed");
 }
 
