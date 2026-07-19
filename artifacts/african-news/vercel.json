@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://www.africannewsfeed.news/api/$1"
+      "destination": "https://african-news-feed-api-server.vercel.app/api/$1"
     }
   ]
 }
