@@ -1,34 +1,38 @@
 import { Router, type IRouter } from "express";
 import { db } from "@workspace/db";
-import { sourcesTable, articlesTable } from "@workspace/db/schema";
+import { sourcesTable } from "@workspace/db/schema";
 import { eq } from "drizzle-orm";
 import { ingestAllSources } from "../lib/ingestion";
 import { backfillImages } from "../lib/backfillImages";
+import { requireAdmin } from "../middlewares/requireAdmin";
+import { adminTriggerRateLimit } from "../middlewares/rateLimit";
 
 const router: IRouter = Router();
 
-router.post("/trigger", async (_req, res) => {
+router.post("/trigger", adminTriggerRateLimit, requireAdmin, async (_req, res) => {
   try {
     const sources = await db.select().from(sourcesTable).where(eq(sourcesTable.isActive, true));
-    
-    ingestAllSources(sources).catch((err) => {
-      console.error("Background ingestion error:", err);
-    });
+
+    // Awaited, not fire-and-forget: Vercel serverless functions stop executing
+    // once the response is sent, so background work silently no-ops there. The
+    // primary ingestion path is the hourly GitHub Actions cron (a real
+    // process); this endpoint is just the on-demand admin convenience path.
+    await ingestAllSources(sources);
 
     res.json({
-      message: "Ingestion triggered for all active sources",
-      sourcesTriggered: sources.length,
+      message: "Ingestion complete",
+      sourcesProcessed: sources.length,
     });
   } catch (err) {
-    console.error("Error triggering ingestion:", err);
-    res.status(500).json({ error: "internal_error", message: "Failed to trigger ingestion" });
+    console.error("Error running ingestion:", err);
+    res.status(500).json({ error: "internal_error", message: "Failed to run ingestion" });
   }
 });
 
 router.get("/status", async (_req, res) => {
   try {
     const sources = await db.select().from(sourcesTable).orderBy(sourcesTable.country);
-    
+
     res.json(sources.map((s) => ({
       sourceId: s.id,
       sourceName: s.name,
@@ -43,16 +47,13 @@ router.get("/status", async (_req, res) => {
   }
 });
 
-router.post("/backfill-images", async (_req, res) => {
+router.post("/backfill-images", adminTriggerRateLimit, requireAdmin, async (_req, res) => {
   try {
-    res.json({ message: "Image backfill started in background. Check server logs for progress." });
-
-    backfillImages().catch((err) => {
-      console.error("[backfill-images] Fatal error:", err);
-    });
+    await backfillImages();
+    res.json({ message: "Image backfill complete" });
   } catch (err) {
-    console.error("[backfill-images] Error starting backfill:", err);
-    res.status(500).json({ error: "internal_error", message: "Failed to start image backfill" });
+    console.error("[backfill-images] Error running backfill:", err);
+    res.status(500).json({ error: "internal_error", message: "Failed to run image backfill" });
   }
 });
 

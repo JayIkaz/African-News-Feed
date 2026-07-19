@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
-import { useSearchArticles } from "@workspace/api-client-react";
+import { useSearchArticles, getSearchArticlesQueryKey } from "@workspace/api-client-react";
 import { useColors } from "@/hooks/useColors";
 import { ArticleCard } from "@/components/ArticleCard";
 
@@ -22,10 +22,13 @@ export default function SearchScreen() {
   const [query, setQuery] = useState("");
   const [submitted, setSubmitted] = useState("");
 
-  const results = useSearchArticles(
-    { q: submitted, limit: 30 },
-    { query: { enabled: submitted.length >= 2 } }
-  );
+  const searchParams = { q: submitted, limit: 30 };
+  const results = useSearchArticles(searchParams, {
+    query: {
+      queryKey: getSearchArticlesQueryKey(searchParams),
+      enabled: submitted.length >= 2,
+    },
+  });
 
   const handleSubmit = () => {
     setSubmitted(query.trim());

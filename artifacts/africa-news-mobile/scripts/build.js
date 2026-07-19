@@ -67,10 +67,13 @@ function getDeploymentDomain() {
     return stripProtocol(process.env.EXPO_PUBLIC_DOMAIN);
   }
 
-  console.error(
-    "ERROR: No deployment domain found. Set REPLIT_INTERNAL_APP_DOMAIN, REPLIT_DEV_DOMAIN, or EXPO_PUBLIC_DOMAIN",
+  // Off-Replit (e.g. CI or a Vercel build of the other artifacts) there is no
+  // deployment domain — skip the Expo Go static build instead of failing the
+  // whole workspace build. Set EXPO_PUBLIC_DOMAIN to build the mobile app.
+  console.log(
+    "No deployment domain found (REPLIT_INTERNAL_APP_DOMAIN, REPLIT_DEV_DOMAIN, or EXPO_PUBLIC_DOMAIN) — skipping mobile build.",
   );
-  process.exit(1);
+  process.exit(0);
 }
 
 function prepareDirectories(timestamp) {

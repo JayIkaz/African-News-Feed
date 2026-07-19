@@ -10,7 +10,7 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useListCountries, useListArticles, CountrySummary } from "@workspace/api-client-react";
+import { useListCountries, useListArticles, getListArticlesQueryKey, CountrySummary } from "@workspace/api-client-react";
 import { useColors } from "@/hooks/useColors";
 import { ArticleCard } from "@/components/ArticleCard";
 
@@ -90,10 +90,15 @@ export default function ExploreScreen() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
 
   const countries = useListCountries();
-  const articles = useListArticles(
-    selectedCountry ? { country: selectedCountry, limit: 30 } : { limit: 1 },
-    { query: { enabled: !!selectedCountry } }
-  );
+  const articleParams = selectedCountry
+    ? { country: selectedCountry, limit: 30 }
+    : { limit: 1 };
+  const articles = useListArticles(articleParams, {
+    query: {
+      queryKey: getListArticlesQueryKey(articleParams),
+      enabled: !!selectedCountry,
+    },
+  });
 
   const countryList = countries.data ?? [];
 

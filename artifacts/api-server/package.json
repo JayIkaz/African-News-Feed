@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "NODE_ENV=development tsx ./src/index.ts",
     "build": "tsx ./build.ts",
+    "start": "node --enable-source-maps ./dist/index.mjs",
+    "ingest": "tsx ./src/ingest.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
@@ -15,6 +17,7 @@
     "cors": "^2",
     "drizzle-orm": "catalog:",
     "express": "^5",
+    "express-rate-limit": "^7",
     "resend": "^6.9.4"
   },
   "devDependencies": {

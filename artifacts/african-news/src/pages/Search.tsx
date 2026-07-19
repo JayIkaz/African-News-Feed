@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { Search as SearchIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { ArticleCard } from "@/components/article/ArticleCard";
-import { useSearchArticles } from "@workspace/api-client-react";
+import { useSearchArticles, getSearchArticlesQueryKey } from "@workspace/api-client-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 
@@ -23,10 +23,13 @@ export default function Search() {
     }
   }, [location]);
 
-  const { data, isLoading, isFetching } = useSearchArticles(
-    { q: query, limit: LIMIT, page },
-    { query: { enabled: !!query } }
-  );
+  const searchParams = { q: query, limit: LIMIT, page };
+  const { data, isLoading, isFetching } = useSearchArticles(searchParams, {
+    query: {
+      queryKey: getSearchArticlesQueryKey(searchParams),
+      enabled: !!query,
+    },
+  });
 
   const totalPages = data ? Math.ceil(data.total / LIMIT) : 1;
 

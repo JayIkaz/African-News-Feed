@@ -2,7 +2,12 @@ import { useParams, Link } from "wouter";
 import { useEffect } from "react";
 import { format } from "date-fns";
 import { Share2, BookmarkPlus, ArrowLeft, ExternalLink } from "lucide-react";
-import { useGetArticle, useListArticles } from "@workspace/api-client-react";
+import {
+  useGetArticle,
+  useListArticles,
+  getGetArticleQueryKey,
+  getListArticlesQueryKey,
+} from "@workspace/api-client-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { getArticleImage } from "@/lib/unsplash";
 import { ArticleCard } from "@/components/article/ArticleCard";
@@ -15,7 +20,10 @@ export default function ArticleDetail() {
   const { markRead, isRead } = useReadHistory();
 
   const { data: article, isLoading, error } = useGetArticle(articleId, {
-    query: { enabled: !isNaN(articleId) && articleId > 0 }
+    query: {
+      queryKey: getGetArticleQueryKey(articleId),
+      enabled: !isNaN(articleId) && articleId > 0,
+    },
   });
 
   useEffect(() => {
@@ -24,10 +32,13 @@ export default function ArticleDetail() {
     }
   }, [articleId, markRead]);
 
-  const { data: relatedData } = useListArticles(
-    { category: article?.category, limit: 4 },
-    { query: { enabled: !!article?.category } }
-  );
+  const relatedParams = { category: article?.category, limit: 4 };
+  const { data: relatedData } = useListArticles(relatedParams, {
+    query: {
+      queryKey: getListArticlesQueryKey(relatedParams),
+      enabled: !!article?.category,
+    },
+  });
 
   if (isLoading) {
     return (
