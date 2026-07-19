@@ -2,88 +2,101 @@ import { db } from "@workspace/db";
 import { sourcesTable } from "@workspace/db/schema";
 import { count } from "drizzle-orm";
 
-const SOURCES = [
-  { name: "The Guardian Nigeria", country: "Nigeria", homepage: "https://guardian.ng", rssUrl: "https://guardian.ng/feed/" },
+// Every rssUrl below was verified working (HTTP 200, valid RSS/Atom with items)
+// on 2026-07-19 using a browser-like User-Agent. Sources with rssUrl: null have
+// no server-fetchable feed (WAF-blocked or none published) — kept for reference.
+export const SOURCES = [
+  // Nigeria — guardian.ng, thenationonlineng.net and punchng.com feeds are
+  // WAF-blocked or empty; replaced with Daily Trust / ThisDay / Daily Post.
   { name: "Vanguard", country: "Nigeria", homepage: "https://www.vanguardngr.com", rssUrl: "https://www.vanguardngr.com/feed/" },
-  { name: "Punch", country: "Nigeria", homepage: "https://punchng.com", rssUrl: "https://punchng.com/feed/" },
-  { name: "Premium Times", country: "Nigeria", homepage: "https://www.premiumtimesng.com", rssUrl: "https://www.premiumtimesng.com/feed/" },
-  { name: "The Nation", country: "Nigeria", homepage: "https://thenationonlineng.net", rssUrl: "https://thenationonlineng.net/feed/" },
+  { name: "Premium Times", country: "Nigeria", homepage: "https://www.premiumtimesng.com", rssUrl: "https://www.premiumtimesng.com/feed" },
   { name: "BusinessDay Nigeria", country: "Nigeria", homepage: "https://businessday.ng", rssUrl: "https://businessday.ng/feed/" },
   { name: "ThisDay Live", country: "Nigeria", homepage: "https://www.thisdaylive.com", rssUrl: "https://www.thisdaylive.com/feed/" },
   { name: "Daily Trust", country: "Nigeria", homepage: "https://dailytrust.com", rssUrl: "https://dailytrust.com/feed/" },
   { name: "Sahara Reporters", country: "Nigeria", homepage: "https://saharareporters.com", rssUrl: "https://saharareporters.com/rss.xml" },
-  { name: "Business Day SA", country: "South Africa", homepage: "https://www.businesslive.co.za", rssUrl: "https://www.businesslive.co.za/rss/feed.xml" },
-  { name: "Daily Maverick", country: "South Africa", homepage: "https://www.dailymaverick.co.za", rssUrl: "https://www.dailymaverick.co.za/feed/" },
-  { name: "News24", country: "South Africa", homepage: "https://www.news24.com", rssUrl: "https://feeds.24.com/articles/news24/TopStories/rss" },
-  { name: "Mail & Guardian", country: "South Africa", homepage: "https://mg.co.za", rssUrl: "https://mg.co.za/feed/" },
+  { name: "Daily Post Nigeria", country: "Nigeria", homepage: "https://dailypost.ng", rssUrl: "https://dailypost.ng/feed/" },
+  { name: "Leadership Nigeria", country: "Nigeria", homepage: "https://leadership.ng", rssUrl: "https://leadership.ng/feed/" },
+  // South Africa — News24 feeds are gone (feeds.24.com DNS dead, Arc feed 403);
+  // The South African added instead.
+  { name: "Business Day SA", country: "South Africa", homepage: "https://www.businessday.co.za", rssUrl: "https://www.businessday.co.za/arc/outboundfeeds/rss/?outputType=xml" },
+  { name: "Daily Maverick", country: "South Africa", homepage: "https://www.dailymaverick.co.za", rssUrl: "https://www.dailymaverick.co.za/dmrss/" },
+  { name: "Mail & Guardian", country: "South Africa", homepage: "https://mg.co.za", rssUrl: "https://mg.co.za/rss/" },
+  { name: "The South African", country: "South Africa", homepage: "https://www.thesouthafrican.com", rssUrl: "https://www.thesouthafrican.com/feed/" },
+  // Kenya — the-star.co.ke has no feed; Capital FM moved to capitalfm.africa.
   { name: "Daily Nation", country: "Kenya", homepage: "https://nation.africa", rssUrl: "https://nation.africa/kenya/rss.xml" },
-  { name: "The Standard Kenya", country: "Kenya", homepage: "https://www.standardmedia.co.ke", rssUrl: "https://www.standardmedia.co.ke/rss/all-stories" },
-  { name: "The Star Kenya", country: "Kenya", homepage: "https://www.the-star.co.ke", rssUrl: "https://www.the-star.co.ke/rss.xml" },
-  { name: "Egypt Independent", country: "Egypt", homepage: "https://egyptindependent.com", rssUrl: "https://egyptindependent.com/feed/" },
-  { name: "Ahram Online", country: "Egypt", homepage: "https://english.ahram.org.eg", rssUrl: "https://english.ahram.org.eg/rss/NewsContent/1/64.aspx" },
-  { name: "Ghana Web", country: "Ghana", homepage: "https://www.ghanaweb.com", rssUrl: "https://www.ghanaweb.com/GhanaHomePage/rss/News.xml" },
+  { name: "The Standard Kenya", country: "Kenya", homepage: "https://www.standardmedia.co.ke", rssUrl: "https://www.standardmedia.co.ke/rss/headlines.php" },
+  { name: "Capital FM Kenya", country: "Kenya", homepage: "https://capitalfm.africa", rssUrl: "https://capitalfm.africa/news/feed/" },
+  { name: "Business Daily Africa", country: "Kenya", homepage: "https://www.businessdailyafrica.com", rssUrl: "https://www.businessdailyafrica.com/bd/rss.xml" },
+  // Egypt — english.ahram.org.eg is WAF-blocked; Daily News Egypt instead.
+  { name: "Egypt Independent", country: "Egypt", homepage: "https://www.egyptindependent.com", rssUrl: "https://www.egyptindependent.com/feed/" },
+  { name: "Daily News Egypt", country: "Egypt", homepage: "https://www.dailynewsegypt.com", rssUrl: "https://www.dailynewsegypt.com/feed/" },
+  // Ghana — citifmonline is dead (3News replaces it); GhanaWeb feed moved to CDN.
+  { name: "Ghana Web", country: "Ghana", homepage: "https://www.ghanaweb.com", rssUrl: "https://cdn.ghanaweb.com/feed/newsfeed.xml" },
   { name: "Myjoyonline", country: "Ghana", homepage: "https://www.myjoyonline.com", rssUrl: "https://www.myjoyonline.com/feed/" },
-  { name: "CitiFM Ghana", country: "Ghana", homepage: "https://citifmonline.com", rssUrl: "https://citifmonline.com/feed/" },
-  { name: "Morocco World News", country: "Morocco", homepage: "https://www.moroccoworldnews.com", rssUrl: "https://www.moroccoworldnews.com/feed/" },
-  { name: "Le360", country: "Morocco", homepage: "https://en.le360.ma", rssUrl: "https://en.le360.ma/rss.xml" },
-  { name: "Addis Standard", country: "Ethiopia", homepage: "https://addisstandard.com", rssUrl: "https://addisstandard.com/feed/" },
+  { name: "3News Ghana", country: "Ghana", homepage: "https://3news.com", rssUrl: "https://3news.com/feed.xml" },
+  // Morocco — moroccoworldnews.com is WAF-blocked; Hespress EN instead.
+  { name: "Hespress English", country: "Morocco", homepage: "https://en.hespress.com", rssUrl: "https://en.hespress.com/feed" },
+  { name: "Le360", country: "Morocco", homepage: "https://en.le360.ma", rssUrl: "https://en.le360.ma/arc/outboundfeeds/rss/?outputType=xml" },
+  // Ethiopia — addisstandard.com is WAF-blocked; The Reporter instead.
+  { name: "The Reporter Ethiopia", country: "Ethiopia", homepage: "https://www.thereporterethiopia.com", rssUrl: "https://www.thereporterethiopia.com/feed/" },
   { name: "Ethiopian Monitor", country: "Ethiopia", homepage: "https://ethiopianmonitor.com", rssUrl: "https://ethiopianmonitor.com/feed/" },
-  { name: "The Citizen Tanzania", country: "Tanzania", homepage: "https://www.thecitizen.co.tz", rssUrl: "https://www.thecitizen.co.tz/tanzania/rss.xml" },
-  { name: "Mwananchi", country: "Tanzania", homepage: "https://www.mwananchi.co.tz", rssUrl: "https://www.mwananchi.co.tz/mw/rss.xml" },
-  { name: "New Vision Uganda", country: "Uganda", homepage: "https://www.newvision.co.ug", rssUrl: "https://www.newvision.co.ug/feed" },
-  { name: "Daily Monitor Uganda", country: "Uganda", homepage: "https://www.monitor.co.ug", rssUrl: "https://www.monitor.co.ug/uganda/rss.xml" },
-  { name: "Algeria Press Service", country: "Algeria", homepage: "https://www.aps.dz/en", rssUrl: "https://www.aps.dz/en/rss.xml" },
-  { name: "The Herald Zimbabwe", country: "Zimbabwe", homepage: "https://www.herald.co.zw", rssUrl: "https://www.herald.co.zw/feed/" },
-  { name: "NewsDay Zimbabwe", country: "Zimbabwe", homepage: "https://www.newsday.co.zw", rssUrl: "https://www.newsday.co.zw/feed/" },
+  // Tanzania — Nation Media sites now serve rss.xml at the site root.
+  { name: "The Citizen Tanzania", country: "Tanzania", homepage: "https://www.thecitizen.co.tz", rssUrl: "https://www.thecitizen.co.tz/rss.xml" },
+  { name: "Mwananchi", country: "Tanzania", homepage: "https://www.mwananchi.co.tz", rssUrl: "https://www.mwananchi.co.tz/rss.xml" },
+  // Uganda — newvision.co.ug has no fetchable feed; Nile Post instead.
+  { name: "Nile Post", country: "Uganda", homepage: "https://nilepost.co.ug", rssUrl: "https://nilepost.co.ug/feed" },
+  { name: "Daily Monitor Uganda", country: "Uganda", homepage: "https://www.monitor.co.ug", rssUrl: "https://www.monitor.co.ug/rss.xml" },
+  // Algeria — aps.dz has no working feed; Echorouk EN instead.
+  { name: "Echorouk Online", country: "Algeria", homepage: "https://www.echoroukonline.com", rssUrl: "https://www.echoroukonline.com/feed" },
+  // Zimbabwe — Herald moved to heraldonline.co.zw; newsday.co.zw feed is gone.
+  { name: "The Herald Zimbabwe", country: "Zimbabwe", homepage: "https://www.heraldonline.co.zw", rssUrl: "https://www.heraldonline.co.zw/feed/" },
+  { name: "NewZimbabwe", country: "Zimbabwe", homepage: "https://www.newzimbabwe.com", rssUrl: "https://www.newzimbabwe.com/feed/" },
+  // Angola — no outlet with a working server-fetchable feed found.
   { name: "Angola Press Agency", country: "Angola", homepage: "https://www.angop.ao/en", rssUrl: null },
-  { name: "Abidjan.net", country: "Ivory Coast", homepage: "https://news.abidjan.net", rssUrl: null },
+  // Tunisia — africanmanager.com/en feed is dead; French edition works.
   { name: "Tunisia Live", country: "Tunisia", homepage: "https://www.tunisia-live.net", rssUrl: "https://www.tunisia-live.net/feed/" },
-  { name: "African Manager", country: "Tunisia", homepage: "https://africanmanager.com/en", rssUrl: "https://africanmanager.com/en/feed/" },
-  { name: "Dakar Actu", country: "Senegal", homepage: "https://www.dakaractu.com", rssUrl: "https://www.dakaractu.com/rss.xml" },
-  { name: "The New Times Rwanda", country: "Rwanda", homepage: "https://www.newtimes.co.rw", rssUrl: "https://www.newtimes.co.rw/rss.xml" },
-  { name: "Cameroon Tribune", country: "Cameroon", homepage: "https://www.cameroon-tribune.cm", rssUrl: "https://www.cameroon-tribune.cm/rss.xml" },
-  // Kenya additional
-  { name: "Capital FM Kenya", country: "Kenya", homepage: "https://www.capitalfm.co.ke", rssUrl: "https://www.capitalfm.co.ke/news/feed/" },
-  { name: "Business Daily Africa", country: "Kenya", homepage: "https://www.businessdailyafrica.com", rssUrl: "https://www.businessdailyafrica.com/feed/" },
-  { name: "The Standard Kenya", country: "Kenya", homepage: "https://www.standardmedia.co.ke", rssUrl: "https://www.standardmedia.co.ke/rss" },
-  // Zambia
+  { name: "African Manager", country: "Tunisia", homepage: "https://africanmanager.com", rssUrl: "https://africanmanager.com/feed/" },
+  // Senegal — Dakaractu uses the WMaker platform syndication URL.
+  { name: "Dakar Actu", country: "Senegal", homepage: "https://www.dakaractu.com", rssUrl: "https://www.dakaractu.com/xml/syndication.rss" },
+  { name: "Senego", country: "Senegal", homepage: "https://senego.com", rssUrl: "https://senego.com/feed" },
+  // Rwanda — newtimes.co.rw has no working feed; KT Press instead.
+  { name: "KT Press", country: "Rwanda", homepage: "https://www.ktpress.rw", rssUrl: "https://www.ktpress.rw/feed/" },
+  // Cameroon — cameroon-tribune.cm has no feed; Journal du Cameroun EN instead.
+  { name: "Journal du Cameroun", country: "Cameroon", homepage: "https://en.journalducameroun.com", rssUrl: "https://en.journalducameroun.com/feed/" },
+  // Zambia — zambiareports moved to .news domain.
   { name: "Lusaka Times", country: "Zambia", homepage: "https://www.lusakatimes.com", rssUrl: "https://www.lusakatimes.com/feed/" },
   { name: "Daily Mail Zambia", country: "Zambia", homepage: "https://www.daily-mail.co.zm", rssUrl: "https://www.daily-mail.co.zm/feed/" },
-  { name: "Zambia Reports", country: "Zambia", homepage: "https://zambiareports.com", rssUrl: "https://zambiareports.com/feed/" },
+  { name: "Zambia Reports", country: "Zambia", homepage: "https://zambiareports.news", rssUrl: "https://zambiareports.news/feed/" },
   { name: "Diggers News", country: "Zambia", homepage: "https://diggers.news", rssUrl: "https://diggers.news/feed/" },
   // Malawi
   { name: "Nyasa Times", country: "Malawi", homepage: "https://www.nyasatimes.com", rssUrl: "https://www.nyasatimes.com/feed/" },
   // Libya
   { name: "Libya Herald", country: "Libya", homepage: "https://libyaherald.com", rssUrl: "https://libyaherald.com/feed/" },
-  // Liberia
-  { name: "FrontPage Africa", country: "Liberia", homepage: "https://frontpageafricaonline.com", rssUrl: "https://frontpageafricaonline.com/feed/" },
-  // Eritrea
-  { name: "TesfaNews", country: "Eritrea", homepage: "https://www.tesfanews.net", rssUrl: "https://www.tesfanews.net/feed/" },
+  // Liberia — FrontPage Africa moved to fpa.news.
+  { name: "FrontPage Africa", country: "Liberia", homepage: "https://fpa.news", rssUrl: "https://fpa.news/feed/" },
   // Burundi
   { name: "Iwacu Burundi", country: "Burundi", homepage: "https://www.iwacu-burundi.org", rssUrl: "https://www.iwacu-burundi.org/feed/" },
-  // Lesotho
-  { name: "Lesotho Times", country: "Lesotho", homepage: "https://lestimes.com", rssUrl: "https://lestimes.com/feed/" },
+  // Lesotho — /feed/ serves HTML; the query-string form works.
+  { name: "Lesotho Times", country: "Lesotho", homepage: "https://lestimes.com", rssUrl: "https://lestimes.com/?feed=rss2" },
   // South Sudan
-  { name: "Eye Radio", country: "South Sudan", homepage: "https://eyeradio.org", rssUrl: "https://eyeradio.org/feed/" },
+  { name: "Eye Radio", country: "South Sudan", homepage: "https://www.eyeradio.org", rssUrl: "https://www.eyeradio.org/feed/" },
   // Eswatini
   { name: "Times of Eswatini", country: "Eswatini", homepage: "https://times.co.sz", rssUrl: "https://times.co.sz/feed/" },
-  // DR Congo (Central Africa)
+  // DR Congo — 7sur7.cd feed is dead; Actualité.cd instead.
   { name: "Radio Okapi", country: "DR Congo", homepage: "https://www.radiookapi.net", rssUrl: "https://www.radiookapi.net/feed" },
-  { name: "7sur7 Congo", country: "DR Congo", homepage: "https://7sur7.cd", rssUrl: "https://7sur7.cd/feed/" },
+  { name: "Actualité.cd", country: "DR Congo", homepage: "https://actualite.cd", rssUrl: "https://actualite.cd/feed" },
   // Mozambique
   { name: "Club of Mozambique", country: "Mozambique", homepage: "https://clubofmozambique.com", rssUrl: "https://clubofmozambique.com/feed/" },
-  // Botswana
-  { name: "Mmegi Online", country: "Botswana", homepage: "https://www.mmegi.bw", rssUrl: "https://www.mmegi.bw/rss.xml" },
-  // Namibia
+  // Botswana — mmegi.bw no longer publishes a feed.
+  { name: "Mmegi Online", country: "Botswana", homepage: "https://www.mmegi.bw", rssUrl: null },
+  // Namibia — feed unreachable from server-side fetch at last check; kept for retry.
   { name: "The Namibian", country: "Namibia", homepage: "https://www.namibian.com.na", rssUrl: "https://www.namibian.com.na/feed/" },
-  // Senegal
-  { name: "Senego", country: "Senegal", homepage: "https://senego.com", rssUrl: "https://senego.com/feed/" },
-  // Ivory Coast
-  { name: "Connectionivoirienne", country: "Ivory Coast", homepage: "https://www.connectionivoirienne.net", rssUrl: "https://www.connectionivoirienne.net/feed/" },
+  // Ivory Coast — news.abidjan.net has no working feed; AIP is the state agency.
+  { name: "Connectionivoirienne", country: "Ivory Coast", homepage: "https://connectionivoirienne.net", rssUrl: "https://connectionivoirienne.net/feed/" },
   { name: "AIP Côte d'Ivoire", country: "Ivory Coast", homepage: "https://www.aip.ci", rssUrl: "https://www.aip.ci/feed/" },
-  // Sudan
-  { name: "Sudan Tribune", country: "Sudan", homepage: "https://sudantribune.com", rssUrl: "https://sudantribune.com/rss.xml" },
-  // Somalia
+  // Sudan — WAF-blocked at last check; kept for retry from other networks.
+  { name: "Sudan Tribune", country: "Sudan", homepage: "https://sudantribune.com", rssUrl: "https://sudantribune.com/feed/" },
+  // Somalia — feed returned HTTP 500 at last check; kept for retry.
   { name: "Garowe Online", country: "Somalia", homepage: "https://www.garoweonline.com", rssUrl: "https://www.garoweonline.com/en/feed" },
 ];
 

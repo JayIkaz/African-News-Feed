@@ -1,6 +1,6 @@
 import { db } from "@workspace/db";
 import { sourcesTable, articlesTable, type InsertArticle } from "@workspace/db/schema";
-import { eq, sql } from "drizzle-orm";
+import { eq, inArray, sql } from "drizzle-orm";
 
 interface RssItem {
   title?: string;
@@ -311,14 +311,25 @@ async function fetchOgImage(articleUrl: string): Promise<string | null> {
 // RSS parser
 // ---------------------------------------------------------------------------
 
+// Several publishers (WordPress hosts, Nation Media Group, Arc-based sites)
+// serve 403s to obvious bot user agents but accept a normal browser UA.
+const FETCH_HEADERS = {
+  "User-Agent":
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+  Accept:
+    "application/rss+xml, application/atom+xml, application/xml;q=0.9, text/xml;q=0.8, */*;q=0.5",
+  "Accept-Language": "en-US,en;q=0.9",
+};
+
 async function parseRss(rssUrl: string): Promise<RssItem[]> {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 15000);
+  const timeout = setTimeout(() => controller.abort(), 30000);
 
   try {
     const response = await fetch(rssUrl, {
       signal: controller.signal,
-      headers: { "User-Agent": "AfricaNews-Aggregator/1.0" },
+      redirect: "follow",
+      headers: FETCH_HEADERS,
     });
 
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -326,7 +337,8 @@ async function parseRss(rssUrl: string): Promise<RssItem[]> {
     const text = await response.text();
     const items: RssItem[] = [];
 
-    const itemRegex = /<item[^>]*>([\s\S]*?)<\/item>/gi;
+    // RSS 2.0 <item> blocks and Atom <entry> blocks
+    const itemRegex = /<(?:item|entry)[^>]*>([\s\S]*?)<\/(?:item|entry)>/gi;
     let match;
 
     while ((match = itemRegex.exec(text)) !== null) {
@@ -398,7 +410,7 @@ export async function ingestSource(source: typeof sourcesTable.$inferSelect): Pr
       ? await db
           .select({ url: articlesTable.url })
           .from(articlesTable)
-          .where(sql`${articlesTable.url} = ANY(${candidateLinks})`)
+          .where(inArray(articlesTable.url, candidateLinks))
       : [];
     const existingUrls = new Set(existingRows.map((r) => r.url));
 
