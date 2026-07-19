@@ -24,6 +24,7 @@ async function buildAll() {
     format: "esm",
     outdir: distDir,
     outExtension: { ".js": ".mjs" },
+    minify: true,
     logLevel: "info",
     // Fully bundled (workspace packages and all deps) so the Vercel serverless
     // runtime never has to resolve raw TS or pnpm-workspace symlinks. Only
