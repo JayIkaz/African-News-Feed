@@ -1,27 +1,12 @@
 import { Router, type IRouter } from "express";
 import { db } from "@workspace/db";
 import { articlesTable, sourcesTable } from "@workspace/db/schema";
-import { eq, desc, like, or, count, and, sql } from "drizzle-orm";
+import { eq, desc, count, and } from "drizzle-orm";
+import { articleSelection, buildArticleResponse } from "../lib/articleSelect";
+import { isTranslateConfigured, translateToEnglish } from "../lib/translate";
+import { translateRateLimit } from "../middlewares/rateLimit";
 
 const router: IRouter = Router();
-
-function buildArticleResponse(article: typeof articlesTable.$inferSelect & { sourceName?: string }) {
-  return {
-    id: article.id,
-    title: article.title,
-    summary: article.summary,
-    author: article.author ?? null,
-    sourceId: article.sourceId,
-    sourceName: article.sourceName ?? "",
-    country: article.country,
-    category: article.category,
-    publishedDate: article.publishedDate.toISOString(),
-    url: article.url,
-    imageUrl: article.imageUrl ?? null,
-    createdAt: article.createdAt.toISOString(),
-    aiSummary: article.aiSummary ?? null,
-  };
-}
 
 router.get("/", async (req, res) => {
   try {
@@ -39,21 +24,7 @@ router.get("/", async (req, res) => {
 
     const [rows, totalRows] = await Promise.all([
       db
-        .select({
-          id: articlesTable.id,
-          title: articlesTable.title,
-          summary: articlesTable.summary,
-          author: articlesTable.author,
-          sourceId: articlesTable.sourceId,
-          sourceName: sourcesTable.name,
-          country: articlesTable.country,
-          category: articlesTable.category,
-          publishedDate: articlesTable.publishedDate,
-          url: articlesTable.url,
-          imageUrl: articlesTable.imageUrl,
-          createdAt: articlesTable.createdAt,
-          aiSummary: articlesTable.aiSummary,
-        })
+        .select(articleSelection)
         .from(articlesTable)
         .leftJoin(sourcesTable, eq(articlesTable.sourceId, sourcesTable.id))
         .where(where)
@@ -66,7 +37,7 @@ router.get("/", async (req, res) => {
     const total = totalRows[0]?.count ?? 0;
 
     res.json({
-      articles: rows.map((r) => buildArticleResponse({ ...r, sourceName: r.sourceName ?? "" })),
+      articles: rows.map(buildArticleResponse),
       total,
       page: pageNum,
       limit: limitNum,
@@ -84,28 +55,14 @@ router.get("/trending", async (req, res) => {
     const limitNum = Math.min(50, parseInt(limit) || 10);
 
     const rows = await db
-      .select({
-        id: articlesTable.id,
-        title: articlesTable.title,
-        summary: articlesTable.summary,
-        author: articlesTable.author,
-        sourceId: articlesTable.sourceId,
-        sourceName: sourcesTable.name,
-        country: articlesTable.country,
-        category: articlesTable.category,
-        publishedDate: articlesTable.publishedDate,
-        url: articlesTable.url,
-        imageUrl: articlesTable.imageUrl,
-        createdAt: articlesTable.createdAt,
-        aiSummary: articlesTable.aiSummary,
-      })
+      .select(articleSelection)
       .from(articlesTable)
       .leftJoin(sourcesTable, eq(articlesTable.sourceId, sourcesTable.id))
       .orderBy(desc(articlesTable.publishedDate))
       .limit(limitNum);
 
     res.json({
-      articles: rows.map((r) => buildArticleResponse({ ...r, sourceName: r.sourceName ?? "" })),
+      articles: rows.map(buildArticleResponse),
       total: rows.length,
       page: 1,
       limit: limitNum,
@@ -123,28 +80,14 @@ router.get("/top-stories", async (req, res) => {
     const limitNum = Math.min(20, parseInt(limit) || 6);
 
     const rows = await db
-      .select({
-        id: articlesTable.id,
-        title: articlesTable.title,
-        summary: articlesTable.summary,
-        author: articlesTable.author,
-        sourceId: articlesTable.sourceId,
-        sourceName: sourcesTable.name,
-        country: articlesTable.country,
-        category: articlesTable.category,
-        publishedDate: articlesTable.publishedDate,
-        url: articlesTable.url,
-        imageUrl: articlesTable.imageUrl,
-        createdAt: articlesTable.createdAt,
-        aiSummary: articlesTable.aiSummary,
-      })
+      .select(articleSelection)
       .from(articlesTable)
       .leftJoin(sourcesTable, eq(articlesTable.sourceId, sourcesTable.id))
       .orderBy(desc(articlesTable.publishedDate))
       .limit(limitNum);
 
     res.json({
-      articles: rows.map((r) => buildArticleResponse({ ...r, sourceName: r.sourceName ?? "" })),
+      articles: rows.map(buildArticleResponse),
       total: rows.length,
       page: 1,
       limit: limitNum,
@@ -153,6 +96,48 @@ router.get("/top-stories", async (req, res) => {
   } catch (err) {
     console.error("Error fetching top stories:", err);
     res.status(500).json({ error: "internal_error", message: "Failed to fetch top stories" });
+  }
+});
+
+router.post("/:id/translate", translateRateLimit, async (req, res) => {
+  try {
+    const id = parseInt(String(req.params.id));
+    if (isNaN(id)) {
+      res.status(400).json({ error: "bad_request", message: "Invalid article ID" });
+      return;
+    }
+
+    const rows = await db.select().from(articlesTable).where(eq(articlesTable.id, id)).limit(1);
+    const article = rows[0];
+    if (!article) {
+      res.status(404).json({ error: "not_found", message: "Article not found" });
+      return;
+    }
+
+    if (article.language === "en") {
+      res.status(400).json({ error: "bad_request", message: "Article is already in English" });
+      return;
+    }
+
+    // Cached from a previous request — no API call needed.
+    if (article.titleEn && article.summaryEn) {
+      res.json({ id: article.id, language: article.language, titleEn: article.titleEn, summaryEn: article.summaryEn });
+      return;
+    }
+
+    if (!isTranslateConfigured()) {
+      res.status(503).json({ error: "translate_unavailable", message: "Translation service is not configured" });
+      return;
+    }
+
+    const [titleEn, summaryEn] = await translateToEnglish([article.title, article.summary], article.language);
+
+    await db.update(articlesTable).set({ titleEn, summaryEn }).where(eq(articlesTable.id, id));
+
+    res.json({ id: article.id, language: article.language, titleEn, summaryEn });
+  } catch (err) {
+    console.error("Error translating article:", err);
+    res.status(503).json({ error: "translate_unavailable", message: "Translation failed, try again later" });
   }
 });
 
@@ -165,21 +150,7 @@ router.get("/:id", async (req, res) => {
     }
 
     const rows = await db
-      .select({
-        id: articlesTable.id,
-        title: articlesTable.title,
-        summary: articlesTable.summary,
-        author: articlesTable.author,
-        sourceId: articlesTable.sourceId,
-        sourceName: sourcesTable.name,
-        country: articlesTable.country,
-        category: articlesTable.category,
-        publishedDate: articlesTable.publishedDate,
-        url: articlesTable.url,
-        imageUrl: articlesTable.imageUrl,
-        createdAt: articlesTable.createdAt,
-        aiSummary: articlesTable.aiSummary,
-      })
+      .select(articleSelection)
       .from(articlesTable)
       .leftJoin(sourcesTable, eq(articlesTable.sourceId, sourcesTable.id))
       .where(eq(articlesTable.id, id))
@@ -190,7 +161,7 @@ router.get("/:id", async (req, res) => {
       return;
     }
 
-    res.json(buildArticleResponse({ ...rows[0], sourceName: rows[0].sourceName ?? "" }));
+    res.json(buildArticleResponse(rows[0]));
   } catch (err) {
     console.error("Error fetching article:", err);
     res.status(500).json({ error: "internal_error", message: "Failed to fetch article" });

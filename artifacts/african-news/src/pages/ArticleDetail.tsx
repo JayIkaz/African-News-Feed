@@ -13,6 +13,8 @@ import { getArticleImage } from "@/lib/unsplash";
 import { ArticleCard } from "@/components/article/ArticleCard";
 import { CAT_COLORS } from "@/components/article/ArticleCard";
 import { useReadHistory } from "@/lib/useReadHistory";
+import { useTranslate } from "@/lib/useTranslate";
+import { TranslateChip } from "@/components/article/ArticleCard";
 
 export default function ArticleDetail() {
   const { id } = useParams<{ id: string }>();
@@ -39,6 +41,7 @@ export default function ArticleDetail() {
       enabled: !!article?.category,
     },
   });
+  const t = useTranslate(article);
 
   if (isLoading) {
     return (
@@ -100,17 +103,18 @@ export default function ArticleDetail() {
             >
               {article.country}
             </Link>
+            <TranslateChip t={t} />
           </div>
 
           {/* Title */}
           <h1 style={{ fontFamily: "var(--font-headline)", fontSize: "clamp(28px, 4vw, 40px)", fontWeight: 700, color: "var(--ink)", lineHeight: 1.2, letterSpacing: "-0.025em", marginBottom: 16 }}>
-            {article.title}
+            {t.title}
           </h1>
 
           {/* Deck / Summary */}
-          {article.summary && (
+          {t.summary && (
             <p style={{ fontFamily: "var(--font-body)", fontSize: 16, fontWeight: 300, fontStyle: "italic", color: "var(--ink-2)", lineHeight: 1.7, marginBottom: 24 }}>
-              {article.summary}
+              {t.summary}
             </p>
           )}
 
@@ -159,9 +163,9 @@ export default function ArticleDetail() {
           {/* Drop-cap paragraph */}
           <div style={{ fontFamily: "var(--font-body)", fontSize: 17, fontWeight: 400, lineHeight: 1.75, color: "var(--ink-2)", marginBottom: 24, position: "relative" }}>
             <span className="an-drop-cap" style={{ fontFamily: "var(--font-headline)", fontSize: 68, fontWeight: 700, color: "var(--ink)", float: "left", lineHeight: 0.8, marginRight: 8, marginTop: 8 }}>
-              {article.summary?.charAt(0) ?? "T"}
+              {t.summary?.charAt(0) ?? "T"}
             </span>
-            {article.summary?.slice(1)}
+            {t.summary?.slice(1)}
           </div>
 
           <div style={{ fontFamily: "var(--font-body)", fontSize: 17, fontWeight: 400, lineHeight: 1.75, color: "var(--ink-2)", marginBottom: 24 }}>

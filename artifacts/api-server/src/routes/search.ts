@@ -1,7 +1,8 @@
 import { Router, type IRouter } from "express";
 import { db } from "@workspace/db";
 import { articlesTable, sourcesTable } from "@workspace/db/schema";
-import { eq, desc, like, or, count, and } from "drizzle-orm";
+import { eq, desc, like, or, count } from "drizzle-orm";
+import { articleSelection, buildArticleResponse } from "../lib/articleSelect";
 
 const router: IRouter = Router();
 
@@ -27,21 +28,7 @@ router.get("/", async (req, res) => {
 
     const [rows, totalRows] = await Promise.all([
       db
-        .select({
-          id: articlesTable.id,
-          title: articlesTable.title,
-          summary: articlesTable.summary,
-          author: articlesTable.author,
-          sourceId: articlesTable.sourceId,
-          sourceName: sourcesTable.name,
-          country: articlesTable.country,
-          category: articlesTable.category,
-          publishedDate: articlesTable.publishedDate,
-          url: articlesTable.url,
-          imageUrl: articlesTable.imageUrl,
-          createdAt: articlesTable.createdAt,
-          aiSummary: articlesTable.aiSummary,
-        })
+        .select(articleSelection)
         .from(articlesTable)
         .leftJoin(sourcesTable, eq(articlesTable.sourceId, sourcesTable.id))
         .where(searchCondition)
@@ -54,21 +41,7 @@ router.get("/", async (req, res) => {
     const total = totalRows[0]?.count ?? 0;
 
     res.json({
-      articles: rows.map((r) => ({
-        id: r.id,
-        title: r.title,
-        summary: r.summary,
-        author: r.author ?? null,
-        sourceId: r.sourceId,
-        sourceName: r.sourceName ?? "",
-        country: r.country,
-        category: r.category,
-        publishedDate: r.publishedDate.toISOString(),
-        url: r.url,
-        imageUrl: r.imageUrl ?? null,
-        createdAt: r.createdAt.toISOString(),
-        aiSummary: r.aiSummary ?? null,
-      })),
+      articles: rows.map(buildArticleResponse),
       total,
       page: pageNum,
       limit: limitNum,

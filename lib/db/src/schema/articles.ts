@@ -15,6 +15,12 @@ export const articlesTable = pgTable("articles", {
   url: text("url").notNull().unique(),
   imageUrl: text("image_url"),
   aiSummary: text("ai_summary"),
+  // ISO 639-1 code detected at ingestion ("en", "fr", "pt", "ar"); "en" means
+  // no translation offered.
+  language: text("language").notNull().default("en"),
+  // Cached English translation, filled on first translate request.
+  titleEn: text("title_en"),
+  summaryEn: text("summary_en"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 }, (table) => ({
   countryIdx: index("articles_country_idx").on(table.country),

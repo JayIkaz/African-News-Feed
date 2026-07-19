@@ -23,6 +23,19 @@ export interface Article {
   createdAt: string;
   imageUrl?: string | null;
   aiSummary?: string | null;
+  /** Detected source language (ISO 639-1); "en" articles have no translation. */
+  language: string;
+  /** Cached English translation of the title, if requested before. */
+  titleEn?: string | null;
+  /** Cached English translation of the summary, if requested before. */
+  summaryEn?: string | null;
+}
+
+export interface TranslateResponse {
+  id: number;
+  language: string;
+  titleEn: string;
+  summaryEn: string;
 }
 
 export interface ArticleListResponse {

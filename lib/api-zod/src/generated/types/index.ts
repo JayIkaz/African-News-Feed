@@ -19,3 +19,4 @@ export * from "./listArticlesParams";
 export * from "./searchArticlesParams";
 export * from "./source";
 export * from "./sourceIngestionStatus";
+export * from "./translateResponse";

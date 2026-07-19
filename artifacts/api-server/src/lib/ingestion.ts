@@ -1,6 +1,7 @@
 import { db } from "@workspace/db";
 import { sourcesTable, articlesTable, type InsertArticle } from "@workspace/db/schema";
 import { eq, inArray, sql } from "drizzle-orm";
+import { detectLanguage } from "./detectLanguage";
 
 interface RssItem {
   title?: string;
@@ -447,6 +448,7 @@ export async function ingestSource(source: typeof sourcesTable.$inferSelect): Pr
         url: item.link.slice(0, 1000),
         imageUrl: imageUrl?.slice(0, 2000) ?? null,
         aiSummary: null,
+        language: detectLanguage(`${title} ${summary}`),
       };
 
       try {

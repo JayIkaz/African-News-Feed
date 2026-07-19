@@ -30,6 +30,7 @@ import type {
   SearchArticlesParams,
   Source,
   SourceIngestionStatus,
+  TranslateResponse,
 } from "./api.schemas";
 
 import { customFetch } from "../custom-fetch";
@@ -494,6 +495,90 @@ export function useGetArticle<
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+/**
+ * @summary Translate an article's title and summary to English (cached after first call)
+ */
+export const getTranslateArticleUrl = (id: number) => {
+  return `/api/articles/${id}/translate`;
+};
+
+export const translateArticle = async (
+  id: number,
+  options?: RequestInit,
+): Promise<TranslateResponse> => {
+  return customFetch<TranslateResponse>(getTranslateArticleUrl(id), {
+    ...options,
+    method: "POST",
+  });
+};
+
+export const getTranslateArticleMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof translateArticle>>,
+    TError,
+    { id: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof translateArticle>>,
+  TError,
+  { id: number },
+  TContext
+> => {
+  const mutationKey = ["translateArticle"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof translateArticle>>,
+    { id: number }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return translateArticle(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type TranslateArticleMutationResult = NonNullable<
+  Awaited<ReturnType<typeof translateArticle>>
+>;
+
+export type TranslateArticleMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Translate an article's title and summary to English (cached after first call)
+ */
+export const useTranslateArticle = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof translateArticle>>,
+    TError,
+    { id: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof translateArticle>>,
+  TError,
+  { id: number },
+  TContext
+> => {
+  return useMutation(getTranslateArticleMutationOptions(options));
+};
 
 /**
  * @summary Search articles

@@ -8,3 +8,12 @@ export const adminTriggerRateLimit = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 });
+
+// Public but cost-bearing (each uncached call hits the DeepL API) — generous
+// enough for a reader paging through foreign-language stories.
+export const translateRateLimit = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  limit: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+});

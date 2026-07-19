@@ -138,6 +138,43 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /articles/{id}/translate:
+    post:
+      operationId: translateArticle
+      tags: [articles]
+      summary: Translate an article's title and summary to English (cached after first call)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: English translation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TranslateResponse"
+        "400":
+          description: Article is already in English
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Article not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "503":
+          description: Translation service not configured or unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /search:
     get:
       operationId: searchArticles
@@ -284,6 +321,17 @@ components:
         aiSummary:
           type: string
           nullable: true
+        language:
+          type: string
+          description: Detected source language (ISO 639-1); "en" articles have no translation.
+        titleEn:
+          type: string
+          nullable: true
+          description: Cached English translation of the title, if requested before.
+        summaryEn:
+          type: string
+          nullable: true
+          description: Cached English translation of the summary, if requested before.
       required:
         - id
         - title
@@ -295,6 +343,24 @@ components:
         - publishedDate
         - url
         - createdAt
+        - language
+
+    TranslateResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        language:
+          type: string
+        titleEn:
+          type: string
+        summaryEn:
+          type: string
+      required:
+        - id
+        - language
+        - titleEn
+        - summaryEn
 
     ArticleListResponse:
       type: object

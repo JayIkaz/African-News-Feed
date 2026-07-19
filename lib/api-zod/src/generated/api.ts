@@ -46,6 +46,23 @@ export const ListArticlesResponse = zod.object({
       createdAt: zod.date(),
       imageUrl: zod.string().nullish(),
       aiSummary: zod.string().nullish(),
+      language: zod
+        .string()
+        .describe(
+          'Detected source language (ISO 639-1); \"en\" articles have no translation.',
+        ),
+      titleEn: zod
+        .string()
+        .nullish()
+        .describe(
+          "Cached English translation of the title, if requested before.",
+        ),
+      summaryEn: zod
+        .string()
+        .nullish()
+        .describe(
+          "Cached English translation of the summary, if requested before.",
+        ),
     }),
   ),
   total: zod.number(),
@@ -80,6 +97,23 @@ export const GetTrendingArticlesResponse = zod.object({
       createdAt: zod.date(),
       imageUrl: zod.string().nullish(),
       aiSummary: zod.string().nullish(),
+      language: zod
+        .string()
+        .describe(
+          'Detected source language (ISO 639-1); \"en\" articles have no translation.',
+        ),
+      titleEn: zod
+        .string()
+        .nullish()
+        .describe(
+          "Cached English translation of the title, if requested before.",
+        ),
+      summaryEn: zod
+        .string()
+        .nullish()
+        .describe(
+          "Cached English translation of the summary, if requested before.",
+        ),
     }),
   ),
   total: zod.number(),
@@ -114,6 +148,23 @@ export const GetTopStoriesResponse = zod.object({
       createdAt: zod.date(),
       imageUrl: zod.string().nullish(),
       aiSummary: zod.string().nullish(),
+      language: zod
+        .string()
+        .describe(
+          'Detected source language (ISO 639-1); \"en\" articles have no translation.',
+        ),
+      titleEn: zod
+        .string()
+        .nullish()
+        .describe(
+          "Cached English translation of the title, if requested before.",
+        ),
+      summaryEn: zod
+        .string()
+        .nullish()
+        .describe(
+          "Cached English translation of the summary, if requested before.",
+        ),
     }),
   ),
   total: zod.number(),
@@ -143,6 +194,35 @@ export const GetArticleResponse = zod.object({
   createdAt: zod.date(),
   imageUrl: zod.string().nullish(),
   aiSummary: zod.string().nullish(),
+  language: zod
+    .string()
+    .describe(
+      'Detected source language (ISO 639-1); \"en\" articles have no translation.',
+    ),
+  titleEn: zod
+    .string()
+    .nullish()
+    .describe("Cached English translation of the title, if requested before."),
+  summaryEn: zod
+    .string()
+    .nullish()
+    .describe(
+      "Cached English translation of the summary, if requested before.",
+    ),
+});
+
+/**
+ * @summary Translate an article's title and summary to English (cached after first call)
+ */
+export const TranslateArticleParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const TranslateArticleResponse = zod.object({
+  id: zod.number(),
+  language: zod.string(),
+  titleEn: zod.string(),
+  summaryEn: zod.string(),
 });
 
 /**
@@ -173,6 +253,23 @@ export const SearchArticlesResponse = zod.object({
       createdAt: zod.date(),
       imageUrl: zod.string().nullish(),
       aiSummary: zod.string().nullish(),
+      language: zod
+        .string()
+        .describe(
+          'Detected source language (ISO 639-1); \"en\" articles have no translation.',
+        ),
+      titleEn: zod
+        .string()
+        .nullish()
+        .describe(
+          "Cached English translation of the title, if requested before.",
+        ),
+      summaryEn: zod
+        .string()
+        .nullish()
+        .describe(
+          "Cached English translation of the summary, if requested before.",
+        ),
     }),
   ),
   total: zod.number(),

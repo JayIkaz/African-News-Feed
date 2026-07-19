@@ -3,6 +3,42 @@ import { formatDistanceToNow } from "date-fns";
 import { Article } from "@workspace/api-client-react";
 import { getArticleImage } from "@/lib/unsplash";
 import { COUNTRY_FLAGS } from "@/lib/countries";
+import { useTranslate } from "@/lib/useTranslate";
+
+// Small pill shown on non-English cards; toggles between original and English.
+export function TranslateChip({ t, light = false }: { t: ReturnType<typeof useTranslate>; light?: boolean }) {
+  if (!t.canTranslate) return null;
+  const label = t.isTranslating
+    ? "Translating…"
+    : t.showEnglish
+      ? "Show original"
+      : t.translateFailed
+        ? "Translation unavailable"
+        : "🌐 English";
+  return (
+    <button
+      onClick={t.toggle}
+      disabled={t.isTranslating}
+      title={t.showEnglish ? `Show ${t.languageLabel} original` : `Translate from ${t.languageLabel}`}
+      style={{
+        fontFamily: "var(--font-ui)",
+        fontSize: 9.5,
+        fontWeight: 600,
+        letterSpacing: "0.06em",
+        textTransform: "uppercase",
+        padding: "2px 7px",
+        borderRadius: 3,
+        border: light ? "1px solid rgba(255,255,255,0.5)" : "1px solid var(--paper-3)",
+        background: light ? "rgba(0,0,0,0.35)" : "var(--paper-2)",
+        color: light ? "#fff" : "var(--ink-3)",
+        cursor: t.isTranslating ? "wait" : "pointer",
+        lineHeight: 1.4,
+      }}
+    >
+      {label}
+    </button>
+  );
+}
 
 export const CAT_COLORS: Record<string, string> = {
   Politics: "#c1392b",
@@ -44,6 +80,7 @@ interface ArticleCardProps {
 }
 
 export function ArticleCard({ article, featured = false, compact = false, side = false, isRead = false }: ArticleCardProps) {
+  const t = useTranslate(article);
   const imageUrl = getArticleImage(article, featured ? "featured" : side ? "side" : compact ? "compact" : "card");
   const dateStr = article.publishedDate
     ? formatDistanceToNow(new Date(article.publishedDate), { addSuffix: true })
@@ -71,11 +108,14 @@ export function ArticleCard({ article, featured = false, compact = false, side =
         onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
       >
         <div>
-          <div style={{ fontFamily: "var(--font-ui)", fontSize: 10, fontWeight: 600, color: catColor, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 3 }}>
-            {article.category}
+          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 3 }}>
+            <span style={{ fontFamily: "var(--font-ui)", fontSize: 10, fontWeight: 600, color: catColor, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+              {article.category}
+            </span>
+            <TranslateChip t={t} />
           </div>
           <div style={{ fontFamily: "var(--font-headline)", fontSize: 13.5, fontWeight: 600, lineHeight: 1.3, color: isRead ? "var(--ink-4)" : "var(--ink)", opacity: isRead ? 0.7 : 1 }}>
-            {article.title}
+            {t.title}
           </div>
           <div style={{ fontFamily: "var(--font-ui)", fontSize: 11, color: "var(--ink-4)", marginTop: 4, display: "flex", gap: 4, alignItems: "center" }}>
             <span>{flag}</span>
@@ -123,8 +163,11 @@ export function ArticleCard({ article, featured = false, compact = false, side =
         />
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.45) 55%, rgba(0,0,0,0.15) 100%)" }} />
         <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: 28, color: "#fff" }}>
-          <div style={{ display: "inline-block", background: catColor, color: "#fff", fontFamily: "var(--font-ui)", fontSize: 10, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", padding: "3px 8px", borderRadius: 3, marginBottom: 12 }}>
-            {article.category}
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+            <span style={{ background: catColor, color: "#fff", fontFamily: "var(--font-ui)", fontSize: 10, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", padding: "3px 8px", borderRadius: 3 }}>
+              {article.category}
+            </span>
+            <TranslateChip t={t} light />
           </div>
           <h2 style={{
             fontFamily: "var(--font-headline)",
@@ -136,9 +179,9 @@ export function ArticleCard({ article, featured = false, compact = false, side =
             color: "#fff",
             textShadow: "0 1px 4px rgba(0,0,0,0.6)",
           }}>
-            {article.title}
+            {t.title}
           </h2>
-          {article.summary && (
+          {t.summary && (
             <p style={{
               fontFamily: "var(--font-body)",
               fontSize: 15,
@@ -153,7 +196,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
               overflow: "hidden",
               textShadow: "0 1px 3px rgba(0,0,0,0.5)",
             }}>
-              {article.summary}
+              {t.summary}
             </p>
           )}
           <div style={{ display: "flex", alignItems: "center", gap: 12, fontFamily: "var(--font-ui)", fontSize: 12, opacity: 0.8 }}>
@@ -196,11 +239,14 @@ export function ArticleCard({ article, featured = false, compact = false, side =
             onError={e => imgFallback(e, article.category)}
           />
         </div>
-        <div style={{ display: "inline-block", background: catColor, color: "#fff", fontFamily: "var(--font-ui)", fontSize: 9.5, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", padding: "2px 7px", borderRadius: 3, alignSelf: "flex-start" }}>
-          {article.category}
+        <div style={{ display: "flex", alignItems: "center", gap: 6, alignSelf: "flex-start" }}>
+          <span style={{ background: catColor, color: "#fff", fontFamily: "var(--font-ui)", fontSize: 9.5, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", padding: "2px 7px", borderRadius: 3 }}>
+            {article.category}
+          </span>
+          <TranslateChip t={t} />
         </div>
         <div style={{ fontFamily: "var(--font-headline)", fontSize: 16, fontWeight: 600, lineHeight: 1.3, letterSpacing: "-0.01em", color: isRead ? "var(--ink-4)" : "var(--ink)", opacity: isRead ? 0.7 : 1 }}>
-          {article.title}
+          {t.title}
         </div>
         <div style={{ marginTop: "auto", display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-ui)", fontSize: 11.5, color: "var(--ink-4)" }}>
           <span>{flag}</span>
@@ -254,19 +300,20 @@ export function ArticleCard({ article, featured = false, compact = false, side =
       </div>
       <div style={{ padding: 16, flex: 1, display: "flex", flexDirection: "column", gap: 8 }}>
         <h3 style={{ fontFamily: "var(--font-headline)", fontSize: 15.5, fontWeight: 600, lineHeight: 1.35, letterSpacing: "-0.01em", color: isRead ? "var(--ink-4)" : "var(--ink)", margin: 0, opacity: isRead ? 0.7 : 1 }}>
-          {article.title}
+          {t.title}
           {isRead && (
             <span title="Read" style={{ display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: "var(--ink-4)", marginLeft: 6, verticalAlign: "middle", flexShrink: 0 }} />
           )}
         </h3>
-        {article.summary && (
+        {t.summary && (
           <p style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "var(--ink-3)", lineHeight: 1.5, margin: 0, flex: 1 }}>
-            {article.summary}
+            {t.summary}
           </p>
         )}
         <div style={{ display: "flex", alignItems: "center", gap: 8, paddingTop: 10, borderTop: "1px solid var(--paper-2)", marginTop: "auto" }}>
           <span style={{ fontSize: 15, lineHeight: 1 }}>{flag}</span>
           <span style={{ fontFamily: "var(--font-ui)", fontSize: 11.5, fontWeight: 500, color: "var(--ink-2)" }}>{article.country}</span>
+          <TranslateChip t={t} />
           <span style={{ color: "var(--paper-3)" }}>·</span>
           <span style={{ fontFamily: "var(--font-ui)", fontSize: 11, color: "var(--ink-4)", marginLeft: "auto" }}>{dateStr}</span>
         </div>
