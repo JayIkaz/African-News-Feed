@@ -2,6 +2,7 @@ import { db } from "@workspace/db";
 import { sourcesTable, articlesTable, type InsertArticle } from "@workspace/db/schema";
 import { eq, inArray, sql } from "drizzle-orm";
 import { detectLanguage } from "./detectLanguage";
+import { cleanSummary } from "./cleanSummary";
 
 interface RssItem {
   title?: string;
@@ -185,40 +186,6 @@ function classifyArticle(title: string, summary: string, rssCategory?: string): 
   return best && best[1] > 0 ? best[0] : "General";
 }
 
-// ---------------------------------------------------------------------------
-// Summary cleaner
-// ---------------------------------------------------------------------------
-
-function cleanSummary(raw: string, sourceTitle?: string): string {
-  let text = raw;
-
-  text = text.replace(/<[^>]+>/g, " ");
-
-  text = text
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;|&apos;/g, "'")
-    .replace(/&nbsp;/g, " ")
-    .replace(/&#(\d+);/g, (_, c) => String.fromCharCode(parseInt(c, 10)))
-    .replace(/&#x([0-9a-fA-F]+);/g, (_, h) => String.fromCharCode(parseInt(h, 16)));
-
-  text = text.replace(/\s*The post .{0,300}? appeared first on .{0,150}?\.?\s*$/is, "");
-
-  if (sourceTitle) {
-    const escaped = sourceTitle.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    text = text.replace(new RegExp(`\\s*[|\\-–—]\\s*${escaped}\\s*$`, "i"), "");
-  }
-
-  text = text.replace(/\s*(Read more|Continue reading|Click here to read|Read full story|See also|View more|Learn more)[^.]*\.?\s*$/i, "");
-  text = text.replace(/\s*\[\s*(…|\.{3}|Read More|\+\d+ chars?)\s*\]\s*$/i, "");
-  text = text.replace(/\s*\(\s*\.\.\.\s*\)\s*$/i, "");
-  text = text.replace(/\s*https?:\/\/\S+\s*$/i, "");
-  text = text.replace(/\s{2,}/g, " ").trim();
-
-  return text;
-}
 
 // ---------------------------------------------------------------------------
 // Image extraction from RSS item XML
