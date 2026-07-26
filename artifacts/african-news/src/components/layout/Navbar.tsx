@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useListCountries } from "@workspace/api-client-react";
-import { COUNTRY_FLAGS, COUNTRY_REGIONS } from "@/lib/countries";
+import { COUNTRY_REGIONS } from "@/lib/countries";
+import { CountryFlag } from "@/components/common/CountryFlag";
 import { BreakingTicker } from "./BreakingTicker";
 
 const CATEGORIES = [
@@ -316,7 +317,7 @@ export function Navbar() {
                             onMouseEnter={e => (e.currentTarget.style.color = "var(--accent)")}
                             onMouseLeave={e => (e.currentTarget.style.color = "var(--ink-2)")}
                           >
-                            <span style={{ fontSize: 14 }}>{COUNTRY_FLAGS[c.country] ?? "🌍"}</span>
+                            <CountryFlag country={c.country} size={14} />
                             {c.country}
                           </Link>
                         ))}
