@@ -1,7 +1,7 @@
 import { Router, type IRouter } from "express";
 import { db } from "@workspace/db";
-import { articlesTable } from "@workspace/db/schema";
-import { desc } from "drizzle-orm";
+import { articlesTable, sourcesTable } from "@workspace/db/schema";
+import { desc, eq } from "drizzle-orm";
 import { articleSelection, buildArticleResponse } from "../lib/articleSelect";
 
 const router: IRouter = Router();
@@ -73,6 +73,7 @@ router.get("/", async (_req, res) => {
       const rows = await db
         .select(articleSelection)
         .from(articlesTable)
+        .leftJoin(sourcesTable, eq(articlesTable.sourceId, sourcesTable.id))
         .orderBy(desc(articlesTable.publishedDate))
         .limit(limit)
         .offset(offset);
