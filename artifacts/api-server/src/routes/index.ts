@@ -7,9 +7,9 @@ import countriesRouter from "./countries";
 import categoriesRouter from "./categories";
 import ingestionRouter from "./ingestion";
 import newsletterRouter from "./newsletter";
+import sitemapRouter from "./sitemap";
 
 const router = Router();
-
 router.use(healthRouter);
 router.use("/articles", articlesRouter);
 router.use("/search", searchRouter);
@@ -18,5 +18,6 @@ router.use("/countries", countriesRouter);
 router.use("/categories", categoriesRouter);
 router.use("/ingestion", ingestionRouter);
 router.use("/newsletter", newsletterRouter);
+router.use("/sitemap.xml", sitemapRouter);
 
 export default router;
