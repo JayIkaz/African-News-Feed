@@ -27,7 +27,7 @@ function WidgetHeader({ dot, title }: { dot?: boolean; title: string }) {
 
 function Widget({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ background: "#fff", border: "1px solid var(--paper-3)", borderRadius: 10, overflow: "hidden" }}>
+    <div style={{ background: "var(--surface-1)", border: "1px solid var(--paper-3)", borderRadius: 10, overflow: "hidden" }}>
       {children}
     </div>
   );
@@ -140,18 +140,18 @@ export function Sidebar() {
       <div
         id="sidebar-newsletter"
         style={{
-          background: "var(--ink)",
-          color: "#fff",
+          background: "var(--paper-2)",
+          color: "var(--ink)",
           borderRadius: 10,
           padding: 20,
           position: "relative",
           overflow: "hidden",
         }}
       >
-        <h3 style={{ fontFamily: "var(--font-headline)", fontSize: 18, fontWeight: 700, marginBottom: 8, color: "#fff" }}>
+        <h3 style={{ fontFamily: "var(--font-headline)", fontSize: 18, fontWeight: 700, marginBottom: 8, color: "var(--ink)" }}>
           Africa in Your Inbox
         </h3>
-        <p style={{ fontFamily: "var(--font-ui)", fontSize: 13, opacity: 0.7, marginBottom: 16, lineHeight: 1.5 }}>
+        <p style={{ fontFamily: "var(--font-ui)", fontSize: 13, color: "var(--ink-3)", marginBottom: 16, lineHeight: 1.5 }}>
           Daily digest of the continent's most important stories, curated from 65+ sources.
         </p>
         {subscribed ? (
@@ -169,12 +169,12 @@ export function Sidebar() {
               style={{
                 width: "100%",
                 padding: "10px 12px",
-                background: "rgba(255,255,255,0.1)",
-                border: "1px solid rgba(255,255,255,0.2)",
+                background: "var(--surface-1)",
+                border: "1px solid var(--paper-3)",
                 borderRadius: 5,
                 fontFamily: "var(--font-ui)",
                 fontSize: 13,
-                color: "#fff",
+                color: "var(--ink)",
                 outline: "none",
               }}
             />
@@ -185,7 +185,7 @@ export function Sidebar() {
                 width: "100%",
                 padding: "10px",
                 background: "var(--accent)",
-                color: "#fff",
+                color: "#412402",
                 border: "none",
                 borderRadius: 5,
                 fontFamily: "var(--font-ui)",
