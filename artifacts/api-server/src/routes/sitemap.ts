@@ -66,3 +66,44 @@ router.get("/", async (_req, res) => {
     // Articles — paginated the same way routes/articles.ts does it
     const limit = 100;
     let offset = 0;
+    let fetched = 0;
+    const maxArticles = 5000; // safety cap; raise if the archive grows past this
+
+    while (fetched < maxArticles) {
+      const rows = await db
+        .select(articleSelection)
+        .from(articlesTable)
+        .orderBy(desc(articlesTable.publishedDate))
+        .limit(limit)
+        .offset(offset);
+
+      if (rows.length === 0) break;
+
+      for (const row of rows) {
+        const article = buildArticleResponse(row);
+        const lastmod = new Date(article.publishedDate).toISOString().split("T")[0];
+        entries.push(
+          urlEntry(`${SITE_URL}/article/${article.id}`, lastmod, "never", "0.6")
+        );
+      }
+
+      fetched += rows.length;
+      offset += limit;
+      if (rows.length < limit) break;
+    }
+
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${entries.join("\n")}
+</urlset>`;
+
+    res.setHeader("Content-Type", "application/xml");
+    res.setHeader("Cache-Control", "public, max-age=3600, stale-while-revalidate=1800");
+    res.status(200).send(xml);
+  } catch (err) {
+    console.error("Error generating sitemap:", err);
+    res.status(500).send("Error generating sitemap");
+  }
+});
+
+export default router;
