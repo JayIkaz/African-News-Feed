@@ -48,27 +48,27 @@ export default function Home() {
   return (
     <AppLayout>
       {/* ── Dark Stats Strip ── */}
-      <div style={{ background: "var(--ink)", color: "#fff", overflow: "hidden" }}>
+      <div style={{ background: "var(--paper-2)", color: "var(--ink)", overflow: "hidden" }}>
         <div className="an-stats-strip-inner" style={{ fontFamily: "var(--font-ui)", fontSize: 12 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
             <span style={{ opacity: 0.6, fontSize: 13 }}>🌍</span>
             <span style={{ fontWeight: 600, fontSize: 13 }}>{countryCount > 0 ? countryCount : "25"}+</span>
-            <span style={{ opacity: 0.65 }}>African countries</span>
+            <span style={{ color: "var(--ink-3)" }}>African countries</span>
           </div>
-          <div style={{ width: 1, height: 16, background: "rgba(255,255,255,0.2)", flexShrink: 0 }} />
+          <div style={{ width: 1, height: 16, background: "var(--paper-3)", flexShrink: 0 }} />
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
             <span style={{ opacity: 0.6, fontSize: 13 }}>📡</span>
             <span style={{ fontWeight: 600, fontSize: 13 }}>65+</span>
-            <span style={{ opacity: 0.65 }}>news sources</span>
+            <span style={{ color: "var(--ink-3)" }}>news sources</span>
           </div>
-          <div style={{ width: 1, height: 16, background: "rgba(255,255,255,0.2)", flexShrink: 0 }} />
+          <div style={{ width: 1, height: 16, background: "var(--paper-3)", flexShrink: 0 }} />
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
             <span style={{ opacity: 0.6, fontSize: 13 }}>📰</span>
             <span style={{ fontWeight: 600, fontSize: 13 }}>{totalArticles > 0 ? totalArticles.toLocaleString() : "1,000"}+</span>
-            <span style={{ opacity: 0.65 }}>articles indexed</span>
+            <span style={{ color: "var(--ink-3)" }}>articles indexed</span>
           </div>
-          <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 6, fontSize: 11.5, opacity: 0.7, flexShrink: 0 }}>
-            <span style={{ width: 6, height: 6, background: "#4ade80", borderRadius: "50%", animation: "pulse-dot 2s ease-in-out infinite", display: "inline-block" }} />
+          <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 6, fontSize: 11.5, color: "var(--ink-3)", flexShrink: 0 }}>
+            <span style={{ width: 6, height: 6, background: "var(--live)", borderRadius: "50%", animation: "pulse-dot 2s ease-in-out infinite", display: "inline-block" }} />
             Updated every hour
           </div>
         </div>
@@ -153,12 +153,12 @@ export default function Home() {
                   gap: 6,
                   padding: "8px 16px",
                   borderRadius: 100,
-                  border: `1.5px solid ${isActive ? "var(--ink)" : "var(--paper-3)"}`,
+                  border: `1.5px solid ${isActive ? "var(--accent)" : "var(--paper-3)"}`,
                   fontFamily: "var(--font-ui)",
                   fontSize: 13,
                   fontWeight: 500,
-                  color: isActive ? "#fff" : "var(--ink-3)",
-                  background: isActive ? "var(--ink)" : "#fff",
+                  color: isActive ? "#412402" : "var(--ink-3)",
+                  background: isActive ? "var(--accent)" : "var(--surface-1)",
                   cursor: "pointer",
                   transition: "all 0.2s",
                   flexShrink: 0,
@@ -188,7 +188,7 @@ export default function Home() {
                   fontSize: 12,
                   fontWeight: 500,
                   color: "var(--ink-3)",
-                  background: "#fff",
+                  background: "var(--surface-1)",
                   cursor: "pointer",
                   transition: "all 0.2s",
                   flexShrink: 0,
@@ -215,7 +215,7 @@ export default function Home() {
                   fontSize: 12,
                   fontWeight: 500,
                   color: "var(--ink-4)",
-                  background: "#fff",
+                  background: "var(--surface-1)",
                   cursor: "pointer",
                   transition: "all 0.2s",
                   flexShrink: 0,
@@ -252,7 +252,7 @@ export default function Home() {
               <div key={fadeKey} className="an-grid-3 an-articles-fade">
                 {latestLoading || isFetching ? (
                   Array(6).fill(0).map((_, i) => (
-                    <div key={i} style={{ background: "#fff", borderRadius: 10, overflow: "hidden", border: "1px solid var(--paper-3)" }}>
+                    <div key={i} style={{ background: "var(--surface-1)", borderRadius: 10, overflow: "hidden", border: "1px solid var(--paper-3)" }}>
                       <div className="an-skeleton" style={{ aspectRatio: "16/9", width: "100%" }} />
                       <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 8 }}>
                         <div className="an-skeleton" style={{ height: 14 }} />
@@ -330,9 +330,9 @@ function PagBtn({ children, onClick, disabled, active }: { children: React.React
         height: 36,
         padding: "0 12px",
         borderRadius: 6,
-        border: `1px solid ${active ? "var(--ink)" : "var(--paper-3)"}`,
-        background: active ? "var(--ink)" : "#fff",
-        color: active ? "#fff" : disabled ? "var(--ink-4)" : "var(--ink-2)",
+        border: `1px solid ${active ? "var(--accent)" : "var(--paper-3)"}`,
+        background: active ? "var(--accent)" : "var(--surface-1)",
+        color: active ? "#412402" : disabled ? "var(--ink-4)" : "var(--ink-2)",
         fontFamily: "var(--font-ui)",
         fontSize: 13,
         fontWeight: 500,
