@@ -5,15 +5,13 @@ export function BreakingTicker() {
   const headlines = data?.articles?.map(a => a.title) ?? [
     "Loading latest headlines from across Africa…",
   ];
-
   const doubled = [...headlines, ...headlines];
-
   return (
     <div
       className="an-breaking-ticker"
       style={{
         background: "var(--accent)",
-        color: "#fff",
+        color: "#412402",
         display: "flex",
         alignItems: "center",
         overflow: "hidden",
@@ -24,7 +22,8 @@ export function BreakingTicker() {
       <div
         className="an-breaking-label"
         style={{
-          background: "var(--ink)",
+          background: "var(--paper-2)",
+          color: "var(--ink)",
           height: "100%",
           display: "flex",
           alignItems: "center",
@@ -41,7 +40,7 @@ export function BreakingTicker() {
           style={{
             width: 6,
             height: 6,
-            background: "var(--accent-2)",
+            background: "var(--live)",
             borderRadius: "50%",
             animation: "pulse-dot 1.4s ease-in-out infinite",
             flexShrink: 0,
@@ -67,7 +66,7 @@ export function BreakingTicker() {
             >
               {title}
               {i < doubled.length - 1 && (
-                <span style={{ opacity: 0.4, marginLeft: 60 }}>·</span>
+                <span style={{ opacity: 0.55, marginLeft: 60 }}>·</span>
               )}
             </span>
           ))}
