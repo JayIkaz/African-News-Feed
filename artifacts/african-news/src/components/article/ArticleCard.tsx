@@ -41,25 +41,25 @@ export function TranslateChip({ t, light = false }: { t: ReturnType<typeof useTr
 }
 
 export const CAT_COLORS: Record<string, string> = {
-  Politics: "#c1392b",
-  Business: "#1a5276",
-  Technology: "#1a7a6e",
-  Economy: "#b8860b",
-  Society: "#6b3fa0",
-  Environment: "#2d6a4f",
-  International: "#8b4513",
-  General: "#5a5750",
+  Politics: "#D85A30",
+  Business: "#378ADD",
+  Technology: "#1D9E75",
+  Economy: "#E8A33D",
+  Society: "#7F77DD",
+  Environment: "#639922",
+  International: "#C97B4A",
+  General: "#9691B0",
 };
 
 const CAT_FALLBACK_BG: Record<string, string> = {
-  Politics: "#3d0e09",
-  Business: "#0a1f35",
-  Technology: "#0a2e2a",
-  Economy: "#3b2a01",
-  Society: "#1e0f30",
-  Environment: "#0c2218",
-  International: "#2a1505",
-  General: "#1c1a18",
+  Politics: "#2E1710",
+  Business: "#101E30",
+  Technology: "#0C2A20",
+  Economy: "#2E2008",
+  Society: "#1C1936",
+  Environment: "#122010",
+  International: "#241708",
+  General: "#1E1D3D",
 };
 
 function imgFallback(e: React.SyntheticEvent<HTMLImageElement>, cat?: string | null) {
@@ -67,7 +67,7 @@ function imgFallback(e: React.SyntheticEvent<HTMLImageElement>, cat?: string | n
   el.style.display = "none";
   const parent = el.parentElement;
   if (parent) {
-    parent.style.background = CAT_FALLBACK_BG[cat ?? "General"] ?? "#1c1a18";
+    parent.style.background = CAT_FALLBACK_BG[cat ?? "General"] ?? "#1E1D3D";
   }
 }
 
@@ -86,8 +86,8 @@ export function ArticleCard({ article, featured = false, compact = false, side =
     ? formatDistanceToNow(new Date(article.publishedDate), { addSuffix: true })
     : "";
   const flag = COUNTRY_FLAGS[article.country ?? ""] ?? "🌍";
-  const catColor = CAT_COLORS[article.category ?? "General"] ?? "#5a5750";
-  const fallbackBg = CAT_FALLBACK_BG[article.category ?? "General"] ?? "#1c1a18";
+  const catColor = CAT_COLORS[article.category ?? "General"] ?? "#9691B0";
+  const fallbackBg = CAT_FALLBACK_BG[article.category ?? "General"] ?? "#1E1D3D";
 
   if (compact) {
     return (
@@ -219,7 +219,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
           display: "flex",
           flexDirection: "column",
           gap: 10,
-          background: "#fff",
+          background: "var(--surface-1)",
           padding: 20,
           cursor: "pointer",
           transition: "background 0.2s",
@@ -228,7 +228,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
           height: "100%",
         }}
         onMouseEnter={e => (e.currentTarget.style.background = "var(--paper-2)")}
-        onMouseLeave={e => (e.currentTarget.style.background = "#fff")}
+        onMouseLeave={e => (e.currentTarget.style.background = "var(--surface-1)")}
       >
         <div className="side-card-img" style={{ width: "100%", height: 140, borderRadius: 6, overflow: "hidden", background: fallbackBg, flexShrink: 0 }}>
           <img
@@ -262,7 +262,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
     <Link
       href={`/article/${article.id}`}
       style={{
-        background: "#fff",
+        background: "var(--surface-1)",
         borderRadius: 10,
         overflow: "hidden",
         cursor: "pointer",
@@ -274,7 +274,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
       }}
       onMouseEnter={e => {
         e.currentTarget.style.transform = "translateY(-3px)";
-        e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.09)";
+        e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.35)";
         const img = e.currentTarget.querySelector(".card-img") as HTMLElement;
         if (img) img.style.transform = "scale(1.05)";
       }}
