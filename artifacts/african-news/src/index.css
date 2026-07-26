@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,600;0,700;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Serif:ital,wght@0,300;0,400;1,300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 @plugin "@tailwindcss/typography";
@@ -12,17 +12,17 @@
   --color-input: var(--paper-2);
   --color-ring: var(--ink);
 
-  --color-card: #ffffff;
+  --color-card: var(--surface-1);
   --color-card-foreground: var(--ink);
   --color-card-border: var(--paper-3);
 
-  --color-popover: #ffffff;
+  --color-popover: var(--surface-2);
   --color-popover-foreground: var(--ink);
   --color-popover-border: var(--paper-3);
 
-  --color-primary: var(--ink);
-  --color-primary-foreground: #ffffff;
-  --color-primary-border: var(--ink);
+  --color-primary: var(--accent);
+  --color-primary-foreground: #412402;
+  --color-primary-border: var(--accent);
 
   --color-secondary: var(--paper-2);
   --color-secondary-foreground: var(--ink-2);
@@ -33,16 +33,17 @@
   --color-muted-border: var(--paper-3);
 
   --color-accent: var(--accent);
-  --color-accent-foreground: #ffffff;
+  --color-accent-foreground: #412402;
   --color-accent-border: var(--accent);
 
-  --color-destructive: #dc2626;
+  --color-destructive: var(--live);
   --color-destructive-foreground: #ffffff;
-  --color-destructive-border: #dc2626;
+  --color-destructive-border: var(--live);
 
-  --font-ui: 'IBM Plex Sans', system-ui, sans-serif;
-  --font-headline: 'Lora', Georgia, serif;
-  --font-body: 'IBM Plex Serif', Georgia, serif;
+  --font-ui: 'Inter', system-ui, sans-serif;
+  --font-headline: 'Fraunces', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-data: 'IBM Plex Mono', ui-monospace, monospace;
 
   --radius-sm: 4px;
   --radius-md: 6px;
@@ -51,23 +52,38 @@
 }
 
 :root {
-  --ink: #0f0e0d;
-  --ink-2: #2d2b28;
-  --ink-3: #5a5750;
-  --ink-4: #8a8780;
-  --paper: #faf9f6;
-  --paper-2: #f3f1ec;
-  --paper-3: #e8e5de;
-  --accent: #c1392b;
-  --accent-2: #e8523f;
-  --accent-warm: #e07b39;
-  --gold: #b8860b;
-  --teal: #1a7a6e;
-  --region-north: #8b4513;
-  --region-west: #2d6a4f;
-  --region-east: #1a4a7a;
-  --region-central: #6b3fa0;
-  --region-south: #b8860b;
+  /* Page background — deep indigo night, not literal black */
+  --paper: #14132B;
+  --paper-2: #1A1938;
+  --paper-3: #2A2950;
+
+  /* Card / panel surfaces — distinct from page bg so cards read as
+     raised, same role literal white played in the old cream design */
+  --surface-1: #1E1D3D;
+  --surface-2: #24234A;
+
+  /* Text */
+  --ink: #F5F0E6;
+  --ink-2: #D8D4E8;
+  --ink-3: #9691B0;
+  --ink-4: #6B6889;
+
+  /* Brand accent — ochre/marigold, category tags + primary actions */
+  --accent: #E8A33D;
+  --accent-2: #F0B75E;
+
+  /* Live / breaking indicator only — deliberately not reused elsewhere
+     so it keeps its meaning */
+  --live: #E94F37;
+
+  /* Region colors kept distinct from the two brand accents above so a
+     region tag never gets mistaken for a live/breaking marker */
+  --region-north: #C97B4A;
+  --region-west: #4A9D7E;
+  --region-east: #4A7FB8;
+  --region-central: #9B7FD4;
+  --region-south: #E8A33D;
+
   --transition: 0.2s cubic-bezier(0.4,0,0.2,1);
   --radius: 0.3rem;
 }
@@ -122,12 +138,10 @@ h1, h2, h3, h4, h5, h6 {
   width: 100%;
 }
 
-/* Leaderboard visible on desktop, hidden on mobile */
 .an-ad-leaderboard-desktop {
   display: flex;
 }
 
-/* Mobile banner hidden on desktop */
 .an-ad-mobile-banner {
   display: none;
 }
@@ -173,7 +187,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .an-skeleton {
-  background: linear-gradient(90deg, var(--paper-2) 25%, var(--paper-3) 50%, var(--paper-2) 75%);
+  background: linear-gradient(90deg, var(--surface-1) 25%, var(--paper-3) 50%, var(--surface-1) 75%);
   background-size: 400px 100%;
   animation: shimmer 1.4s ease-in-out infinite;
   border-radius: 4px;
@@ -181,21 +195,18 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ── RESPONSIVE LAYOUT UTILITIES ── */
 
-/* Container with responsive horizontal padding */
 .an-container {
   max-width: 1320px;
   margin: 0 auto;
   padding: 0 24px;
 }
 
-/* 3-column article grid → 2 tablet → 1 mobile */
 .an-grid-3 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
 }
 
-/* Content + sidebar layout: collapses to single column on tablet/mobile */
 .an-content-with-sidebar {
   display: grid;
   grid-template-columns: 1fr 300px;
@@ -203,7 +214,6 @@ h1, h2, h3, h4, h5, h6 {
   align-items: start;
 }
 
-/* Stats strip: scrollable on mobile */
 .an-stats-strip-inner {
   display: flex;
   align-items: center;
@@ -213,7 +223,6 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0 auto;
 }
 
-/* Hero grid: featured left + 2 side cards stacked right */
 .an-hero-grid {
   display: grid;
   grid-template-columns: 1fr 340px;
@@ -225,17 +234,14 @@ h1, h2, h3, h4, h5, h6 {
   min-height: 480px;
 }
 
-/* Featured card min-height */
 .an-featured-card {
   min-height: 480px;
 }
 
-/* Side cards container (the two story cards on right of hero) */
 .an-hero-side-cards {
   display: contents;
 }
 
-/* Article detail responsive padding */
 .an-article-header {
   max-width: 800px;
   margin: 0 auto;
@@ -281,7 +287,7 @@ h1, h2, h3, h4, h5, h6 {
   height: 340px;
   display: block;
   overflow: hidden;
-  background: #1c1a18;
+  background: var(--surface-1);
   text-decoration: none;
 }
 
@@ -313,21 +319,22 @@ h1, h2, h3, h4, h5, h6 {
 
 .an-carousel-cat {
   display: inline-block;
-  color: #fff;
-  font-family: var(--font-ui);
+  color: #412402;
+  font-family: var(--font-data);
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   padding: 3px 8px;
   border-radius: 3px;
   align-self: flex-start;
+  background: var(--accent);
 }
 
 .an-carousel-title {
   font-family: var(--font-headline);
   font-size: 20px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.25;
   letter-spacing: -0.02em;
   color: #fff;
@@ -340,7 +347,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .an-carousel-meta {
-  font-family: var(--font-ui);
+  font-family: var(--font-data);
   font-size: 12px;
   opacity: 0.8;
   display: flex;
@@ -422,40 +429,34 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: 24px;
   }
 
-  /* Reduce hero image aspect ratio on mobile */
   .an-article-hero-img > div {
     aspect-ratio: 16/9;
   }
 
-  /* Ensure tap targets are at least 44px tall */
   .an-pag-btn {
     min-height: 44px !important;
     height: 44px !important;
   }
 
-  /* Share/bookmark buttons in article detail */
   .an-icon-btn {
     width: 44px !important;
     height: 44px !important;
   }
 
-  /* Back button tap target */
   .an-article-back-btn {
     min-height: 44px !important;
     padding: 0 8px !important;
     margin-left: -8px !important;
   }
 
-  /* Drop cap: disable float on mobile to avoid narrow text column */
   .an-drop-cap {
     float: none !important;
     font-size: 1em !important;
     line-height: inherit !important;
     margin: 0 !important;
-    font-weight: 700;
+    font-weight: 600;
   }
 
-  /* Prevent any article content from causing horizontal overflow */
   .an-article-header,
   .an-article-body,
   .an-article-hero-img {
@@ -463,7 +464,6 @@ h1, h2, h3, h4, h5, h6 {
     max-width: 100%;
   }
 
-  /* CTA read-full button: allow wrapping on very narrow screens */
   .an-article-body a[target="_blank"] {
     white-space: normal;
     text-align: center;
@@ -471,14 +471,12 @@ h1, h2, h3, h4, h5, h6 {
     box-sizing: border-box;
   }
 
-  /* Navbar mobile menu links */
   .an-mobile-link {
     min-height: 44px !important;
     display: flex !important;
     align-items: center;
   }
 
-  /* Category pill bar: horizontal scroll row on mobile */
   .an-pill-bar {
     flex-wrap: nowrap;
     overflow-x: auto;
@@ -493,7 +491,6 @@ h1, h2, h3, h4, h5, h6 {
     display: none;
   }
 
-  /* Category pills */
   .an-pill {
     min-height: 44px !important;
     scroll-snap-align: start;
@@ -518,7 +515,6 @@ h1, h2, h3, h4, h5, h6 {
     display: none;
   }
 
-  /* Hide desktop hero grid on mobile, show carousel instead */
   .an-hero-grid {
     display: none;
   }
@@ -527,13 +523,11 @@ h1, h2, h3, h4, h5, h6 {
     display: block;
   }
 
-  /* ── FOOTER GRID (mobile) ── */
   .an-footer-grid {
     grid-template-columns: 1fr;
     gap: 28px;
   }
 
-  /* ── TICKER (mobile) ── */
   .an-breaking-ticker {
     height: 32px;
   }
@@ -551,13 +545,10 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 11.5px;
   }
 
-  /* Show sidebar below articles on mobile instead of hiding it */
   .an-sidebar-col {
     display: block;
   }
 
-  /* ── AD BANNERS (mobile) ── */
-  /* Hide desktop leaderboard (728×90), show mobile banner (320×50) */
   .an-ad-leaderboard-desktop {
     display: none;
   }
