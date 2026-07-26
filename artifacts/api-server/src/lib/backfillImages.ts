@@ -4,6 +4,11 @@ import { isNull, asc, eq } from "drizzle-orm";
 
 const BATCH_SIZE = 50;
 
+// Several publishers (WordPress hosts, Nation Media Group, Arc-based sites)
+// serve 403s to obvious bot user agents but accept a normal browser UA —
+// same reasoning as FETCH_HEADERS in ingestion.ts. This function previously
+// sent a self-identifying "AfricaNews-Aggregator/1.0" UA, which is exactly
+// the kind of string that trips bot detection on these publishers.
 const OG_FETCH_HEADERS = {
   "User-Agent":
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
@@ -20,10 +25,7 @@ async function fetchOgImage(articleUrl: string): Promise<string | null> {
       headers: OG_FETCH_HEADERS,
     });
     clearTimeout(timeout);
-    if (!resp.ok) {
-      console.log(`[backfill-diagnostic] ${articleUrl} -> HTTP ${resp.status}`);
-      return null;
-    }
+    if (!resp.ok) return null;
     const html = await resp.text();
     const match =
       html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i) ||
@@ -32,11 +34,8 @@ async function fetchOgImage(articleUrl: string): Promise<string | null> {
       html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']twitter:image["']/i);
     const url = match?.[1];
     if (url && url.startsWith("http")) return url;
-    console.log(`[backfill-diagnostic] ${articleUrl} -> HTTP ${resp.status}, no match (html length ${html.length})`);
     return null;
-  } catch (err) {
-    const reason = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
-    console.log(`[backfill-diagnostic] ${articleUrl} -> threw: ${reason}`);
+  } catch {
     return null;
   }
 }
@@ -73,7 +72,9 @@ export async function backfillImages(
   const allArticles = maxArticles ? await query.limit(maxArticles) : await query;
 
   const total = allArticles.length;
-  log(`Found ${totalMissing} articles with no image total — processing ${total} this run (batches of ${BATCH_SIZE})`);
+  log(
+    `Found ${totalMissing} articles with no image total — processing ${total} this run (batches of ${BATCH_SIZE})`,
+  );
 
   let found = 0;
   let notFound = 0;
@@ -101,11 +102,15 @@ export async function backfillImages(
         processed++;
       }),
     );
-    log(`Progress: ${processed}/${total} processed — found ${found}, not found ${notFound}, errors ${errors}`);
+    log(
+      `Progress: ${processed}/${total} processed — found ${found}, not found ${notFound}, errors ${errors}`,
+    );
   }
 
   const remaining = totalMissing - processed;
-  log(`Backfill run complete — ${total} articles processed, ${found} images found, ${notFound} without image, ${errors} errors, ${remaining} still remaining`);
+  log(
+    `Backfill run complete — ${total} articles processed, ${found} images found, ${notFound} without image, ${errors} errors, ${remaining} still remaining`,
+  );
 
   return { total, found, notFound, errors, remaining };
 }
