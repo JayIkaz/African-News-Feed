@@ -4,6 +4,9 @@ import { isNull, asc, eq } from "drizzle-orm";
 
 const BATCH_SIZE = 50;
 
+// TEMPORARY DIAGNOSTIC VERSION — logs why each fetch fails instead of
+// silently swallowing the error. Revert to the silent version once the
+// mass-failure cause is identified.
 async function fetchOgImage(articleUrl: string): Promise<string | null> {
   try {
     const controller = new AbortController();
@@ -16,7 +19,10 @@ async function fetchOgImage(articleUrl: string): Promise<string | null> {
       },
     });
     clearTimeout(timeout);
-    if (!resp.ok) return null;
+    if (!resp.ok) {
+      console.log(`[backfill-diagnostic] ${articleUrl} -> HTTP ${resp.status}`);
+      return null;
+    }
     const html = await resp.text();
     const match =
       html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i) ||
@@ -25,8 +31,13 @@ async function fetchOgImage(articleUrl: string): Promise<string | null> {
       html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']twitter:image["']/i);
     const url = match?.[1];
     if (url && url.startsWith("http")) return url;
+    console.log(
+      `[backfill-diagnostic] ${articleUrl} -> HTTP ${resp.status}, no og:image/twitter:image match found (html length ${html.length})`,
+    );
     return null;
-  } catch {
+  } catch (err) {
+    const reason = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
+    console.log(`[backfill-diagnostic] ${articleUrl} -> threw: ${reason}`);
     return null;
   }
 }
@@ -39,10 +50,6 @@ export interface BackfillResult {
   remaining: number;
 }
 
-// maxArticles caps how many rows this single invocation will attempt, so it
-// can be called repeatedly (e.g. from an admin endpoint with a small limit,
-// or from the GitHub Actions ingestion job with no cap) without exceeding a
-// serverless function's execution time limit.
 export async function backfillImages(
   onProgress?: (msg: string) => void,
   maxArticles?: number,
