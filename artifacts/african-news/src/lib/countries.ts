@@ -52,6 +52,65 @@ export const COUNTRY_FLAGS: Record<string, string> = {
   "Zimbabwe": "🇿🇼",
 };
 
+// ISO 3166-1 alpha-2 codes, lowercase — used to build real flag image URLs
+// instead of relying on emoji flag glyphs. Windows (and some Linux distros)
+// have no font glyph for regional-indicator flag emoji and fall back to
+// showing the raw two-letter code as plain text (e.g. "ZA" instead of 🇿🇦).
+// Real flag images render identically across every OS.
+export const COUNTRY_CODES: Record<string, string> = {
+  "Algeria": "dz",
+  "Angola": "ao",
+  "Benin": "bj",
+  "Botswana": "bw",
+  "Burkina Faso": "bf",
+  "Burundi": "bi",
+  "Cameroon": "cm",
+  "Cape Verde": "cv",
+  "Central African Republic": "cf",
+  "Chad": "td",
+  "Comoros": "km",
+  "DR Congo": "cd",
+  "Djibouti": "dj",
+  "Egypt": "eg",
+  "Equatorial Guinea": "gq",
+  "Eritrea": "er",
+  "Eswatini": "sz",
+  "Ethiopia": "et",
+  "Gabon": "ga",
+  "Gambia": "gm",
+  "Ghana": "gh",
+  "Guinea": "gn",
+  "Guinea-Bissau": "gw",
+  "Ivory Coast": "ci",
+  "Kenya": "ke",
+  "Lesotho": "ls",
+  "Liberia": "lr",
+  "Libya": "ly",
+  "Madagascar": "mg",
+  "Malawi": "mw",
+  "Mali": "ml",
+  "Mauritania": "mr",
+  "Mauritius": "mu",
+  "Morocco": "ma",
+  "Mozambique": "mz",
+  "Namibia": "na",
+  "Niger": "ne",
+  "Nigeria": "ng",
+  "Rwanda": "rw",
+  "Senegal": "sn",
+  "Sierra Leone": "sl",
+  "Somalia": "so",
+  "South Africa": "za",
+  "South Sudan": "ss",
+  "Sudan": "sd",
+  "Tanzania": "tz",
+  "Togo": "tg",
+  "Tunisia": "tn",
+  "Uganda": "ug",
+  "Zambia": "zm",
+  "Zimbabwe": "zw",
+};
+
 export type Region = "All" | "West Africa" | "East Africa" | "North Africa" | "Southern Africa" | "Central Africa";
 
 export const COUNTRY_REGIONS: Record<string, Region> = {
@@ -117,20 +176,27 @@ export const REGIONS: Region[] = [
   "Central Africa",
 ];
 
+// Solid backgrounds for the active/selected region pill. Uses the
+// --region-* CSS tokens already defined in index.css (and already used by
+// Sidebar.tsx's "Browse by Region" widget) instead of hardcoded Tailwind
+// palette colors, so this page's region colors actually match the rest of
+// the site rather than being a disconnected purple/amber/emerald set.
 export const REGION_COLORS: Record<Region, string> = {
-  "All": "bg-primary text-primary-foreground",
-  "West Africa": "bg-amber-600 text-white",
-  "East Africa": "bg-emerald-600 text-white",
-  "North Africa": "bg-sky-600 text-white",
-  "Southern Africa": "bg-purple-600 text-white",
-  "Central Africa": "bg-rose-600 text-white",
+  "All": "bg-[var(--accent)] text-[#412402]",
+  "West Africa": "bg-[var(--region-west)] text-white",
+  "East Africa": "bg-[var(--region-east)] text-white",
+  "North Africa": "bg-[var(--region-north)] text-white",
+  "Southern Africa": "bg-[var(--region-south)] text-[#412402]",
+  "Central Africa": "bg-[var(--region-central)] text-white",
 };
 
+// Tinted badge version (15% opacity fill + full-strength text) for the
+// smaller count badges and the "filtered by region" label.
 export const REGION_BADGE_COLORS: Record<Region, string> = {
-  "All": "bg-primary/10 text-primary",
-  "West Africa": "bg-amber-100 text-amber-700",
-  "East Africa": "bg-emerald-100 text-emerald-700",
-  "North Africa": "bg-sky-100 text-sky-700",
-  "Southern Africa": "bg-purple-100 text-purple-700",
-  "Central Africa": "bg-rose-100 text-rose-700",
+  "All": "bg-[var(--accent)]/15 text-[var(--accent)]",
+  "West Africa": "bg-[var(--region-west)]/15 text-[var(--region-west)]",
+  "East Africa": "bg-[var(--region-east)]/15 text-[var(--region-east)]",
+  "North Africa": "bg-[var(--region-north)]/15 text-[var(--region-north)]",
+  "Southern Africa": "bg-[var(--region-south)]/20 text-[var(--region-south)]",
+  "Central Africa": "bg-[var(--region-central)]/15 text-[var(--region-central)]",
 };
