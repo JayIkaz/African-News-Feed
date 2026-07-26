@@ -12,13 +12,7 @@ const router: IRouter = Router();
 router.post("/trigger", adminTriggerRateLimit, requireAdmin, async (_req, res) => {
   try {
     const sources = await db.select().from(sourcesTable).where(eq(sourcesTable.isActive, true));
-
-    // Awaited, not fire-and-forget: Vercel serverless functions stop executing
-    // once the response is sent, so background work silently no-ops there. The
-    // primary ingestion path is the hourly GitHub Actions cron (a real
-    // process); this endpoint is just the on-demand admin convenience path.
     await ingestAllSources(sources);
-
     res.json({
       message: "Ingestion complete",
       sourcesProcessed: sources.length,
@@ -32,7 +26,6 @@ router.post("/trigger", adminTriggerRateLimit, requireAdmin, async (_req, res) =
 router.get("/status", async (_req, res) => {
   try {
     const sources = await db.select().from(sourcesTable).orderBy(sourcesTable.country);
-
     res.json(sources.map((s) => ({
       sourceId: s.id,
       sourceName: s.name,
@@ -47,10 +40,16 @@ router.get("/status", async (_req, res) => {
   }
 });
 
-router.post("/backfill-images", adminTriggerRateLimit, requireAdmin, async (_req, res) => {
+router.post("/backfill-images", adminTriggerRateLimit, requireAdmin, async (req, res) => {
   try {
-    await backfillImages();
-    res.json({ message: "Image backfill complete" });
+    const { limit } = req.query as Record<string, string>;
+    // Default to 150 per call: comfortably finishes well inside the 60s
+    // serverless timeout even with slow-responding sources. Pass a higher
+    // ?limit= for local/CI runs that aren't time-boxed, or omit maxArticles
+    // entirely to process everything in one go.
+    const maxArticles = limit ? parseInt(limit, 10) : 150;
+    const result = await backfillImages(undefined, maxArticles);
+    res.json({ message: "Image backfill run complete", ...result });
   } catch (err) {
     console.error("[backfill-images] Error running backfill:", err);
     res.status(500).json({ error: "internal_error", message: "Failed to run image backfill" });
