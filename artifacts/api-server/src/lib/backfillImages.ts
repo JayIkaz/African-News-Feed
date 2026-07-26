@@ -36,22 +36,40 @@ export interface BackfillResult {
   found: number;
   notFound: number;
   errors: number;
+  remaining: number;
 }
 
-export async function backfillImages(onProgress?: (msg: string) => void): Promise<BackfillResult> {
+// maxArticles caps how many rows this single invocation will attempt, so it
+// can be called repeatedly (e.g. from an admin endpoint with a small limit,
+// or from the GitHub Actions ingestion job with no cap) without exceeding a
+// serverless function's execution time limit.
+export async function backfillImages(
+  onProgress?: (msg: string) => void,
+  maxArticles?: number,
+): Promise<BackfillResult> {
   const log = (msg: string) => {
     console.log(`[backfill-images] ${msg}`);
     onProgress?.(msg);
   };
 
-  const allArticles = await db
+  const totalMissingQuery = db
+    .select({ id: articlesTable.id })
+    .from(articlesTable)
+    .where(isNull(articlesTable.imageUrl));
+  const totalMissing = (await totalMissingQuery).length;
+
+  const query = db
     .select({ id: articlesTable.id, url: articlesTable.url })
     .from(articlesTable)
     .where(isNull(articlesTable.imageUrl))
     .orderBy(asc(articlesTable.id));
 
+  const allArticles = maxArticles ? await query.limit(maxArticles) : await query;
+
   const total = allArticles.length;
-  log(`Found ${total} articles with no image — starting backfill in batches of ${BATCH_SIZE}`);
+  log(
+    `Found ${totalMissing} articles with no image total — processing ${total} this run (batches of ${BATCH_SIZE})`,
+  );
 
   let found = 0;
   let notFound = 0;
@@ -60,7 +78,6 @@ export async function backfillImages(onProgress?: (msg: string) => void): Promis
 
   for (let i = 0; i < allArticles.length; i += BATCH_SIZE) {
     const batch = allArticles.slice(i, i + BATCH_SIZE);
-
     await Promise.allSettled(
       batch.map(async (article) => {
         try {
@@ -80,14 +97,15 @@ export async function backfillImages(onProgress?: (msg: string) => void): Promis
         processed++;
       }),
     );
-
     log(
       `Progress: ${processed}/${total} processed — found ${found}, not found ${notFound}, errors ${errors}`,
     );
   }
 
+  const remaining = totalMissing - processed;
   log(
-    `Backfill complete — ${total} articles processed, ${found} images found, ${notFound} without image, ${errors} errors`,
+    `Backfill run complete — ${total} articles processed, ${found} images found, ${notFound} without image, ${errors} errors, ${remaining} still remaining`,
   );
-  return { total, found, notFound, errors };
+
+  return { total, found, notFound, errors, remaining };
 }
