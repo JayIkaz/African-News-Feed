@@ -6,6 +6,10 @@
       "destination": "https://african-news-feed-api-server.vercel.app/api/$1"
     },
     {
+      "source": "/sitemap.xml",
+      "destination": "https://african-news-feed-api-server.vercel.app/api/sitemap.xml"
+    },
+    {
       "source": "/((?!api/).*)",
       "destination": "/index.html"
     }
