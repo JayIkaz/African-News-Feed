@@ -4,8 +4,8 @@ import { Globe2, ArrowRight, Newspaper } from "lucide-react";
 import { useListCountries, useListSources } from "@workspace/api-client-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Skeleton } from "@/components/ui/skeleton";
+import { CountryFlag } from "@/components/common/CountryFlag";
 import {
-  COUNTRY_FLAGS,
   COUNTRY_REGIONS,
   REGIONS,
   REGION_COLORS,
@@ -129,15 +129,13 @@ export default function Countries() {
                     className="group block bg-card border border-border rounded-xl p-6 hover:border-primary hover:shadow-md transition-all duration-200"
                   >
                     <div className="flex items-start justify-between mb-4">
-                      <span className="text-5xl leading-none" role="img" aria-label={item.country}>
-                        {COUNTRY_FLAGS[item.country] ?? "🌍"}
-                      </span>
+                      <CountryFlag country={item.country} size={44} />
                       <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all mt-1" />
                     </div>
                     <h2 className="font-serif text-xl font-bold mb-1 group-hover:text-primary transition-colors">
                       {item.country}
                     </h2>
-                    <p className={`text-xs font-semibold mb-4 inline-flex items-center px-2 py-0.5 rounded-full ${REGION_BADGE_COLORS[region]}`}>
+                    <p className={`text-xs font-semibold mb-4 inline-flex items-center px-2 py-0.5 rounded-full ${REGION_BADGE_COLORS[region as Region] ?? REGION_BADGE_COLORS.All}`}>
                       {region}
                     </p>
                     <div className="flex items-center justify-between border-t border-border pt-4">
