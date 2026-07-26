@@ -2,7 +2,7 @@ import { Link } from "wouter";
 import { formatDistanceToNow } from "date-fns";
 import { Article } from "@workspace/api-client-react";
 import { getArticleImage } from "@/lib/unsplash";
-import { COUNTRY_FLAGS } from "@/lib/countries";
+import { CountryFlag } from "@/components/common/CountryFlag";
 import { useTranslate } from "@/lib/useTranslate";
 
 // Small pill shown on non-English cards; toggles between original and English.
@@ -85,7 +85,6 @@ export function ArticleCard({ article, featured = false, compact = false, side =
   const dateStr = article.publishedDate
     ? formatDistanceToNow(new Date(article.publishedDate), { addSuffix: true })
     : "";
-  const flag = COUNTRY_FLAGS[article.country ?? ""] ?? "🌍";
   const catColor = CAT_COLORS[article.category ?? "General"] ?? "#9691B0";
   const fallbackBg = CAT_FALLBACK_BG[article.category ?? "General"] ?? "#1E1D3D";
 
@@ -118,7 +117,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
             {t.title}
           </div>
           <div style={{ fontFamily: "var(--font-ui)", fontSize: 11, color: "var(--ink-4)", marginTop: 4, display: "flex", gap: 4, alignItems: "center" }}>
-            <span>{flag}</span>
+            <CountryFlag country={article.country ?? ""} size={13} />
             <span>{article.country}</span>
             <span>·</span>
             <span>{dateStr}</span>
@@ -200,7 +199,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
             </p>
           )}
           <div style={{ display: "flex", alignItems: "center", gap: 12, fontFamily: "var(--font-ui)", fontSize: 12, opacity: 0.8 }}>
-            <span>{flag} {article.country}</span>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><CountryFlag country={article.country ?? ""} size={15} /> {article.country}</span>
             <span>·</span>
             <span>{dateStr}</span>
             <span>·</span>
@@ -249,7 +248,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
           {t.title}
         </div>
         <div style={{ marginTop: "auto", display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-ui)", fontSize: 11.5, color: "var(--ink-4)" }}>
-          <span>{flag}</span>
+          <CountryFlag country={article.country ?? ""} size={13} />
           <span>{article.country}</span>
           <span>·</span>
           <span>{dateStr}</span>
@@ -311,7 +310,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
           </p>
         )}
         <div style={{ display: "flex", alignItems: "center", gap: 8, paddingTop: 10, borderTop: "1px solid var(--paper-2)", marginTop: "auto" }}>
-          <span style={{ fontSize: 15, lineHeight: 1 }}>{flag}</span>
+          <CountryFlag country={article.country ?? ""} size={15} />
           <span style={{ fontFamily: "var(--font-ui)", fontSize: 11.5, fontWeight: 500, color: "var(--ink-2)" }}>{article.country}</span>
           <TranslateChip t={t} />
           <span style={{ color: "var(--paper-3)" }}>·</span>
