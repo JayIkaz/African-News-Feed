@@ -4,25 +4,28 @@ import { isNull, asc, eq } from "drizzle-orm";
 
 const BATCH_SIZE = 50;
 
-// TEMPORARY DIAGNOSTIC VERSION — logs why each fetch fails instead of
-// silently swallowing the error. Revert to the silent version once the
-// mass-failure cause is identified.
+// Several publishers (WordPress hosts, Nation Media Group, Arc-based sites)
+// serve 403s to obvious bot user agents but accept a normal browser UA —
+// same reasoning as FETCH_HEADERS in ingestion.ts. This function previously
+// sent a self-identifying "AfricaNews-Aggregator/1.0" UA, which is exactly
+// the kind of string that trips bot detection on these publishers.
+const OG_FETCH_HEADERS = {
+  "User-Agent":
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+  Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+  "Accept-Language": "en-US,en;q=0.9",
+};
+
 async function fetchOgImage(articleUrl: string): Promise<string | null> {
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 4000);
     const resp = await fetch(articleUrl, {
       signal: controller.signal,
-      headers: {
-        "User-Agent": "AfricaNews-Aggregator/1.0",
-        Accept: "text/html",
-      },
+      headers: OG_FETCH_HEADERS,
     });
     clearTimeout(timeout);
-    if (!resp.ok) {
-      console.log(`[backfill-diagnostic] ${articleUrl} -> HTTP ${resp.status}`);
-      return null;
-    }
+    if (!resp.ok) return null;
     const html = await resp.text();
     const match =
       html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i) ||
@@ -31,13 +34,8 @@ async function fetchOgImage(articleUrl: string): Promise<string | null> {
       html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']twitter:image["']/i);
     const url = match?.[1];
     if (url && url.startsWith("http")) return url;
-    console.log(
-      `[backfill-diagnostic] ${articleUrl} -> HTTP ${resp.status}, no og:image/twitter:image match found (html length ${html.length})`,
-    );
     return null;
-  } catch (err) {
-    const reason = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
-    console.log(`[backfill-diagnostic] ${articleUrl} -> threw: ${reason}`);
+  } catch {
     return null;
   }
 }
