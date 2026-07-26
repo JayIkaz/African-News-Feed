@@ -157,6 +157,17 @@ export function Footer() {
         <div style={{ borderTop: "1px solid var(--paper-3)", paddingTop: 24, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
           <p style={{ fontFamily: "var(--font-ui)", fontSize: 12, color: "var(--ink-4)" }}>
             © {new Date().getFullYear()} AfricaNews Aggregator. All rights reserved.
+            {" · "}
+            <a
+              href="https://aukizan.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "var(--ink-4)", textDecoration: "none", transition: "color 0.2s" }}
+              onMouseEnter={e => (e.currentTarget.style.color = "var(--ink)")}
+              onMouseLeave={e => (e.currentTarget.style.color = "var(--ink-4)")}
+            >
+              Powered by Aukizan
+            </a>
           </p>
           <div style={{ display: "flex", alignItems: "center", gap: 20, flexWrap: "wrap" }}>
             {["About", "Sources", "Privacy", "Terms"].map(item => (
