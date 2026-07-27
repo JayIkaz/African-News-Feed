@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useListCountries } from "@workspace/api-client-react";
-import { COUNTRY_FLAGS, COUNTRY_REGIONS } from "@/lib/countries";
+import { COUNTRY_REGIONS } from "@/lib/countries";
+import { CountryFlag } from "@/components/common/CountryFlag";
 import { BreakingTicker } from "./BreakingTicker";
 
 const CATEGORIES = [
@@ -85,6 +86,7 @@ export function Navbar() {
             href="/"
             style={{ display: "flex", alignItems: "center", gap: 12, flexShrink: 0, textDecoration: "none" }}
           >
+<<<<<<< HEAD
             <div
               style={{
                 width: 40,
@@ -102,6 +104,15 @@ export function Navbar() {
                 <path d="M8 10l4-4 4 4M8 14l4 4 4-4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
+=======
+            <svg width="40" height="40" viewBox="0 0 240 240" style={{ flexShrink: 0, borderRadius: 8 }}>
+              <rect width="240" height="240" rx="48" fill="var(--paper-2)"/>
+              <path d="M120,26 C144,24 162,34 174,47 C184,58 190,64 186,76 C182,86 172,84 176,97 C181,108 193,110 189,123 C185,135 172,128 168,141 C164,154 173,161 164,172 C158,181 151,177 147,190 C143,203 135,212 126,218 C122,221 118,223 115,218 C109,206 105,195 99,187 C92,177 79,173 75,162 C71,151 80,145 74,134 C67,122 54,120 51,107 C48,94 58,88 53,77 C48,66 39,60 46,49 C53,38 70,34 83,31 C96,28 108,29 120,26 Z" fill="var(--ink)"/>
+              <polyline points="30,132 78,132 91,109 106,155 121,132 152,132 165,104 178,160 210,132" fill="none" stroke="var(--accent)" strokeWidth="9" strokeLinecap="round" strokeLinejoin="round"/>
+              <circle cx="91" cy="109" r="6.5" fill="var(--live)"/>
+              <circle cx="165" cy="104" r="6.5" fill="var(--live)"/>
+            </svg>
+>>>>>>> 11a5f0242cc82ef3963a0f45ba7dbd9108b4ddac
             <div style={{ lineHeight: 1.1 }}>
               <div style={{ fontFamily: "var(--font-headline)", fontSize: 22, fontWeight: 700, color: "var(--ink)", letterSpacing: "-0.02em" }}>
                 AfricaNews
@@ -159,7 +170,11 @@ export function Navbar() {
               href="#newsletter"
               style={{
                 background: "var(--accent)",
+<<<<<<< HEAD
                 color: "var(--ink)",
+=======
+                color: "#412402",
+>>>>>>> 11a5f0242cc82ef3963a0f45ba7dbd9108b4ddac
                 border: "none",
                 borderRadius: 5,
                 padding: "0 16px",
@@ -269,7 +284,7 @@ export function Navbar() {
                     background: "var(--surface-1)",
                     border: "1px solid var(--paper-3)",
                     borderRadius: 10,
-                    boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
+                    boxShadow: "0 8px 32px rgba(0,0,0,0.45)",
                     maxWidth: "min(600px, 95vw)",
                     padding: 20,
                     zIndex: 999,
@@ -316,7 +331,7 @@ export function Navbar() {
                             onMouseEnter={e => (e.currentTarget.style.color = "var(--accent)")}
                             onMouseLeave={e => (e.currentTarget.style.color = "var(--ink-2)")}
                           >
-                            <span style={{ fontSize: 14 }}>{COUNTRY_FLAGS[c.country] ?? "🌍"}</span>
+                            <CountryFlag country={c.country} size={14} />
                             {c.country}
                           </Link>
                         ))}

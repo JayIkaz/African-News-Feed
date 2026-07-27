@@ -2,7 +2,7 @@ import { Link } from "wouter";
 import { formatDistanceToNow } from "date-fns";
 import { Article } from "@workspace/api-client-react";
 import { getArticleImage } from "@/lib/unsplash";
-import { COUNTRY_FLAGS } from "@/lib/countries";
+import { CountryFlag } from "@/components/common/CountryFlag";
 import { useTranslate } from "@/lib/useTranslate";
 
 // Small pill shown on non-English cards; toggles between original and English.
@@ -41,25 +41,25 @@ export function TranslateChip({ t, light = false }: { t: ReturnType<typeof useTr
 }
 
 export const CAT_COLORS: Record<string, string> = {
-  Politics: "#c1392b",
-  Business: "#1a5276",
-  Technology: "#1a7a6e",
-  Economy: "#b8860b",
-  Society: "#6b3fa0",
-  Environment: "#2d6a4f",
-  International: "#8b4513",
-  General: "#5a5750",
+  Politics: "#D85A30",
+  Business: "#378ADD",
+  Technology: "#1D9E75",
+  Economy: "#E8A33D",
+  Society: "#7F77DD",
+  Environment: "#639922",
+  International: "#C97B4A",
+  General: "#9691B0",
 };
 
 const CAT_FALLBACK_BG: Record<string, string> = {
-  Politics: "#3d0e09",
-  Business: "#0a1f35",
-  Technology: "#0a2e2a",
-  Economy: "#3b2a01",
-  Society: "#1e0f30",
-  Environment: "#0c2218",
-  International: "#2a1505",
-  General: "#1c1a18",
+  Politics: "#2E1710",
+  Business: "#101E30",
+  Technology: "#0C2A20",
+  Economy: "#2E2008",
+  Society: "#1C1936",
+  Environment: "#122010",
+  International: "#241708",
+  General: "#1E1D3D",
 };
 
 function imgFallback(e: React.SyntheticEvent<HTMLImageElement>, cat?: string | null) {
@@ -67,7 +67,7 @@ function imgFallback(e: React.SyntheticEvent<HTMLImageElement>, cat?: string | n
   el.style.display = "none";
   const parent = el.parentElement;
   if (parent) {
-    parent.style.background = CAT_FALLBACK_BG[cat ?? "General"] ?? "#1c1a18";
+    parent.style.background = CAT_FALLBACK_BG[cat ?? "General"] ?? "#1E1D3D";
   }
 }
 
@@ -85,9 +85,8 @@ export function ArticleCard({ article, featured = false, compact = false, side =
   const dateStr = article.publishedDate
     ? formatDistanceToNow(new Date(article.publishedDate), { addSuffix: true })
     : "";
-  const flag = COUNTRY_FLAGS[article.country ?? ""] ?? "🌍";
-  const catColor = CAT_COLORS[article.category ?? "General"] ?? "#5a5750";
-  const fallbackBg = CAT_FALLBACK_BG[article.category ?? "General"] ?? "#1c1a18";
+  const catColor = CAT_COLORS[article.category ?? "General"] ?? "#9691B0";
+  const fallbackBg = CAT_FALLBACK_BG[article.category ?? "General"] ?? "#1E1D3D";
 
   if (compact) {
     return (
@@ -118,7 +117,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
             {t.title}
           </div>
           <div style={{ fontFamily: "var(--font-ui)", fontSize: 11, color: "var(--ink-4)", marginTop: 4, display: "flex", gap: 4, alignItems: "center" }}>
-            <span>{flag}</span>
+            <CountryFlag country={article.country ?? ""} size={13} />
             <span>{article.country}</span>
             <span>·</span>
             <span>{dateStr}</span>
@@ -200,7 +199,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
             </p>
           )}
           <div style={{ display: "flex", alignItems: "center", gap: 12, fontFamily: "var(--font-ui)", fontSize: 12, opacity: 0.8 }}>
-            <span>{flag} {article.country}</span>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><CountryFlag country={article.country ?? ""} size={15} /> {article.country}</span>
             <span>·</span>
             <span>{dateStr}</span>
             <span>·</span>
@@ -249,7 +248,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
           {t.title}
         </div>
         <div style={{ marginTop: "auto", display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-ui)", fontSize: 11.5, color: "var(--ink-4)" }}>
-          <span>{flag}</span>
+          <CountryFlag country={article.country ?? ""} size={13} />
           <span>{article.country}</span>
           <span>·</span>
           <span>{dateStr}</span>
@@ -274,7 +273,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
       }}
       onMouseEnter={e => {
         e.currentTarget.style.transform = "translateY(-3px)";
-        e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.09)";
+        e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.35)";
         const img = e.currentTarget.querySelector(".card-img") as HTMLElement;
         if (img) img.style.transform = "scale(1.05)";
       }}
@@ -311,7 +310,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
           </p>
         )}
         <div style={{ display: "flex", alignItems: "center", gap: 8, paddingTop: 10, borderTop: "1px solid var(--paper-2)", marginTop: "auto" }}>
-          <span style={{ fontSize: 15, lineHeight: 1 }}>{flag}</span>
+          <CountryFlag country={article.country ?? ""} size={15} />
           <span style={{ fontFamily: "var(--font-ui)", fontSize: 11.5, fontWeight: 500, color: "var(--ink-2)" }}>{article.country}</span>
           <TranslateChip t={t} />
           <span style={{ color: "var(--paper-3)" }}>·</span>

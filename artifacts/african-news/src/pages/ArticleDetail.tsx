@@ -72,7 +72,7 @@ export default function ArticleDetail() {
 
   const imageUrl = getArticleImage(article);
   const relatedArticles = relatedData?.articles.filter(a => a.id !== article.id).slice(0, 3) ?? [];
-  const catColor = CAT_COLORS[article.category ?? "General"] ?? "#5a5750";
+  const catColor = CAT_COLORS[article.category ?? "General"] ?? "#9691B0";
 
   return (
     <AppLayout>
@@ -149,7 +149,7 @@ export default function ArticleDetail() {
 
         {/* ── Hero Image ── */}
         <div className="an-article-hero-img">
-          <div style={{ aspectRatio: "21/9", borderRadius: 12, overflow: "hidden", background: "var(--paper-2)", boxShadow: "0 4px 24px rgba(0,0,0,0.08)" }}>
+          <div style={{ aspectRatio: "21/9", borderRadius: 12, overflow: "hidden", background: "var(--paper-2)", boxShadow: "0 4px 24px rgba(0,0,0,0.35)" }}>
             <img src={imageUrl} alt={article.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </div>
           <p style={{ fontFamily: "var(--font-ui)", fontSize: 11, color: "var(--ink-4)", textAlign: "right", marginTop: 6, fontStyle: "italic" }}>
@@ -178,9 +178,15 @@ export default function ArticleDetail() {
               href={article.url}
               target="_blank"
               rel="noopener noreferrer"
+<<<<<<< HEAD
               style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "var(--paper-2)", color: "var(--ink)", padding: "14px 28px", borderRadius: 100, fontFamily: "var(--font-ui)", fontSize: 14, fontWeight: 500, textDecoration: "none", transition: "background 0.2s, transform 0.2s" }}
               onMouseEnter={e => { e.currentTarget.style.background = "var(--accent)"; e.currentTarget.style.transform = "translateY(-2px)"; }}
               onMouseLeave={e => { e.currentTarget.style.background = "var(--paper-2)"; e.currentTarget.style.transform = "none"; }}
+=======
+              style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "var(--paper-2)", color: "var(--ink)", padding: "14px 28px", borderRadius: 100, fontFamily: "var(--font-ui)", fontSize: 14, fontWeight: 500, textDecoration: "none", transition: "background 0.2s, color 0.2s, transform 0.2s" }}
+              onMouseEnter={e => { e.currentTarget.style.background = "var(--accent)"; e.currentTarget.style.color = "#412402"; e.currentTarget.style.transform = "translateY(-2px)"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "var(--paper-2)"; e.currentTarget.style.color = "var(--ink)"; e.currentTarget.style.transform = "none"; }}
+>>>>>>> 11a5f0242cc82ef3963a0f45ba7dbd9108b4ddac
             >
               Read full article on {article.sourceName} <ExternalLink size={14} />
             </a>

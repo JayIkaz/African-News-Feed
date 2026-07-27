@@ -31,7 +31,7 @@ export default function Category() {
     description: `Latest news and analysis on ${decodedCategory.toLowerCase()} from across Africa.`,
     icon: "📰",
   };
-  const catColor = CAT_COLORS[decodedCategory] ?? "#5a5750";
+  const catColor = CAT_COLORS[decodedCategory] ?? "#9691B0";
 
   return (
     <AppLayout>
@@ -49,7 +49,7 @@ export default function Category() {
               {decodedCategory}
             </h1>
           </div>
-          <p style={{ fontFamily: "var(--font-body)", fontSize: 16, opacity: 0.65, maxWidth: 560, fontStyle: "italic" }}>
+          <p style={{ fontFamily: "var(--font-body)", fontSize: 16, color: "var(--ink-3)", maxWidth: 560, fontStyle: "italic" }}>
             {meta.description}
           </p>
         </div>
@@ -140,9 +140,9 @@ function PagBtn({ children, onClick, disabled, active }: { children: React.React
         height: 36,
         padding: "0 12px",
         borderRadius: 6,
-        border: `1px solid ${active ? "var(--ink)" : "var(--paper-3)"}`,
-        background: active ? "var(--ink)" : "#fff",
-        color: active ? "#fff" : disabled ? "var(--ink-4)" : "var(--ink-2)",
+        border: `1px solid ${active ? "var(--accent)" : "var(--paper-3)"}`,
+        background: active ? "var(--accent)" : "var(--surface-1)",
+        color: active ? "#412402" : disabled ? "var(--ink-4)" : "var(--ink-2)",
         fontFamily: "var(--font-ui)",
         fontSize: 13,
         fontWeight: 500,
