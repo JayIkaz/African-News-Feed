@@ -39,10 +39,16 @@ export function Footer() {
 
           {/* Brand */}
           <div>
-            <Link href="/" style={{ textDecoration: "none" }}>
-              <div style={{ fontFamily: "var(--font-headline)", fontSize: 24, fontWeight: 700, color: "var(--ink)", letterSpacing: "-0.02em", marginBottom: 2 }}>AfricaNews</div>
-              <div style={{ fontFamily: "var(--font-ui)", fontSize: 9, fontWeight: 500, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink-4)", marginBottom: 14 }}>The Continent's Pulse</div>
+            <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 10, marginBottom: 2 }}>
+              <svg width="30" height="30" viewBox="0 0 240 240" style={{ flexShrink: 0 }}>
+                <path d="M120,26 C144,24 162,34 174,47 C184,58 190,64 186,76 C182,86 172,84 176,97 C181,108 193,110 189,123 C185,135 172,128 168,141 C164,154 173,161 164,172 C158,181 151,177 147,190 C143,203 135,212 126,218 C122,221 118,223 115,218 C109,206 105,195 99,187 C92,177 79,173 75,162 C71,151 80,145 74,134 C67,122 54,120 51,107 C48,94 58,88 53,77 C48,66 39,60 46,49 C53,38 70,34 83,31 C96,28 108,29 120,26 Z" fill="var(--ink)"/>
+                <polyline points="30,132 78,132 91,109 106,155 121,132 152,132 165,104 178,160 210,132" fill="none" stroke="var(--accent)" strokeWidth="11" strokeLinecap="round" strokeLinejoin="round"/>
+                <circle cx="91" cy="109" r="7.5" fill="var(--live)"/>
+                <circle cx="165" cy="104" r="7.5" fill="var(--live)"/>
+              </svg>
+              <div style={{ fontFamily: "var(--font-headline)", fontSize: 24, fontWeight: 700, color: "var(--ink)", letterSpacing: "-0.02em" }}>AfricaNews</div>
             </Link>
+            <div style={{ fontFamily: "var(--font-ui)", fontSize: 9, fontWeight: 500, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink-4)", marginBottom: 14 }}>The Continent's Pulse</div>
             <p style={{ fontFamily: "var(--font-ui)", fontSize: 13, lineHeight: 1.6, color: "var(--ink-3)", marginBottom: 16 }}>
               Aggregating the continent's most important stories from 65+ trusted local and international sources.
             </p>
