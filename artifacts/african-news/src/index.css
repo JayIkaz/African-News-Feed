@@ -229,13 +229,14 @@ h1, h2, h3, h4, h5, h6 {
   gap: 12px;
 }
 
-/* Spec §4: latest-news card — 260px is a ceiling; image band 100px on
-   desktop, proportional 16/9 on single-column layouts */
-.an-news-card { height: 260px; }
-.an-news-card-media { height: 100px; flex-shrink: 0; }
+/* Latest-news card — full 16/9 image band (photos drive clicks; the old
+   100px strip cropped them to a sliver). Cards size naturally; the grid
+   keeps rows aligned. */
+.an-news-card { height: auto; }
+.an-news-card-media { aspect-ratio: 16 / 9; flex-shrink: 0; }
 
-/* Spec §3: top story media — fixed height, crop focus top-third */
-.an-top-media { height: 220px; }
+/* Top story media — crop focus top-third */
+.an-top-media { height: 300px; }
 
 .an-content-with-sidebar {
   display: grid;
