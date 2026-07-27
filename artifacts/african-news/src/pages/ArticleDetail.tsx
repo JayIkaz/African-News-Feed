@@ -93,7 +93,7 @@ export default function ArticleDetail() {
           {/* Category + Country */}
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
             <Link href={`/category/${article.category}`}>
-              <span style={{ display: "inline-block", background: catColor, color: "#fff", fontFamily: "var(--font-ui)", fontSize: 9.5, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", padding: "4px 10px", borderRadius: 3, cursor: "pointer" }}>
+              <span style={{ display: "inline-block", background: catColor, color: "var(--ink)", fontFamily: "var(--font-ui)", fontSize: 9.5, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", padding: "4px 10px", borderRadius: 3, cursor: "pointer" }}>
                 {article.category}
               </span>
             </Link>
