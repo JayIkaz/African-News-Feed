@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://africannewsfeed.com/sitemap.xml
+Sitemap: https://africannewsfeed.news/sitemap.xml

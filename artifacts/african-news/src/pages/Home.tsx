@@ -48,7 +48,7 @@ export default function Home() {
   return (
     <AppLayout>
       {/* ── Dark Stats Strip ── */}
-      <div style={{ background: "var(--ink)", color: "#fff", overflow: "hidden" }}>
+      <div style={{ background: "var(--paper-2)", color: "var(--ink)", overflow: "hidden" }}>
         <div className="an-stats-strip-inner" style={{ fontFamily: "var(--font-ui)", fontSize: 12 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
             <span style={{ opacity: 0.6, fontSize: 13 }}>🌍</span>
@@ -188,7 +188,7 @@ export default function Home() {
                   fontSize: 12,
                   fontWeight: 500,
                   color: "var(--ink-3)",
-                  background: "#fff",
+                  background: "var(--surface-1)",
                   cursor: "pointer",
                   transition: "all 0.2s",
                   flexShrink: 0,
@@ -215,7 +215,7 @@ export default function Home() {
                   fontSize: 12,
                   fontWeight: 500,
                   color: "var(--ink-4)",
-                  background: "#fff",
+                  background: "var(--surface-1)",
                   cursor: "pointer",
                   transition: "all 0.2s",
                   flexShrink: 0,
@@ -252,7 +252,7 @@ export default function Home() {
               <div key={fadeKey} className="an-grid-3 an-articles-fade">
                 {latestLoading || isFetching ? (
                   Array(6).fill(0).map((_, i) => (
-                    <div key={i} style={{ background: "#fff", borderRadius: 10, overflow: "hidden", border: "1px solid var(--paper-3)" }}>
+                    <div key={i} style={{ background: "var(--surface-1)", borderRadius: 10, overflow: "hidden", border: "1px solid var(--paper-3)" }}>
                       <div className="an-skeleton" style={{ aspectRatio: "16/9", width: "100%" }} />
                       <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 8 }}>
                         <div className="an-skeleton" style={{ height: 14 }} />

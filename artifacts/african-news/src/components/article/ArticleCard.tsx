@@ -162,9 +162,9 @@ export function ArticleCard({ article, featured = false, compact = false, side =
           onError={e => imgFallback(e, article.category)}
         />
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.45) 55%, rgba(0,0,0,0.15) 100%)" }} />
-        <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: 28, color: "#fff" }}>
+        <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: 28, color: "var(--ink)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-            <span style={{ background: catColor, color: "#fff", fontFamily: "var(--font-ui)", fontSize: 10, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", padding: "3px 8px", borderRadius: 3 }}>
+            <span style={{ background: catColor, color: "var(--ink)", fontFamily: "var(--font-ui)", fontSize: 10, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", padding: "3px 8px", borderRadius: 3 }}>
               {article.category}
             </span>
             <TranslateChip t={t} light />
@@ -176,7 +176,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
             lineHeight: 1.25,
             marginBottom: 10,
             letterSpacing: "-0.02em",
-            color: "#fff",
+            color: "var(--ink)",
             textShadow: "0 1px 4px rgba(0,0,0,0.6)",
           }}>
             {t.title}
@@ -219,7 +219,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
           display: "flex",
           flexDirection: "column",
           gap: 10,
-          background: "#fff",
+          background: "var(--surface-1)",
           padding: 20,
           cursor: "pointer",
           transition: "background 0.2s",
@@ -228,7 +228,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
           height: "100%",
         }}
         onMouseEnter={e => (e.currentTarget.style.background = "var(--paper-2)")}
-        onMouseLeave={e => (e.currentTarget.style.background = "#fff")}
+        onMouseLeave={e => (e.currentTarget.style.background = "var(--surface-1)")}
       >
         <div className="side-card-img" style={{ width: "100%", height: 140, borderRadius: 6, overflow: "hidden", background: fallbackBg, flexShrink: 0 }}>
           <img
@@ -240,7 +240,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
           />
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 6, alignSelf: "flex-start" }}>
-          <span style={{ background: catColor, color: "#fff", fontFamily: "var(--font-ui)", fontSize: 9.5, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", padding: "2px 7px", borderRadius: 3 }}>
+          <span style={{ background: catColor, color: "var(--ink)", fontFamily: "var(--font-ui)", fontSize: 9.5, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", padding: "2px 7px", borderRadius: 3 }}>
             {article.category}
           </span>
           <TranslateChip t={t} />
@@ -262,7 +262,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
     <Link
       href={`/article/${article.id}`}
       style={{
-        background: "#fff",
+        background: "var(--surface-1)",
         borderRadius: 10,
         overflow: "hidden",
         cursor: "pointer",
@@ -294,7 +294,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
           loading="lazy"
           onError={e => imgFallback(e, article.category)}
         />
-        <div style={{ position: "absolute", top: 10, left: 10, background: catColor, color: "#fff", fontFamily: "var(--font-ui)", fontSize: 9.5, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", padding: "3px 8px", borderRadius: 3 }}>
+        <div style={{ position: "absolute", top: 10, left: 10, background: catColor, color: "var(--ink)", fontFamily: "var(--font-ui)", fontSize: 9.5, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", padding: "3px 8px", borderRadius: 3 }}>
           {article.category}
         </div>
       </div>

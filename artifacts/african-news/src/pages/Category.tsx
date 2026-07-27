@@ -36,7 +36,7 @@ export default function Category() {
   return (
     <AppLayout>
       {/* ── Category Hero ── */}
-      <div style={{ background: "var(--ink)", color: "#fff", padding: "36px 0", marginBottom: 0 }}>
+      <div style={{ background: "var(--paper-2)", color: "var(--ink)", padding: "36px 0", marginBottom: 0 }}>
         <div className="an-container">
           <div style={{ fontFamily: "var(--font-ui)", fontSize: 10, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--accent)", marginBottom: 8 }}>
             Section
@@ -45,7 +45,7 @@ export default function Category() {
             <div style={{ width: 56, height: 56, borderRadius: 12, background: `${catColor}22`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, flexShrink: 0 }}>
               {meta.icon}
             </div>
-            <h1 style={{ fontFamily: "var(--font-headline)", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 900, letterSpacing: "-0.03em", color: "#fff" }}>
+            <h1 style={{ fontFamily: "var(--font-headline)", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 900, letterSpacing: "-0.03em", color: "var(--ink)" }}>
               {decodedCategory}
             </h1>
           </div>
@@ -75,7 +75,7 @@ export default function Category() {
             <div className="an-grid-3" style={{ marginBottom: 32 }}>
               {isLoading || isFetching ? (
                 Array(6).fill(0).map((_, i) => (
-                  <div key={i} style={{ background: "#fff", borderRadius: 10, overflow: "hidden", border: "1px solid var(--paper-3)" }}>
+                  <div key={i} style={{ background: "var(--surface-1)", borderRadius: 10, overflow: "hidden", border: "1px solid var(--paper-3)" }}>
                     <div className="an-skeleton" style={{ aspectRatio: "16/9", width: "100%" }} />
                     <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 8 }}>
                       <div className="an-skeleton" style={{ height: 14 }} />

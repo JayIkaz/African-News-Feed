@@ -89,7 +89,7 @@ export function Navbar() {
               style={{
                 width: 40,
                 height: 40,
-                background: "var(--ink)",
+                background: "var(--paper-2)",
                 borderRadius: 4,
                 display: "flex",
                 alignItems: "center",
@@ -136,7 +136,7 @@ export function Navbar() {
                 outline: "none",
                 transition: "border-color 0.2s, background 0.2s",
               }}
-              onFocus={e => { e.target.style.borderColor = "var(--ink-3)"; e.target.style.background = "#fff"; }}
+              onFocus={e => { e.target.style.borderColor = "var(--ink-3)"; e.target.style.background = "var(--surface-1)"; }}
               onBlur={e => { e.target.style.borderColor = "transparent"; e.target.style.background = "var(--paper-2)"; }}
             />
             <button
@@ -159,7 +159,7 @@ export function Navbar() {
               href="#newsletter"
               style={{
                 background: "var(--accent)",
-                color: "#fff",
+                color: "var(--ink)",
                 border: "none",
                 borderRadius: 5,
                 padding: "0 16px",
@@ -266,7 +266,7 @@ export function Navbar() {
                     position: "absolute",
                     top: "calc(100% + 4px)",
                     right: 0,
-                    background: "#fff",
+                    background: "var(--surface-1)",
                     border: "1px solid var(--paper-3)",
                     borderRadius: 10,
                     boxShadow: "0 8px 32px rgba(0,0,0,0.12)",

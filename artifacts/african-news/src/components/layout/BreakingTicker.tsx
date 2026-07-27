@@ -13,7 +13,7 @@ export function BreakingTicker() {
       className="an-breaking-ticker"
       style={{
         background: "var(--accent)",
-        color: "#fff",
+        color: "var(--ink)",
         display: "flex",
         alignItems: "center",
         overflow: "hidden",
@@ -24,7 +24,7 @@ export function BreakingTicker() {
       <div
         className="an-breaking-label"
         style={{
-          background: "var(--ink)",
+          background: "var(--paper-2)",
           height: "100%",
           display: "flex",
           alignItems: "center",

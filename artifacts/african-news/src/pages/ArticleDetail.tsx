@@ -62,7 +62,7 @@ export default function ArticleDetail() {
           <div style={{ fontSize: 48, marginBottom: 16 }}>📭</div>
           <h1 style={{ fontFamily: "var(--font-headline)", fontSize: 28, fontWeight: 700, color: "var(--ink)", marginBottom: 12 }}>Article Not Found</h1>
           <p style={{ fontFamily: "var(--font-ui)", fontSize: 15, color: "var(--ink-3)", marginBottom: 24 }}>We couldn't find the article you were looking for.</p>
-          <Link href="/" style={{ display: "inline-block", background: "var(--ink)", color: "#fff", padding: "12px 24px", borderRadius: 6, fontFamily: "var(--font-ui)", fontSize: 14, fontWeight: 500 }}>
+          <Link href="/" style={{ display: "inline-block", background: "var(--paper-2)", color: "var(--ink)", padding: "12px 24px", borderRadius: 6, fontFamily: "var(--font-ui)", fontSize: 14, fontWeight: 500 }}>
             Return to Home
           </Link>
         </div>
@@ -93,7 +93,7 @@ export default function ArticleDetail() {
           {/* Category + Country */}
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
             <Link href={`/category/${article.category}`}>
-              <span style={{ display: "inline-block", background: catColor, color: "#fff", fontFamily: "var(--font-ui)", fontSize: 9.5, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", padding: "4px 10px", borderRadius: 3, cursor: "pointer" }}>
+              <span style={{ display: "inline-block", background: catColor, color: "var(--ink)", fontFamily: "var(--font-ui)", fontSize: 9.5, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", padding: "4px 10px", borderRadius: 3, cursor: "pointer" }}>
                 {article.category}
               </span>
             </Link>
@@ -136,7 +136,7 @@ export default function ArticleDetail() {
             </div>
             <div style={{ display: "flex", gap: 8 }}>
               {[<Share2 size={15} />, <BookmarkPlus size={15} />].map((icon, i) => (
-                <button key={i} className="an-icon-btn" style={{ width: 34, height: 34, borderRadius: "50%", border: "1px solid var(--paper-3)", background: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--ink-3)", transition: "border-color 0.2s" }}
+                <button key={i} className="an-icon-btn" style={{ width: 34, height: 34, borderRadius: "50%", border: "1px solid var(--paper-3)", background: "var(--surface-1)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--ink-3)", transition: "border-color 0.2s" }}
                   onMouseEnter={e => (e.currentTarget.style.borderColor = "var(--ink-3)")}
                   onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--paper-3)")}
                 >
@@ -178,9 +178,9 @@ export default function ArticleDetail() {
               href={article.url}
               target="_blank"
               rel="noopener noreferrer"
-              style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "var(--ink)", color: "#fff", padding: "14px 28px", borderRadius: 100, fontFamily: "var(--font-ui)", fontSize: 14, fontWeight: 500, textDecoration: "none", transition: "background 0.2s, transform 0.2s" }}
+              style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "var(--paper-2)", color: "var(--ink)", padding: "14px 28px", borderRadius: 100, fontFamily: "var(--font-ui)", fontSize: 14, fontWeight: 500, textDecoration: "none", transition: "background 0.2s, transform 0.2s" }}
               onMouseEnter={e => { e.currentTarget.style.background = "var(--accent)"; e.currentTarget.style.transform = "translateY(-2px)"; }}
-              onMouseLeave={e => { e.currentTarget.style.background = "var(--ink)"; e.currentTarget.style.transform = "none"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "var(--paper-2)"; e.currentTarget.style.transform = "none"; }}
             >
               Read full article on {article.sourceName} <ExternalLink size={14} />
             </a>
