@@ -4,7 +4,7 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { ArticleCard } from "@/components/article/ArticleCard";
 import { Sidebar } from "@/components/article/Sidebar";
 import { useListArticles } from "@workspace/api-client-react";
-import { CAT_COLORS } from "@/components/article/ArticleCard";
+import { catTag } from "@/components/article/ArticleCard";
 
 const CATEGORY_META: Record<string, { description: string; icon: string }> = {
   Politics:      { description: "Elections, governance, policy, and political analysis from across the African continent.", icon: "🏛️" },
@@ -31,7 +31,7 @@ export default function Category() {
     description: `Latest news and analysis on ${decodedCategory.toLowerCase()} from across Africa.`,
     icon: "📰",
   };
-  const catColor = CAT_COLORS[decodedCategory] ?? "#9691B0";
+  const tag = catTag(decodedCategory);
 
   return (
     <AppLayout>
@@ -42,7 +42,7 @@ export default function Category() {
             Section
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 12 }}>
-            <div style={{ width: 56, height: 56, borderRadius: 12, background: `${catColor}22`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, flexShrink: 0 }}>
+            <div style={{ width: 56, height: 56, borderRadius: 12, background: tag.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, flexShrink: 0 }}>
               {meta.icon}
             </div>
             <h1 style={{ fontFamily: "var(--font-headline)", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 900, letterSpacing: "-0.03em", color: "var(--ink)" }}>
@@ -142,7 +142,7 @@ function PagBtn({ children, onClick, disabled, active }: { children: React.React
         borderRadius: 6,
         border: `1px solid ${active ? "var(--accent)" : "var(--paper-3)"}`,
         background: active ? "var(--accent)" : "var(--surface-1)",
-        color: active ? "#412402" : disabled ? "var(--ink-4)" : "var(--ink-2)",
+        color: active ? "#FFFFFF" : disabled ? "var(--ink-4)" : "var(--ink-2)",
         fontFamily: "var(--font-ui)",
         fontSize: 13,
         fontWeight: 500,

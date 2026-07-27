@@ -10,8 +10,7 @@ import {
 } from "@workspace/api-client-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { getArticleImage } from "@/lib/unsplash";
-import { ArticleCard } from "@/components/article/ArticleCard";
-import { CAT_COLORS } from "@/components/article/ArticleCard";
+import { ArticleCard, CatTag } from "@/components/article/ArticleCard";
 import { useReadHistory } from "@/lib/useReadHistory";
 import { useTranslate } from "@/lib/useTranslate";
 import { TranslateChip } from "@/components/article/ArticleCard";
@@ -72,7 +71,6 @@ export default function ArticleDetail() {
 
   const imageUrl = getArticleImage(article);
   const relatedArticles = relatedData?.articles.filter(a => a.id !== article.id).slice(0, 3) ?? [];
-  const catColor = CAT_COLORS[article.category ?? "General"] ?? "#9691B0";
 
   return (
     <AppLayout>
@@ -92,10 +90,8 @@ export default function ArticleDetail() {
 
           {/* Category + Country */}
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
-            <Link href={`/category/${article.category}`}>
-              <span style={{ display: "inline-block", background: catColor, color: "var(--ink)", fontFamily: "var(--font-ui)", fontSize: 9.5, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", padding: "4px 10px", borderRadius: 3, cursor: "pointer" }}>
-                {article.category}
-              </span>
+            <Link href={`/category/${article.category}`} style={{ cursor: "pointer" }}>
+              <CatTag category={article.category} />
             </Link>
             <Link href={`/country/${article.country}`} style={{ fontFamily: "var(--font-ui)", fontSize: 12, color: "var(--ink-3)", textDecoration: "none" }}
               onMouseEnter={e => (e.currentTarget.style.color = "var(--ink)")}
@@ -178,15 +174,9 @@ export default function ArticleDetail() {
               href={article.url}
               target="_blank"
               rel="noopener noreferrer"
-<<<<<<< HEAD
-              style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "var(--paper-2)", color: "var(--ink)", padding: "14px 28px", borderRadius: 100, fontFamily: "var(--font-ui)", fontSize: 14, fontWeight: 500, textDecoration: "none", transition: "background 0.2s, transform 0.2s" }}
-              onMouseEnter={e => { e.currentTarget.style.background = "var(--accent)"; e.currentTarget.style.transform = "translateY(-2px)"; }}
-              onMouseLeave={e => { e.currentTarget.style.background = "var(--paper-2)"; e.currentTarget.style.transform = "none"; }}
-=======
-              style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "var(--paper-2)", color: "var(--ink)", padding: "14px 28px", borderRadius: 100, fontFamily: "var(--font-ui)", fontSize: 14, fontWeight: 500, textDecoration: "none", transition: "background 0.2s, color 0.2s, transform 0.2s" }}
-              onMouseEnter={e => { e.currentTarget.style.background = "var(--accent)"; e.currentTarget.style.color = "#412402"; e.currentTarget.style.transform = "translateY(-2px)"; }}
-              onMouseLeave={e => { e.currentTarget.style.background = "var(--paper-2)"; e.currentTarget.style.color = "var(--ink)"; e.currentTarget.style.transform = "none"; }}
->>>>>>> 11a5f0242cc82ef3963a0f45ba7dbd9108b4ddac
+              style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "var(--anchor)", color: "#FFFFFF", padding: "14px 28px", borderRadius: 100, fontFamily: "var(--font-ui)", fontSize: 14, fontWeight: 500, textDecoration: "none", transition: "background 0.2s, transform 0.2s" }}
+              onMouseEnter={e => { e.currentTarget.style.background = "var(--accent-2)"; e.currentTarget.style.transform = "translateY(-2px)"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "var(--anchor)"; e.currentTarget.style.transform = "none"; }}
             >
               Read full article on {article.sourceName} <ExternalLink size={14} />
             </a>

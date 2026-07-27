@@ -62,8 +62,7 @@ export function Navbar() {
 
       <header
         style={{
-          background: "var(--paper)",
-          borderBottom: "1px solid var(--paper-3)",
+          background: "var(--anchor)",
           position: "sticky",
           top: 0,
           zIndex: 90,
@@ -86,38 +85,23 @@ export function Navbar() {
             href="/"
             style={{ display: "flex", alignItems: "center", gap: 12, flexShrink: 0, textDecoration: "none" }}
           >
-<<<<<<< HEAD
-            <div
-              style={{
-                width: 40,
-                height: 40,
-                background: "var(--paper-2)",
-                borderRadius: 4,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-              }}
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" fill="white" opacity="0.4"/>
-                <path d="M8 10l4-4 4 4M8 14l4 4 4-4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-=======
             <svg width="40" height="40" viewBox="0 0 240 240" style={{ flexShrink: 0, borderRadius: 8 }}>
-              <rect width="240" height="240" rx="48" fill="var(--paper-2)"/>
-              <path d="M120,26 C144,24 162,34 174,47 C184,58 190,64 186,76 C182,86 172,84 176,97 C181,108 193,110 189,123 C185,135 172,128 168,141 C164,154 173,161 164,172 C158,181 151,177 147,190 C143,203 135,212 126,218 C122,221 118,223 115,218 C109,206 105,195 99,187 C92,177 79,173 75,162 C71,151 80,145 74,134 C67,122 54,120 51,107 C48,94 58,88 53,77 C48,66 39,60 46,49 C53,38 70,34 83,31 C96,28 108,29 120,26 Z" fill="var(--ink)"/>
-              <polyline points="30,132 78,132 91,109 106,155 121,132 152,132 165,104 178,160 210,132" fill="none" stroke="var(--accent)" strokeWidth="9" strokeLinecap="round" strokeLinejoin="round"/>
+              <rect width="240" height="240" rx="48" fill="rgba(255,255,255,0.12)"/>
+              <path d="M120,26 C144,24 162,34 174,47 C184,58 190,64 186,76 C182,86 172,84 176,97 C181,108 193,110 189,123 C185,135 172,128 168,141 C164,154 173,161 164,172 C158,181 151,177 147,190 C143,203 135,212 126,218 C122,221 118,223 115,218 C109,206 105,195 99,187 C92,177 79,173 75,162 C71,151 80,145 74,134 C67,122 54,120 51,107 C48,94 58,88 53,77 C48,66 39,60 46,49 C53,38 70,34 83,31 C96,28 108,29 120,26 Z" fill="#FFFFFF"/>
+              <polyline points="30,132 78,132 91,109 106,155 121,132 152,132 165,104 178,160 210,132" fill="none" stroke="var(--mint)" strokeWidth="9" strokeLinecap="round" strokeLinejoin="round"/>
               <circle cx="91" cy="109" r="6.5" fill="var(--live)"/>
               <circle cx="165" cy="104" r="6.5" fill="var(--live)"/>
             </svg>
->>>>>>> 11a5f0242cc82ef3963a0f45ba7dbd9108b4ddac
             <div style={{ lineHeight: 1.1 }}>
-              <div style={{ fontFamily: "var(--font-headline)", fontSize: 22, fontWeight: 700, color: "var(--ink)", letterSpacing: "-0.02em" }}>
-                AfricaNews
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ fontFamily: "var(--font-headline)", fontSize: 19, fontWeight: 600, color: "#FFFFFF", letterSpacing: "-0.01em" }}>
+                  AfricaNews
+                </span>
+                <span style={{ background: "var(--live)", color: "#FFFFFF", fontFamily: "var(--font-ui)", fontSize: 11, fontWeight: 600, padding: "2px 8px", borderRadius: 4, letterSpacing: "0.02em" }}>
+                  Live
+                </span>
               </div>
-              <div style={{ fontFamily: "var(--font-ui)", fontSize: 9.5, fontWeight: 500, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink-4)" }}>
+              <div style={{ fontFamily: "var(--font-ui)", fontSize: 9.5, fontWeight: 500, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(255,255,255,0.65)" }}>
                 The Continent's Pulse
               </div>
             </div>
@@ -134,27 +118,28 @@ export function Navbar() {
               placeholder="Search news, topics, countries…"
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
+              className="an-nav-search"
               style={{
                 width: "100%",
                 height: 40,
-                background: "var(--paper-2)",
+                background: "rgba(255,255,255,0.14)",
                 border: "1.5px solid transparent",
                 borderRadius: 6,
                 padding: "0 40px 0 14px",
                 fontFamily: "var(--font-ui)",
                 fontSize: 13.5,
-                color: "var(--ink)",
+                color: "#FFFFFF",
                 outline: "none",
                 transition: "border-color 0.2s, background 0.2s",
               }}
-              onFocus={e => { e.target.style.borderColor = "var(--ink-3)"; e.target.style.background = "var(--surface-1)"; }}
-              onBlur={e => { e.target.style.borderColor = "transparent"; e.target.style.background = "var(--paper-2)"; }}
+              onFocus={e => { e.target.style.borderColor = "var(--mint)"; e.target.style.background = "rgba(255,255,255,0.22)"; }}
+              onBlur={e => { e.target.style.borderColor = "transparent"; e.target.style.background = "rgba(255,255,255,0.14)"; }}
             />
             <button
               type="submit"
               style={{
                 position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)",
-                background: "none", border: "none", cursor: "pointer", color: "var(--ink-4)",
+                background: "none", border: "none", cursor: "pointer", color: "rgba(255,255,255,0.7)",
                 display: "flex", padding: 4,
               }}
             >
@@ -169,12 +154,8 @@ export function Navbar() {
             <Link
               href="#newsletter"
               style={{
-                background: "var(--accent)",
-<<<<<<< HEAD
-                color: "var(--ink)",
-=======
-                color: "#412402",
->>>>>>> 11a5f0242cc82ef3963a0f45ba7dbd9108b4ddac
+                background: "var(--yellow)",
+                color: "var(--yellow-text)",
                 border: "none",
                 borderRadius: 5,
                 padding: "0 16px",
@@ -198,7 +179,7 @@ export function Navbar() {
           <button
             className="md:hidden"
             onClick={() => setMobileOpen(!mobileOpen)}
-            style={{ background: "none", border: "none", cursor: "pointer", padding: 4, color: "var(--ink)" }}
+            style={{ background: "none", border: "none", cursor: "pointer", padding: 4, color: "#FFFFFF" }}
           >
             {mobileOpen ? (
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="m18 6-12 12M6 6l12 12"/></svg>
@@ -210,7 +191,7 @@ export function Navbar() {
 
         {/* ── Navigation bar ── */}
         <nav
-          style={{ borderTop: "1px solid var(--paper-3)", background: "var(--paper)" }}
+          style={{ borderTop: "1px solid rgba(255,255,255,0.15)", background: "var(--anchor)" }}
           className="hidden md:block"
         >
           {/* Outer wrapper: NO overflow here — dropdown must escape this container */}
@@ -236,7 +217,7 @@ export function Navbar() {
             </div>
 
             {/* Divider — outside scroll area */}
-            <div style={{ width: 1, height: 20, background: "var(--paper-3)", flexShrink: 0, margin: "0 8px" }} />
+            <div style={{ width: 1, height: 20, background: "rgba(255,255,255,0.25)", flexShrink: 0, margin: "0 8px" }} />
 
             {/* Countries dropdown — outside scroll area so position:absolute is never clipped */}
             <div style={{ position: "relative", flexShrink: 0 }} ref={dropdownRef}>
@@ -249,7 +230,7 @@ export function Navbar() {
                   fontFamily: "var(--font-ui)",
                   fontSize: 13,
                   fontWeight: 500,
-                  color: isCountries ? "var(--accent)" : "var(--ink-3)",
+                  color: isCountries ? "var(--mint)" : "rgba(255,255,255,0.8)",
                   padding: "0 14px",
                   height: 56,
                   display: "flex",
@@ -258,7 +239,7 @@ export function Navbar() {
                   whiteSpace: "nowrap",
                   background: "none",
                   border: "none",
-                  borderBottom: isCountries ? "2px solid var(--accent)" : "2px solid transparent",
+                  borderBottom: isCountries ? "2px solid var(--mint)" : "2px solid transparent",
                   cursor: "pointer",
                   transition: "color 0.2s",
                 }}
@@ -282,9 +263,9 @@ export function Navbar() {
                     top: "calc(100% + 4px)",
                     right: 0,
                     background: "var(--surface-1)",
-                    border: "1px solid var(--paper-3)",
+                    border: "1px solid var(--border)",
                     borderRadius: 10,
-                    boxShadow: "0 8px 32px rgba(0,0,0,0.45)",
+                    boxShadow: "0 8px 32px rgba(0,0,0,0.18)",
                     maxWidth: "min(600px, 95vw)",
                     padding: 20,
                     zIndex: 999,
@@ -357,8 +338,8 @@ export function Navbar() {
         {mobileOpen && (
           <div
             style={{
-              background: "var(--paper)",
-              borderTop: "1px solid var(--paper-3)",
+              background: "var(--anchor)",
+              borderTop: "1px solid rgba(255,255,255,0.15)",
               padding: "16px 24px 24px",
             }}
             className="md:hidden"
@@ -369,16 +350,17 @@ export function Navbar() {
                 placeholder="Search…"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
+                className="an-nav-search"
                 style={{
                   width: "100%",
                   height: 40,
-                  background: "var(--paper-2)",
-                  border: "1.5px solid var(--paper-3)",
+                  background: "rgba(255,255,255,0.14)",
+                  border: "1.5px solid transparent",
                   borderRadius: 6,
                   padding: "0 14px",
                   fontFamily: "var(--font-ui)",
                   fontSize: 13.5,
-                  color: "var(--ink)",
+                  color: "#FFFFFF",
                   outline: "none",
                 }}
               />
@@ -396,9 +378,9 @@ export function Navbar() {
                       fontFamily: "var(--font-ui)",
                       fontSize: 14,
                       fontWeight: 500,
-                      color: "var(--ink-2)",
+                      color: "rgba(255,255,255,0.85)",
                       padding: "10px 0",
-                      borderBottom: "1px solid var(--paper-3)",
+                      borderBottom: "1px solid rgba(255,255,255,0.12)",
                     }}
                   >
                     {item}
@@ -421,18 +403,18 @@ function NavLink({ href, active, children }: { href: string; active: boolean; ch
         fontFamily: "var(--font-ui)",
         fontSize: 13,
         fontWeight: active ? 600 : 500,
-        color: active ? "var(--accent)" : "var(--ink-3)",
+        color: active ? "var(--mint)" : "rgba(255,255,255,0.8)",
         padding: "0 14px",
         height: 56,
         display: "flex",
         alignItems: "center",
         whiteSpace: "nowrap",
-        borderBottom: active ? "2px solid var(--accent)" : "2px solid transparent",
+        borderBottom: active ? "2px solid var(--mint)" : "2px solid transparent",
         transition: "color 0.2s, border-color 0.2s",
         textDecoration: "none",
       }}
-      onMouseEnter={e => { if (!active) (e.currentTarget as HTMLElement).style.color = "var(--ink)"; }}
-      onMouseLeave={e => { if (!active) (e.currentTarget as HTMLElement).style.color = "var(--ink-3)"; }}
+      onMouseEnter={e => { if (!active) (e.currentTarget as HTMLElement).style.color = "#FFFFFF"; }}
+      onMouseLeave={e => { if (!active) (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.8)"; }}
     >
       {children}
     </Link>

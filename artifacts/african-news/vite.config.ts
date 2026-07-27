@@ -49,6 +49,14 @@ export default defineConfig({
       strict: true,
       deny: ["**/.*"],
     },
+    // Local dev hits the deployed API unless DEV_API_PROXY points elsewhere
+    // (e.g. http://localhost:8080 when running api-server locally).
+    proxy: {
+      "/api": {
+        target: process.env.DEV_API_PROXY ?? "https://african-news-feed-api-server.vercel.app",
+        changeOrigin: true,
+      },
+    },
   },
   preview: {
     port,

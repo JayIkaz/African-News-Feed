@@ -155,7 +155,7 @@ export function Sidebar() {
           Daily digest of the continent's most important stories, curated from 65+ sources.
         </p>
         {subscribed ? (
-          <div style={{ fontFamily: "var(--font-ui)", fontSize: 13, color: "#4ade80", fontWeight: 500 }}>
+          <div style={{ fontFamily: "var(--font-ui)", fontSize: 13, color: "var(--mint-text)", fontWeight: 500 }}>
             ✓ You're subscribed! Check your inbox.
           </div>
         ) : (
@@ -184,12 +184,8 @@ export function Sidebar() {
               style={{
                 width: "100%",
                 padding: "10px",
-                background: "var(--accent)",
-<<<<<<< HEAD
-                color: "var(--ink)",
-=======
-                color: "#412402",
->>>>>>> 11a5f0242cc82ef3963a0f45ba7dbd9108b4ddac
+                background: "var(--yellow)",
+                color: "var(--yellow-text)",
                 border: "none",
                 borderRadius: 5,
                 fontFamily: "var(--font-ui)",

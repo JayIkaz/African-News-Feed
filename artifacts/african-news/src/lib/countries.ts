@@ -182,11 +182,11 @@ export const REGIONS: Region[] = [
 // palette colors, so this page's region colors actually match the rest of
 // the site rather than being a disconnected purple/amber/emerald set.
 export const REGION_COLORS: Record<Region, string> = {
-  "All": "bg-[var(--accent)] text-[#412402]",
+  "All": "bg-[var(--accent)] text-white",
   "West Africa": "bg-[var(--region-west)] text-white",
   "East Africa": "bg-[var(--region-east)] text-white",
   "North Africa": "bg-[var(--region-north)] text-white",
-  "Southern Africa": "bg-[var(--region-south)] text-[#412402]",
+  "Southern Africa": "bg-[var(--region-south)] text-white",
   "Central Africa": "bg-[var(--region-central)] text-white",
 };
 

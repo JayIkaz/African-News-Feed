@@ -78,10 +78,7 @@ export default function Home() {
 
         {/* ── Hero / Top Stories ── */}
         <section style={{ paddingTop: 36 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
-            <div style={{ width: 4, height: 22, background: "var(--accent)", borderRadius: 2 }} />
-            <h2 style={{ fontFamily: "var(--font-headline)", fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em" }}>Top Stories</h2>
-          </div>
+          <h2 style={{ fontFamily: "var(--font-headline)", fontSize: 15, fontWeight: 600, margin: "0 0 12px", paddingLeft: 10, borderLeft: "3px solid var(--yellow)" }}>Top stories</h2>
 
           {isMobile ? (
             /* Mobile: swipeable carousel */
@@ -97,34 +94,35 @@ export default function Home() {
               </div>
             )
           ) : (
-            /* Desktop: featured + 2 side cards grid */
-            <div className="an-hero-grid">
+            /* Desktop: spec §3 top-story card full width, next two stories
+               as standard cards beneath it */
+            <>
               {topLoading ? (
                 <>
-                  <div className="an-skeleton an-featured-card" style={{ gridRow: "1/3" }} />
-                  <div className="an-skeleton" style={{ minHeight: 220 }} />
-                  <div className="an-skeleton" style={{ minHeight: 220 }} />
+                  <div className="an-skeleton" style={{ height: 260, borderRadius: 12, marginBottom: 12 }} />
+                  <div className="an-grid-3">
+                    <div className="an-skeleton an-news-card" style={{ borderRadius: 12 }} />
+                    <div className="an-skeleton an-news-card" style={{ borderRadius: 12 }} />
+                  </div>
                 </>
               ) : topStories?.articles && topStories.articles.length > 0 ? (
                 <>
-                  <div style={{ gridRow: "1/3" }}>
+                  <div style={{ marginBottom: 12 }}>
                     <ArticleCard article={topStories.articles[0]} featured />
                   </div>
-                  <div className="an-hero-side-cards">
-                    {topStories.articles[1] && (
-                      <ArticleCard article={topStories.articles[1]} side />
-                    )}
-                    {topStories.articles[2] && (
-                      <ArticleCard article={topStories.articles[2]} side />
-                    )}
-                  </div>
+                  {(topStories.articles[1] || topStories.articles[2]) && (
+                    <div className="an-grid-3">
+                      {topStories.articles[1] && <ArticleCard article={topStories.articles[1]} />}
+                      {topStories.articles[2] && <ArticleCard article={topStories.articles[2]} />}
+                    </div>
+                  )}
                 </>
               ) : (
-                <div style={{ gridColumn: "1/3", display: "flex", alignItems: "center", justifyContent: "center", padding: 40, color: "var(--ink-4)", fontFamily: "var(--font-ui)", fontSize: 14 }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: 40, color: "var(--ink-4)", fontFamily: "var(--font-ui)", fontSize: 14 }}>
                   No top stories available.
                 </div>
               )}
-            </div>
+            </>
           )}
         </section>
 
@@ -157,7 +155,7 @@ export default function Home() {
                   fontFamily: "var(--font-ui)",
                   fontSize: 13,
                   fontWeight: 500,
-                  color: isActive ? "#412402" : "var(--ink-3)",
+                  color: isActive ? "#FFFFFF" : "var(--ink-3)",
                   background: isActive ? "var(--accent)" : "var(--surface-1)",
                   cursor: "pointer",
                   transition: "all 0.2s",
@@ -237,10 +235,9 @@ export default function Home() {
 
             {/* Articles main */}
             <div>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
-                <div style={{ width: 4, height: 22, background: "var(--accent)", borderRadius: 2 }} />
-                <h2 style={{ fontFamily: "var(--font-headline)", fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em" }}>
-                  {activeCat ? `${activeCat} News` : "Latest News"}
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+                <h2 style={{ fontFamily: "var(--font-headline)", fontSize: 15, fontWeight: 600, margin: 0, paddingLeft: 10, borderLeft: "3px solid var(--yellow)" }}>
+                  {activeCat ? `${activeCat} news` : "Latest news"}
                 </h2>
                 {latestNews && (
                   <span style={{ marginLeft: "auto", fontFamily: "var(--font-ui)", fontSize: 12, color: "var(--ink-4)" }}>
@@ -266,7 +263,7 @@ export default function Home() {
                     <ArticleCard key={article.id} article={article} isRead={isRead(article.id)} />
                   ))
                 ) : (
-                  <div style={{ gridColumn: "1/4", textAlign: "center", padding: "60px 24px", color: "var(--ink-4)" }}>
+                  <div style={{ gridColumn: "1/3", textAlign: "center", padding: "60px 24px", color: "var(--ink-4)" }}>
                     <div style={{ fontSize: 48, marginBottom: 16 }}>📭</div>
                     <h3 style={{ fontFamily: "var(--font-headline)", fontSize: 20, color: "var(--ink-3)", marginBottom: 8 }}>No articles found</h3>
                     <p style={{ fontFamily: "var(--font-ui)", fontSize: 14 }}>Try a different category or check back soon.</p>
@@ -332,7 +329,7 @@ function PagBtn({ children, onClick, disabled, active }: { children: React.React
         borderRadius: 6,
         border: `1px solid ${active ? "var(--accent)" : "var(--paper-3)"}`,
         background: active ? "var(--accent)" : "var(--surface-1)",
-        color: active ? "#412402" : disabled ? "var(--ink-4)" : "var(--ink-2)",
+        color: active ? "#FFFFFF" : disabled ? "var(--ink-4)" : "var(--ink-2)",
         fontFamily: "var(--font-ui)",
         fontSize: 13,
         fontWeight: 500,

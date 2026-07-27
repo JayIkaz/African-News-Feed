@@ -4,7 +4,7 @@ import { formatDistanceToNow } from "date-fns";
 import { Article } from "@workspace/api-client-react";
 import { getArticleImage } from "@/lib/unsplash";
 import { COUNTRY_FLAGS } from "@/lib/countries";
-import { CAT_COLORS } from "./ArticleCard";
+import { catTag } from "./ArticleCard";
 
 interface TopStoriesCarouselProps {
   articles: Article[];
@@ -89,7 +89,7 @@ export function TopStoriesCarousel({ articles }: TopStoriesCarouselProps) {
 function CarouselSlide({ article, active }: { article: Article; active: boolean }) {
   const imageUrl = getArticleImage(article, "featured");
   const flag = COUNTRY_FLAGS[article.country ?? ""] ?? "🌍";
-  const catColor = CAT_COLORS[article.category ?? "General"] ?? "#5a5750";
+  const tag = catTag(article.category);
   const dateStr = article.publishedDate
     ? formatDistanceToNow(new Date(article.publishedDate), { addSuffix: true })
     : "";
@@ -113,7 +113,7 @@ function CarouselSlide({ article, active }: { article: Article; active: boolean 
       <div className="an-carousel-content">
         <span
           className="an-carousel-cat"
-          style={{ background: catColor }}
+          style={{ background: tag.bg, color: tag.fg }}
         >
           {article.category}
         </span>

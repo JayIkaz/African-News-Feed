@@ -10,12 +10,9 @@ export function BreakingTicker() {
     <div
       className="an-breaking-ticker"
       style={{
-        background: "var(--accent)",
-<<<<<<< HEAD
-        color: "var(--ink)",
-=======
-        color: "#412402",
->>>>>>> 11a5f0242cc82ef3963a0f45ba7dbd9108b4ddac
+        // Breaking/live is the one place --live is allowed as a surface
+        background: "var(--live)",
+        color: "#FFFFFF",
         display: "flex",
         alignItems: "center",
         overflow: "hidden",
@@ -26,11 +23,8 @@ export function BreakingTicker() {
       <div
         className="an-breaking-label"
         style={{
-          background: "var(--paper-2)",
-<<<<<<< HEAD
-=======
-          color: "var(--ink)",
->>>>>>> 11a5f0242cc82ef3963a0f45ba7dbd9108b4ddac
+          background: "rgba(0,0,0,0.22)",
+          color: "#FFFFFF",
           height: "100%",
           display: "flex",
           alignItems: "center",
@@ -47,7 +41,7 @@ export function BreakingTicker() {
           style={{
             width: 6,
             height: 6,
-            background: "var(--live)",
+            background: "#FFFFFF",
             borderRadius: "50%",
             animation: "pulse-dot 1.4s ease-in-out infinite",
             flexShrink: 0,

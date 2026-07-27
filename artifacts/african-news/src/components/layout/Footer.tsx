@@ -3,6 +3,10 @@ import { Link } from "wouter";
 import { useTriggerIngestion } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
 
+const FOOT_LINK = "rgba(255,255,255,0.72)";
+const FOOT_DIM = "rgba(255,255,255,0.45)";
+const FOOT_RULE = "rgba(255,255,255,0.15)";
+
 export function Footer() {
   const { toast } = useToast();
   const [email, setEmail] = useState("");
@@ -33,40 +37,30 @@ export function Footer() {
   };
 
   return (
-<<<<<<< HEAD
-    <footer style={{ background: "var(--paper-2)", color: "rgba(255,255,255,0.7)", padding: "48px 0 32px", marginTop: 48 }}>
-=======
-    <footer style={{ background: "var(--paper-2)", color: "var(--ink-3)", padding: "48px 0 32px", marginTop: 48 }}>
->>>>>>> 11a5f0242cc82ef3963a0f45ba7dbd9108b4ddac
+    <footer style={{ background: "var(--anchor)", color: FOOT_LINK, padding: "48px 0 32px", marginTop: 48 }}>
       <div style={{ maxWidth: 1320, margin: "0 auto", padding: "0 24px" }}>
         <div className="an-footer-grid" style={{ marginBottom: 40 }}>
 
           {/* Brand */}
           <div>
-<<<<<<< HEAD
-            <Link href="/" style={{ textDecoration: "none" }}>
-              <div style={{ fontFamily: "var(--font-headline)", fontSize: 24, fontWeight: 700, color: "var(--ink)", letterSpacing: "-0.02em", marginBottom: 2 }}>AfricaNews</div>
-              <div style={{ fontFamily: "var(--font-ui)", fontSize: 9, fontWeight: 500, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 14 }}>The Continent's Pulse</div>
-=======
             <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 10, marginBottom: 2 }}>
               <svg width="30" height="30" viewBox="0 0 240 240" style={{ flexShrink: 0 }}>
-                <path d="M120,26 C144,24 162,34 174,47 C184,58 190,64 186,76 C182,86 172,84 176,97 C181,108 193,110 189,123 C185,135 172,128 168,141 C164,154 173,161 164,172 C158,181 151,177 147,190 C143,203 135,212 126,218 C122,221 118,223 115,218 C109,206 105,195 99,187 C92,177 79,173 75,162 C71,151 80,145 74,134 C67,122 54,120 51,107 C48,94 58,88 53,77 C48,66 39,60 46,49 C53,38 70,34 83,31 C96,28 108,29 120,26 Z" fill="var(--ink)"/>
-                <polyline points="30,132 78,132 91,109 106,155 121,132 152,132 165,104 178,160 210,132" fill="none" stroke="var(--accent)" strokeWidth="11" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M120,26 C144,24 162,34 174,47 C184,58 190,64 186,76 C182,86 172,84 176,97 C181,108 193,110 189,123 C185,135 172,128 168,141 C164,154 173,161 164,172 C158,181 151,177 147,190 C143,203 135,212 126,218 C122,221 118,223 115,218 C109,206 105,195 99,187 C92,177 79,173 75,162 C71,151 80,145 74,134 C67,122 54,120 51,107 C48,94 58,88 53,77 C48,66 39,60 46,49 C53,38 70,34 83,31 C96,28 108,29 120,26 Z" fill="#FFFFFF"/>
+                <polyline points="30,132 78,132 91,109 106,155 121,132 152,132 165,104 178,160 210,132" fill="none" stroke="var(--mint)" strokeWidth="11" strokeLinecap="round" strokeLinejoin="round"/>
                 <circle cx="91" cy="109" r="7.5" fill="var(--live)"/>
                 <circle cx="165" cy="104" r="7.5" fill="var(--live)"/>
               </svg>
-              <div style={{ fontFamily: "var(--font-headline)", fontSize: 24, fontWeight: 700, color: "var(--ink)", letterSpacing: "-0.02em" }}>AfricaNews</div>
->>>>>>> 11a5f0242cc82ef3963a0f45ba7dbd9108b4ddac
+              <div style={{ fontFamily: "var(--font-headline)", fontSize: 24, fontWeight: 700, color: "#FFFFFF", letterSpacing: "-0.02em" }}>AfricaNews</div>
             </Link>
-            <div style={{ fontFamily: "var(--font-ui)", fontSize: 9, fontWeight: 500, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink-4)", marginBottom: 14 }}>The Continent's Pulse</div>
-            <p style={{ fontFamily: "var(--font-ui)", fontSize: 13, lineHeight: 1.6, color: "var(--ink-3)", marginBottom: 16 }}>
+            <div style={{ fontFamily: "var(--font-ui)", fontSize: 9, fontWeight: 500, letterSpacing: "0.18em", textTransform: "uppercase", color: FOOT_DIM, marginBottom: 14 }}>The Continent's Pulse</div>
+            <p style={{ fontFamily: "var(--font-ui)", fontSize: 13, lineHeight: 1.6, color: FOOT_LINK, marginBottom: 16 }}>
               Aggregating the continent's most important stories from 65+ trusted local and international sources.
             </p>
             <div style={{ display: "flex", gap: 10 }}>
               {["𝕏", "f", "in"].map((s, i) => (
-                <a key={i} href="#" style={{ width: 32, height: 32, borderRadius: "50%", background: "var(--paper-3)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--ink-3)", fontFamily: "var(--font-ui)", fontSize: 12, textDecoration: "none", transition: "background 0.2s" }}
-                  onMouseEnter={e => (e.currentTarget.style.background = "var(--accent)")}
-                  onMouseLeave={e => (e.currentTarget.style.background = "var(--paper-3)")}
+                <a key={i} href="#" style={{ width: 32, height: 32, borderRadius: "50%", background: "rgba(255,255,255,0.12)", display: "flex", alignItems: "center", justifyContent: "center", color: "#FFFFFF", fontFamily: "var(--font-ui)", fontSize: 12, textDecoration: "none", transition: "background 0.2s" }}
+                  onMouseEnter={e => (e.currentTarget.style.background = "rgba(255,255,255,0.25)")}
+                  onMouseLeave={e => (e.currentTarget.style.background = "rgba(255,255,255,0.12)")}
                 >
                   {s}
                 </a>
@@ -76,19 +70,13 @@ export function Footer() {
 
           {/* Sections */}
           <div>
-            <h4 style={{ fontFamily: "var(--font-ui)", fontSize: 11, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-4)", marginBottom: 14 }}>
+            <h4 style={{ fontFamily: "var(--font-ui)", fontSize: 11, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: FOOT_DIM, marginBottom: 14 }}>
               Sections
             </h4>
             {["Politics", "Business", "Technology", "Economy", "Society", "Environment", "International"].map(cat => (
-<<<<<<< HEAD
-              <Link key={cat} href={`/category/${cat}`} style={{ display: "block", fontFamily: "var(--font-ui)", fontSize: 13, color: "rgba(255,255,255,0.65)", padding: "4px 0", textDecoration: "none", transition: "color 0.2s" }}
-                onMouseEnter={e => (e.currentTarget.style.color = "var(--ink)")}
-                onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.65)")}
-=======
-              <Link key={cat} href={`/category/${cat}`} style={{ display: "block", fontFamily: "var(--font-ui)", fontSize: 13, color: "var(--ink-3)", padding: "4px 0", textDecoration: "none", transition: "color 0.2s" }}
-                onMouseEnter={e => (e.currentTarget.style.color = "var(--ink)")}
-                onMouseLeave={e => (e.currentTarget.style.color = "var(--ink-3)")}
->>>>>>> 11a5f0242cc82ef3963a0f45ba7dbd9108b4ddac
+              <Link key={cat} href={`/category/${cat}`} style={{ display: "block", fontFamily: "var(--font-ui)", fontSize: 13, color: FOOT_LINK, padding: "4px 0", textDecoration: "none", transition: "color 0.2s" }}
+                onMouseEnter={e => (e.currentTarget.style.color = "var(--mint)")}
+                onMouseLeave={e => (e.currentTarget.style.color = FOOT_LINK)}
               >
                 {cat}
               </Link>
@@ -97,58 +85,40 @@ export function Footer() {
 
           {/* Regions & Platform */}
           <div>
-            <h4 style={{ fontFamily: "var(--font-ui)", fontSize: 11, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-4)", marginBottom: 14 }}>
+            <h4 style={{ fontFamily: "var(--font-ui)", fontSize: 11, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: FOOT_DIM, marginBottom: 14 }}>
               Regions
             </h4>
             {["West Africa", "East Africa", "North Africa", "Southern Africa", "Central Africa"].map(r => (
-<<<<<<< HEAD
-              <Link key={r} href={`/countries?region=${encodeURIComponent(r)}`} style={{ display: "block", fontFamily: "var(--font-ui)", fontSize: 13, color: "rgba(255,255,255,0.65)", padding: "4px 0", textDecoration: "none", transition: "color 0.2s" }}
-                onMouseEnter={e => (e.currentTarget.style.color = "var(--ink)")}
-                onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.65)")}
-=======
-              <Link key={r} href={`/countries?region=${encodeURIComponent(r)}`} style={{ display: "block", fontFamily: "var(--font-ui)", fontSize: 13, color: "var(--ink-3)", padding: "4px 0", textDecoration: "none", transition: "color 0.2s" }}
-                onMouseEnter={e => (e.currentTarget.style.color = "var(--ink)")}
-                onMouseLeave={e => (e.currentTarget.style.color = "var(--ink-3)")}
->>>>>>> 11a5f0242cc82ef3963a0f45ba7dbd9108b4ddac
+              <Link key={r} href={`/countries?region=${encodeURIComponent(r)}`} style={{ display: "block", fontFamily: "var(--font-ui)", fontSize: 13, color: FOOT_LINK, padding: "4px 0", textDecoration: "none", transition: "color 0.2s" }}
+                onMouseEnter={e => (e.currentTarget.style.color = "var(--mint)")}
+                onMouseLeave={e => (e.currentTarget.style.color = FOOT_LINK)}
               >
                 {r}
               </Link>
             ))}
-<<<<<<< HEAD
-            <div style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.1)" }}>
-              <h4 style={{ fontFamily: "var(--font-ui)", fontSize: 11, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 10 }}>Platform</h4>
-              <Link href="/advertise" style={{ display: "block", fontFamily: "var(--font-ui)", fontSize: 13, color: "rgba(255,255,255,0.65)", padding: "4px 0", textDecoration: "none" }}
-                onMouseEnter={e => (e.currentTarget.style.color = "var(--ink)")}
-                onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.65)")}
+            <div style={{ marginTop: 16, paddingTop: 16, borderTop: `1px solid ${FOOT_RULE}` }}>
+              <h4 style={{ fontFamily: "var(--font-ui)", fontSize: 11, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: FOOT_DIM, marginBottom: 10 }}>Platform</h4>
+              <Link href="/advertise" style={{ display: "block", fontFamily: "var(--font-ui)", fontSize: 13, color: FOOT_LINK, padding: "4px 0", textDecoration: "none" }}
+                onMouseEnter={e => (e.currentTarget.style.color = "var(--mint)")}
+                onMouseLeave={e => (e.currentTarget.style.color = FOOT_LINK)}
               >Advertise With Us</Link>
-              <Link href="/api-access" style={{ display: "block", fontFamily: "var(--font-ui)", fontSize: 13, color: "rgba(255,255,255,0.65)", padding: "4px 0", textDecoration: "none" }}
-                onMouseEnter={e => (e.currentTarget.style.color = "var(--ink)")}
-                onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.65)")}
-=======
-            <div style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid var(--paper-3)" }}>
-              <h4 style={{ fontFamily: "var(--font-ui)", fontSize: 11, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-4)", marginBottom: 10 }}>Platform</h4>
-              <Link href="/advertise" style={{ display: "block", fontFamily: "var(--font-ui)", fontSize: 13, color: "var(--ink-3)", padding: "4px 0", textDecoration: "none" }}
-                onMouseEnter={e => (e.currentTarget.style.color = "var(--ink)")}
-                onMouseLeave={e => (e.currentTarget.style.color = "var(--ink-3)")}
-              >Advertise With Us</Link>
-              <Link href="/api-access" style={{ display: "block", fontFamily: "var(--font-ui)", fontSize: 13, color: "var(--ink-3)", padding: "4px 0", textDecoration: "none" }}
-                onMouseEnter={e => (e.currentTarget.style.color = "var(--ink)")}
-                onMouseLeave={e => (e.currentTarget.style.color = "var(--ink-3)")}
->>>>>>> 11a5f0242cc82ef3963a0f45ba7dbd9108b4ddac
+              <Link href="/api-access" style={{ display: "block", fontFamily: "var(--font-ui)", fontSize: 13, color: FOOT_LINK, padding: "4px 0", textDecoration: "none" }}
+                onMouseEnter={e => (e.currentTarget.style.color = "var(--mint)")}
+                onMouseLeave={e => (e.currentTarget.style.color = FOOT_LINK)}
               >API Access</Link>
             </div>
           </div>
 
           {/* Newsletter */}
           <div id="footer-newsletter">
-            <h4 style={{ fontFamily: "var(--font-ui)", fontSize: 11, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-4)", marginBottom: 14 }}>
+            <h4 style={{ fontFamily: "var(--font-ui)", fontSize: 11, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: FOOT_DIM, marginBottom: 14 }}>
               Daily Digest
             </h4>
-            <p style={{ fontFamily: "var(--font-ui)", fontSize: 13, color: "var(--ink-3)", marginBottom: 14, lineHeight: 1.6 }}>
+            <p style={{ fontFamily: "var(--font-ui)", fontSize: 13, color: FOOT_LINK, marginBottom: 14, lineHeight: 1.6 }}>
               Top stories from across Africa delivered every morning.
             </p>
             {subscribed ? (
-              <div style={{ fontFamily: "var(--font-ui)", fontSize: 13, color: "#4ade80", fontWeight: 500 }}>
+              <div style={{ fontFamily: "var(--font-ui)", fontSize: 13, color: "var(--mint)", fontWeight: 500 }}>
                 ✓ You're subscribed! Welcome aboard.
               </div>
             ) : (
@@ -162,8 +132,8 @@ export function Footer() {
                   style={{
                     width: "100%",
                     padding: "10px 12px",
-                    background: "var(--surface-1)",
-                    border: "1px solid var(--paper-3)",
+                    background: "#FFFFFF",
+                    border: "1px solid transparent",
                     borderRadius: 5,
                     fontFamily: "var(--font-ui)",
                     fontSize: 13,
@@ -176,17 +146,13 @@ export function Footer() {
                   disabled={submitting}
                   style={{
                     padding: "10px",
-                    background: "var(--accent)",
-<<<<<<< HEAD
-                    color: "var(--ink)",
-=======
-                    color: "#412402",
->>>>>>> 11a5f0242cc82ef3963a0f45ba7dbd9108b4ddac
+                    background: "var(--yellow)",
+                    color: "var(--yellow-text)",
                     border: "none",
                     borderRadius: 5,
                     fontFamily: "var(--font-ui)",
                     fontSize: 13,
-                    fontWeight: 500,
+                    fontWeight: 600,
                     cursor: "pointer",
                   }}
                 >
@@ -198,32 +164,26 @@ export function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div style={{ borderTop: "1px solid var(--paper-3)", paddingTop: 24, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
-          <p style={{ fontFamily: "var(--font-ui)", fontSize: 12, color: "var(--ink-4)" }}>
+        <div style={{ borderTop: `1px solid ${FOOT_RULE}`, paddingTop: 24, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+          <p style={{ fontFamily: "var(--font-ui)", fontSize: 12, color: FOOT_DIM }}>
             © {new Date().getFullYear()} AfricaNews Aggregator. All rights reserved.
             {" · "}
             <a
               href="https://aukizan.com"
               target="_blank"
               rel="noopener noreferrer"
-              style={{ color: "var(--ink-4)", textDecoration: "none", transition: "color 0.2s" }}
-              onMouseEnter={e => (e.currentTarget.style.color = "var(--ink)")}
-              onMouseLeave={e => (e.currentTarget.style.color = "var(--ink-4)")}
+              style={{ color: FOOT_DIM, textDecoration: "none", transition: "color 0.2s" }}
+              onMouseEnter={e => (e.currentTarget.style.color = "#FFFFFF")}
+              onMouseLeave={e => (e.currentTarget.style.color = FOOT_DIM)}
             >
               Powered by Aukizan
             </a>
           </p>
           <div style={{ display: "flex", alignItems: "center", gap: 20, flexWrap: "wrap" }}>
             {["About", "Sources", "Privacy", "Terms"].map(item => (
-<<<<<<< HEAD
-              <Link key={item} href={`/${item.toLowerCase()}`} style={{ fontFamily: "var(--font-ui)", fontSize: 12, color: "rgba(255,255,255,0.35)", textDecoration: "none", transition: "color 0.2s" }}
-                onMouseEnter={e => (e.currentTarget.style.color = "var(--ink)")}
-                onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.35)")}
-=======
-              <Link key={item} href={`/${item.toLowerCase()}`} style={{ fontFamily: "var(--font-ui)", fontSize: 12, color: "var(--ink-4)", textDecoration: "none", transition: "color 0.2s" }}
-                onMouseEnter={e => (e.currentTarget.style.color = "var(--ink)")}
-                onMouseLeave={e => (e.currentTarget.style.color = "var(--ink-4)")}
->>>>>>> 11a5f0242cc82ef3963a0f45ba7dbd9108b4ddac
+              <Link key={item} href={`/${item.toLowerCase()}`} style={{ fontFamily: "var(--font-ui)", fontSize: 12, color: FOOT_DIM, textDecoration: "none", transition: "color 0.2s" }}
+                onMouseEnter={e => (e.currentTarget.style.color = "#FFFFFF")}
+                onMouseLeave={e => (e.currentTarget.style.color = FOOT_DIM)}
               >
                 {item}
               </Link>
@@ -231,10 +191,10 @@ export function Footer() {
             <button
               onClick={() => triggerIngestion.mutate()}
               disabled={triggerIngestion.isPending}
-              style={{ fontFamily: "var(--font-ui)", fontSize: 12, color: "var(--ink-4)", background: "none", border: "none", cursor: "pointer", opacity: 0.3, transition: "opacity 0.2s" }}
+              style={{ fontFamily: "var(--font-ui)", fontSize: 12, color: FOOT_DIM, background: "none", border: "none", cursor: "pointer", opacity: 0.5, transition: "opacity 0.2s" }}
               title="Admin: Force Update"
               onMouseEnter={e => (e.currentTarget.style.opacity = "1")}
-              onMouseLeave={e => (e.currentTarget.style.opacity = "0.3")}
+              onMouseLeave={e => (e.currentTarget.style.opacity = "0.5")}
             >
               {triggerIngestion.isPending ? "Updating…" : "Force Update"}
             </button>

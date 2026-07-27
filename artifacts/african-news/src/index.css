@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 @plugin "@tailwindcss/typography";
@@ -21,7 +20,7 @@
   --color-popover-border: var(--paper-3);
 
   --color-primary: var(--accent);
-  --color-primary-foreground: #412402;
+  --color-primary-foreground: #FFFFFF;
   --color-primary-border: var(--accent);
 
   --color-secondary: var(--paper-2);
@@ -33,17 +32,17 @@
   --color-muted-border: var(--paper-3);
 
   --color-accent: var(--accent);
-  --color-accent-foreground: #412402;
+  --color-accent-foreground: #FFFFFF;
   --color-accent-border: var(--accent);
 
   --color-destructive: var(--live);
   --color-destructive-foreground: #ffffff;
   --color-destructive-border: var(--live);
 
-  --font-ui: 'Inter', system-ui, sans-serif;
-  --font-headline: 'Fraunces', Georgia, serif;
-  --font-body: 'Inter', system-ui, sans-serif;
-  --font-data: 'IBM Plex Mono', ui-monospace, monospace;
+  --font-ui: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-headline: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-body: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-data: ui-monospace, "SF Mono", Consolas, monospace;
 
   --radius-sm: 4px;
   --radius-md: 6px;
@@ -52,37 +51,53 @@
 }
 
 :root {
-  /* Page background — deep indigo night, not literal black */
-  --paper: #14132B;
-  --paper-2: #1A1938;
-  --paper-3: #2A2950;
+  /* Continental light theme — warm grey page, white cards */
+  --paper: #EDEAE5;
+  --paper-2: #E4E1DA;
+  --paper-3: #D8D5CD;
 
-  /* Card / panel surfaces — distinct from page bg so cards read as
-     raised, same role literal white played in the old cream design */
-  --surface-1: #1E1D3D;
-  --surface-2: #24234A;
+  /* Card / panel surfaces */
+  --surface-1: #FFFFFF;
+  --surface-2: #FFFFFF;
 
   /* Text */
-  --ink: #F5F0E6;
-  --ink-2: #D8D4E8;
-  --ink-3: #9691B0;
-  --ink-4: #6B6889;
+  --ink: #2B2B2B;
+  --ink-2: #3F3E3C;
+  --ink-3: #6E6C67;
+  --ink-4: #91908A;
 
-  /* Brand accent — ochre/marigold, category tags + primary actions */
-  --accent: #E8A33D;
-  --accent-2: #F0B75E;
+  /* Brand anchor — deep teal: header, nav, primary actions */
+  --accent: #026670;
+  --accent-2: #04808C;
+  --anchor: #026670;
 
-  /* Live / breaking indicator only — deliberately not reused elsewhere
-     so it keeps its meaning */
-  --live: #E94F37;
+  /* Mint family — active-nav underline, decorative fills, light category tags.
+     Text on a tinted background always uses the darkest shade of the same
+     family, never plain black. */
+  --mint: #9FEDD7;
+  --mint-tint: #E1F5EE;
+  --mint-text: #085041;
 
-  /* Region colors kept distinct from the two brand accents above so a
-     region tag never gets mistaken for a live/breaking marker */
-  --region-north: #C97B4A;
-  --region-west: #4A9D7E;
-  --region-east: #4A7FB8;
-  --region-central: #9B7FD4;
-  --region-south: #E8A33D;
+  /* Yellow family — category tag backgrounds (pale-yellow is decorative
+     only: never under text or tags) */
+  --pale-yellow: #FEF9C7;
+  --yellow: #FCE181;
+  --yellow-tint: #FAEEDA;
+  --yellow-text: #633806;
+
+  /* Breaking/live only. Reserve for genuine urgency */
+  --live: #B23A2E;
+
+  /* Hairline borders */
+  --border: rgba(43,43,43,0.12);
+  --border-strong: rgba(43,43,43,0.28);
+
+  /* Region colors — darkened to hold contrast on the light page */
+  --region-north: #A05E2C;
+  --region-west: #1D7A5F;
+  --region-east: #2F6AA8;
+  --region-central: #7B5FC4;
+  --region-south: #B58020;
 
   --transition: 0.2s cubic-bezier(0.4,0,0.2,1);
   --radius: 0.3rem;
@@ -186,6 +201,11 @@ h1, h2, h3, h4, h5, h6 {
   overflow: hidden;
 }
 
+/* Search input lives on the teal header — placeholder needs its own rule */
+.an-nav-search::placeholder {
+  color: rgba(255,255,255,0.55);
+}
+
 .an-skeleton {
   background: linear-gradient(90deg, var(--surface-1) 25%, var(--paper-3) 50%, var(--surface-1) 75%);
   background-size: 400px 100%;
@@ -201,11 +221,21 @@ h1, h2, h3, h4, h5, h6 {
   padding: 0 24px;
 }
 
+/* Spec §5: latest-news cards sit on a 2-column grid, 12px gap.
+   (Class name kept from the old 3-col layout to avoid touching every page.) */
 .an-grid-3 {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
 }
+
+/* Spec §4: latest-news card — 260px is a ceiling; image band 100px on
+   desktop, proportional 16/9 on single-column layouts */
+.an-news-card { height: 260px; }
+.an-news-card-media { height: 100px; flex-shrink: 0; }
+
+/* Spec §3: top story media — fixed height, crop focus top-third */
+.an-top-media { height: 220px; }
 
 .an-content-with-sidebar {
   display: grid;
@@ -319,7 +349,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .an-carousel-cat {
   display: inline-block;
-  color: #412402;
+  color: var(--yellow-text);
   font-family: var(--font-data);
   font-size: 10px;
   font-weight: 500;
@@ -328,7 +358,7 @@ h1, h2, h3, h4, h5, h6 {
   padding: 3px 8px;
   border-radius: 3px;
   align-self: flex-start;
-  background: var(--accent);
+  background: var(--yellow);
 }
 
 .an-carousel-title {
@@ -499,6 +529,10 @@ h1, h2, h3, h4, h5, h6 {
   .an-grid-3 {
     grid-template-columns: 1fr;
   }
+
+  .an-news-card { height: auto; }
+  .an-news-card-media { height: auto; aspect-ratio: 16 / 9; }
+  .an-top-media { height: 200px; }
 
   .an-stats-strip-inner {
     gap: 20px;
