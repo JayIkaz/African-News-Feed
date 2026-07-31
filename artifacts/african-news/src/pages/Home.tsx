@@ -24,7 +24,7 @@ export default function Home() {
   const [page, setPage] = useState(1);
   const [fadeKey, setFadeKey] = useState(0);
   const isMobile = useMediaQuery("(max-width: 640px)");
-  const limit = 9;
+  const limit = 10;
   const pillRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
   const { isRead, markAllRead, clearHistory, readIds } = useReadHistory();
 
