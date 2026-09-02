@@ -10,9 +10,14 @@ export function BreakingTicker() {
     <div
       className="an-breaking-ticker"
       style={{
-        // Breaking/live is the one place --live is allowed as a surface
-        background: "var(--live)",
-        color: "#FFFFFF",
+        // Spec §1 reserves --live for urgency signals, "never decorative".
+        // A full-bleed red bar above a --paper header read as decoration and
+        // put white on --live at 3.72:1 for every headline. The urgency now
+        // lives in the label — a pulsing --live dot and --live wordmark —
+        // while the headlines sit on --paper as --ink (16:1).
+        background: "var(--paper)",
+        color: "var(--ink)",
+        borderBottom: "1px solid var(--line)",
         display: "flex",
         alignItems: "center",
         overflow: "hidden",
@@ -23,14 +28,16 @@ export function BreakingTicker() {
       <div
         className="an-breaking-label"
         style={{
-          background: "rgba(0,0,0,0.22)",
-          color: "#FFFFFF",
+          color: "var(--live)",
+          // The label used to be separated by its own darker fill; with both
+          // sides on --paper it needs an explicit hairline.
+          borderRight: "1px solid var(--line)",
           height: "100%",
           display: "flex",
           alignItems: "center",
-          fontFamily: "var(--font-ui)",
-          fontWeight: 600,
-          letterSpacing: "0.1em",
+          fontFamily: "var(--font-mono)",
+          fontWeight: 500,
+          letterSpacing: "0.08em",
           textTransform: "uppercase",
           whiteSpace: "nowrap",
           flexShrink: 0,
@@ -41,7 +48,7 @@ export function BreakingTicker() {
           style={{
             width: 6,
             height: 6,
-            background: "#FFFFFF",
+            background: "var(--live)",
             borderRadius: "50%",
             animation: "pulse-dot 1.4s ease-in-out infinite",
             flexShrink: 0,
@@ -67,7 +74,7 @@ export function BreakingTicker() {
             >
               {title}
               {i < doubled.length - 1 && (
-                <span style={{ opacity: 0.55, marginLeft: 60 }}>·</span>
+                <span style={{ color: "var(--ink-faint)", marginLeft: 60 }}>·</span>
               )}
             </span>
           ))}

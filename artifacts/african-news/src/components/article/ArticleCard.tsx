@@ -41,21 +41,26 @@ export function TranslateChip({ t, light = false }: { t: ReturnType<typeof useTr
   );
 }
 
-// Spec §1: tag backgrounds come from the mint/yellow families (plus anchor
-// and urgent); text on a tinted background is always the darkest shade of
-// the same colour family, never plain black.
+// The dark direction drops the per-category colour families: the spec
+// reserves colour for category and urgency signals, and a tag IS the
+// category signal, so one quiet treatment carries all of them — the raised
+// fill with the category name in --accent (7.63:1). The map keeps its shape
+// because it's exported and keyed by category, but every entry now resolves
+// to the same spec-legal pair.
+const TAG_STYLE = { bg: "var(--paper-raised)", fg: "var(--accent)" };
+
 export const CAT_TAG: Record<string, { bg: string; fg: string }> = {
-  Politics: { bg: "var(--yellow)", fg: "var(--yellow-text)" },
-  Business: { bg: "var(--yellow-tint)", fg: "var(--yellow-text)" },
-  Economy: { bg: "var(--yellow)", fg: "var(--yellow-text)" },
-  Society: { bg: "var(--yellow-tint)", fg: "var(--yellow-text)" },
-  Technology: { bg: "var(--mint-tint)", fg: "var(--mint-text)" },
-  Environment: { bg: "var(--mint)", fg: "var(--mint-text)" },
-  International: { bg: "var(--anchor)", fg: "#FFFFFF" },
-  General: { bg: "var(--paper-2)", fg: "var(--ink-3)" },
+  Politics: TAG_STYLE,
+  Business: TAG_STYLE,
+  Economy: TAG_STYLE,
+  Society: TAG_STYLE,
+  Technology: TAG_STYLE,
+  Environment: TAG_STYLE,
+  International: TAG_STYLE,
+  General: TAG_STYLE,
 };
 
-const DEFAULT_TAG = { bg: "var(--paper-2)", fg: "var(--ink-3)" };
+const DEFAULT_TAG = TAG_STYLE;
 
 export function catTag(category?: string | null) {
   return CAT_TAG[category ?? "General"] ?? DEFAULT_TAG;
@@ -83,49 +88,19 @@ export function CatTag({ category, size = 11 }: { category?: string | null; size
   );
 }
 
-// Country tag — mint tint with flag, per spec §4 (kept independent of the
-// category tag; both appear together).
-export function CountryTag({ country }: { country?: string | null }) {
-  return (
-    <span
-      style={{
-        background: "var(--mint-tint)",
-        color: "var(--mint-text)",
-        fontSize: 10,
-        fontWeight: 600,
-        fontFamily: "var(--font-ui)",
-        padding: "2px 6px",
-        borderRadius: 4,
-        display: "inline-flex",
-        alignItems: "center",
-        gap: 4,
-      }}
-    >
-      <CountryFlag country={country ?? ""} size={11} />
-      {country}
-    </span>
-  );
-}
+// Spec §1 assigns --paper-raised the job of image placeholder/fallback fill.
+// This replaces the old per-category fills (browns, greens, teal), which were
+// tuned for the light theme and read as garish blocks on --paper — and which
+// the dark direction rules out anyway: colour is reserved for category and
+// urgency signals, never decoration.
+const IMAGE_FALLBACK_BG = "var(--paper-raised)";
 
-// Dark image-fallback fills, one per tag family so a missing photo still
-// reads as the category's colour world.
-const CAT_FALLBACK_BG: Record<string, string> = {
-  Politics: "#633806",
-  Business: "#633806",
-  Economy: "#633806",
-  Society: "#633806",
-  Technology: "#085041",
-  Environment: "#085041",
-  International: "#026670",
-  General: "#4A4843",
-};
-
-function imgFallback(e: React.SyntheticEvent<HTMLImageElement>, cat?: string | null) {
+function imgFallback(e: React.SyntheticEvent<HTMLImageElement>) {
   const el = e.currentTarget;
   el.style.display = "none";
   const parent = el.parentElement;
   if (parent) {
-    parent.style.background = CAT_FALLBACK_BG[cat ?? "General"] ?? "#4A4843";
+    parent.style.background = IMAGE_FALLBACK_BG;
   }
 }
 
@@ -143,7 +118,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
   const dateStr = article.publishedDate
     ? formatDistanceToNow(new Date(article.publishedDate), { addSuffix: true })
     : "";
-  const fallbackBg = CAT_FALLBACK_BG[article.category ?? "General"] ?? "#4A4843";
+  const fallbackBg = IMAGE_FALLBACK_BG;
   const tag = catTag(article.category);
 
   if (compact) {
@@ -166,7 +141,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
       >
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 3 }}>
-            <span style={{ fontFamily: "var(--font-ui)", fontSize: 10, fontWeight: 600, color: tag.fg === "#FFFFFF" ? "var(--anchor)" : tag.fg, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+            <span style={{ fontFamily: "var(--font-ui)", fontSize: 10, fontWeight: 600, color: tag.fg, textTransform: "uppercase", letterSpacing: "0.06em" }}>
               {article.category}
             </span>
             <TranslateChip t={t} />
@@ -185,9 +160,9 @@ export function ArticleCard({ article, featured = false, compact = false, side =
           <img
             src={imageUrl}
             alt=""
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "var(--crop-focus)" }}
             loading="lazy"
-            onError={e => imgFallback(e, article.category)}
+            onError={e => imgFallback(e)}
           />
         </div>
       </Link>
@@ -195,120 +170,193 @@ export function ArticleCard({ article, featured = false, compact = false, side =
   }
 
   if (featured) {
-    // Spec §3: top story — fixed-height media cropped to fill (focus
-    // top-third), mandatory scrim under the overlaid headline, meta line
-    // below the image.
+    // Spec §4: top story — full-bleed image cropped top-centre at a fixed
+    // height, mandatory scrim, and all text stacked over the image bottom.
+    // No card frame: the spec allows no borders, shadows or rounded corners.
     return (
       <Link
         href={`/article/${article.id}`}
+        className="an-top-story"
         style={{
-          display: "block",
+          display: "flex",
+          alignItems: "flex-end",
           position: "relative",
-          background: "var(--surface-1)",
-          borderRadius: 12,
-          border: "0.5px solid var(--border)",
           overflow: "hidden",
+          background: fallbackBg,
           cursor: "pointer",
           textDecoration: "none",
-          transition: "border-color 0.15s, box-shadow 0.15s",
         }}
-        onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--border-strong)"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.08)"; }}
-        onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.boxShadow = "none"; }}
       >
-        <div className="an-top-media" style={{ position: "relative", width: "100%", background: fallbackBg, overflow: "hidden" }}>
-          <img
-            src={imageUrl}
-            alt=""
-            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "top center" }}
-            loading="eager"
-            onError={e => imgFallback(e, article.category)}
-          />
-          {/* Scrim — mandatory whenever headline text sits over an image */}
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.55) 100%)" }} />
-          <div style={{ position: "absolute", top: 14, left: 14, display: "flex", gap: 8, alignItems: "center" }}>
-            <CatTag category={article.category} />
+        <img
+          src={imageUrl}
+          alt=""
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "var(--crop-focus)" }}
+          loading="eager"
+          onError={e => imgFallback(e)}
+        />
+        {/* Scrim — mandatory whenever text sits over the image */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: "linear-gradient(180deg, rgba(20,19,43,0.1) 30%, rgba(10,9,25,0.95) 100%)",
+          }}
+        />
+        <div style={{ position: "relative", padding: "28px 24px", maxWidth: 640 }}>
+          {/* Spec §4: eyebrow is the category in --accent. The spec's --live
+              "breaking" variant was cut — an aggregator ingesting on a
+              schedule has no signal for what is breaking, and the only
+              available proxy (recency) just restates that this is the newest
+              article, which is what "top story" already means. */}
+          <div
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: 10,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              color: "var(--accent)",
+              marginBottom: 10,
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+            }}
+          >
+            {article.category}
             <TranslateChip t={t} light />
           </div>
           <h2
+            className="an-top-story-headline"
             style={{
-              position: "absolute",
-              left: 16,
-              right: 16,
-              bottom: 14,
-              margin: 0,
-              color: "#FFFFFF",
-              fontFamily: "var(--font-headline)",
-              fontSize: "clamp(18px, 2.2vw, 22px)",
-              lineHeight: 1.3,
+              margin: "0 0 12px",
+              color: "var(--ink)",
+              fontFamily: "var(--font-display)",
               fontWeight: 600,
+              lineHeight: 1.15,
             }}
           >
             {t.title}
           </h2>
+          {t.summary && (
+            <p
+              className="line-clamp-3"
+              style={{
+                fontFamily: "var(--font-body)",
+                fontSize: 14,
+                color: "var(--ink-muted)",
+                fontStyle: "normal",
+                margin: "0 0 12px",
+                lineHeight: 1.5,
+              }}
+            >
+              {truncateToWord(t.summary, 180)}
+            </p>
+          )}
+          <p
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: 11,
+              letterSpacing: "0.03em",
+              textTransform: "uppercase",
+              color: "var(--ink-faint)",
+              margin: 0,
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              flexWrap: "wrap",
+            }}
+          >
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+              <CountryFlag country={article.country ?? ""} size={14} /> {article.country}
+            </span>
+            <span>·</span>
+            <span>{dateStr}</span>
+            <span>·</span>
+            <span>{article.sourceName}</span>
+          </p>
         </div>
-        <p style={{ padding: "10px 16px", margin: 0, fontFamily: "var(--font-ui)", fontSize: 13, color: "var(--ink)", opacity: 0.65, display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><CountryFlag country={article.country ?? ""} size={14} /> {article.country}</span>
-          <span>·</span>
-          <span>{dateStr}</span>
-          <span>·</span>
-          <span>{article.sourceName}</span>
-        </p>
       </Link>
     );
   }
 
-  // Spec §4: latest-news card. `side` uses the same construction.
+  // Spec §6: latest-news row — a borderless stream, not a boxed card. This is
+  // the biggest structural change in the spec: no background, no border, no
+  // radius, no shadow. Structure comes from the hairline under each row and
+  // the spacing. `side` uses the same construction.
+  //
+  // Hover (divider brightening to --line-strong, headline shifting to
+  // --accent) and the read state live in index.css rather than inline style
+  // handlers, because both need to restyle a descendant — and an inline
+  // colour would beat the hover rule.
   return (
     <Link
       href={`/article/${article.id}`}
-      className="an-news-card"
-      style={{
-        background: "var(--surface-1)",
-        borderRadius: 12,
-        border: "0.5px solid var(--border)",
-        overflow: "hidden",
-        cursor: "pointer",
-        transition: "border-color 0.15s, box-shadow 0.15s",
-        display: "flex",
-        flexDirection: "column",
-        textDecoration: "none",
-        color: "inherit",
-      }}
-      onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--border-strong)"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.08)"; }}
-      onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.boxShadow = "none"; }}
+      className={`an-story-row${isRead ? " an-story-row--read" : ""}`}
     >
-      <div className="an-news-card-media" style={{ position: "relative", background: fallbackBg, overflow: "hidden" }}>
+      <div className="an-story-thumb" style={{ background: fallbackBg }}>
         <img
           src={imageUrl}
           alt=""
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "var(--crop-focus)" }}
           loading={side ? "eager" : "lazy"}
-          onError={e => imgFallback(e, article.category)}
+          onError={e => imgFallback(e)}
         />
-        <div style={{ position: "absolute", top: 8, left: 8 }}>
-          <CatTag category={article.category} />
-        </div>
       </div>
-      <div style={{ padding: "12px 14px", display: "flex", flexDirection: "column", flex: 1, minHeight: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 6, alignSelf: "flex-start" }}>
-          <CountryTag country={article.country} />
+      <div style={{ flex: 1, minWidth: 0 }}>
+        {/* Spec §6: category tag (--accent) and country tag (--ink-faint)
+            side by side above the headline. The spec's breaking override —
+            a --live tag replacing the category here — was cut along with the
+            rest of the breaking state; see the top-story eyebrow above. */}
+        <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 6, flexWrap: "wrap" }}>
+          <span
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: 9,
+              letterSpacing: "0.06em",
+              textTransform: "uppercase",
+              color: "var(--accent)",
+            }}
+          >
+            {article.category}
+          </span>
+          <span
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: 9,
+              letterSpacing: "0.06em",
+              textTransform: "uppercase",
+              color: "var(--ink-faint)",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 4,
+            }}
+          >
+            <CountryFlag country={article.country ?? ""} size={11} />
+            {article.country}
+          </span>
           <TranslateChip t={t} />
         </div>
-        <h3
-          className="line-clamp-2"
-          style={{ fontFamily: "var(--font-headline)", fontSize: 14, fontWeight: 500, margin: "8px 0 6px", lineHeight: 1.3, color: isRead ? "var(--ink-4)" : "var(--ink)", opacity: isRead ? 0.7 : 1 }}
-        >
-          {t.title}
+
+        {/* Spec §6: truncate on the last full word before 90 chars rather
+            than trusting the clamp to cut cleanly; the clamp is the safety
+            net for the two-line box, not the cut point. */}
+        <h3 className="an-story-row-headline line-clamp-2">
+          {truncateToWord(t.title, 90)}
           {isRead && (
-            <span title="Read" style={{ display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: "var(--ink-4)", marginLeft: 6, verticalAlign: "middle" }} />
+            <span
+              title="Read"
+              style={{ display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: "var(--ink-faint)", marginLeft: 6, verticalAlign: "middle" }}
+            />
           )}
         </h3>
-        {t.summary && (
-          <p className="line-clamp-2" style={{ fontFamily: "var(--font-body)", fontSize: 12, color: "var(--ink)", opacity: 0.72, margin: 0, lineHeight: 1.45 }}>
-            {truncateToWord(t.summary, 130)}
-          </p>
-        )}
-        <p style={{ fontFamily: "var(--font-ui)", fontSize: 11, color: "var(--ink)", opacity: 0.55, margin: "auto 0 0", paddingTop: 8 }}>
+
+        <p
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: 10,
+            color: "var(--ink-faint)",
+            margin: 0,
+          }}
+        >
           {dateStr}
         </p>
       </div>

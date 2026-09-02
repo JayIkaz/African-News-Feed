@@ -5,6 +5,7 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { ArticleCard } from "@/components/article/ArticleCard";
 import { TopStoriesCarousel } from "@/components/article/TopStoriesCarousel";
 import { Sidebar } from "@/components/article/Sidebar";
+import { PulseDivider } from "@/components/common/PulseDivider";
 import { AdBanner } from "@/components/ads/AdBanner";
 import { useReadHistory } from "@/lib/useReadHistory";
 
@@ -76,6 +77,11 @@ export default function Home() {
 
       <div className="an-container">
 
+        {/* Spec §7: the lede block — top stories, divider, ad and pills — is
+            held to the same column as the latest-news feed below, so the page
+            reads at one measure instead of switching width mid-scroll. */}
+        <div className="an-lede-column">
+
         {/* ── Hero / Top Stories ── */}
         <section style={{ paddingTop: 36 }}>
           <h2 style={{ fontFamily: "var(--font-headline)", fontSize: 15, fontWeight: 600, margin: "0 0 12px", paddingLeft: 10, borderLeft: "3px solid var(--yellow)" }}>Top stories</h2>
@@ -84,7 +90,8 @@ export default function Home() {
             /* Mobile: swipeable carousel */
             topLoading ? (
               <div className="an-carousel-root">
-                <div className="an-skeleton" style={{ height: 340 }} />
+                {/* Matches the carousel slide's 300px (spec §7) */}
+                <div className="an-skeleton" style={{ height: 300 }} />
               </div>
             ) : topStories?.articles && topStories.articles.length > 0 ? (
               <TopStoriesCarousel articles={topStories.articles} />
@@ -94,15 +101,16 @@ export default function Home() {
               </div>
             )
           ) : (
-            /* Desktop: spec §3 top-story card full width, next two stories
-               as standard cards beneath it */
+            /* Desktop: spec §4 top-story card full width, with the next two
+               stories as ordinary feed rows beneath it */
             <>
               {topLoading ? (
                 <>
-                  <div className="an-skeleton" style={{ height: 260, borderRadius: 12, marginBottom: 12 }} />
-                  <div className="an-grid-3">
-                    <div className="an-skeleton an-news-card" style={{ borderRadius: 12 }} />
-                    <div className="an-skeleton an-news-card" style={{ borderRadius: 12 }} />
+                  {/* Matches the top story's 380px so the feed doesn't jump on load */}
+                  <div className="an-skeleton an-top-story" style={{ borderRadius: 0, marginBottom: 12 }} />
+                  <div className="an-story-list">
+                    <div className="an-skeleton an-skeleton-row" />
+                    <div className="an-skeleton an-skeleton-row" />
                   </div>
                 </>
               ) : topStories?.articles && topStories.articles.length > 0 ? (
@@ -111,7 +119,7 @@ export default function Home() {
                     <ArticleCard article={topStories.articles[0]} featured />
                   </div>
                   {(topStories.articles[1] || topStories.articles[2]) && (
-                    <div className="an-grid-3">
+                    <div className="an-story-list">
                       {topStories.articles[1] && <ArticleCard article={topStories.articles[1]} />}
                       {topStories.articles[2] && <ArticleCard article={topStories.articles[2]} />}
                     </div>
@@ -125,6 +133,10 @@ export default function Home() {
             </>
           )}
         </section>
+
+        {/* Spec §5: the one place the pulse divider appears — the structural
+            boundary between the top story and everything below it. */}
+        <PulseDivider />
 
         {/* ── Ad Leaderboard ── */}
         <div style={{ margin: "20px 0" }}>
@@ -155,7 +167,7 @@ export default function Home() {
                   fontFamily: "var(--font-ui)",
                   fontSize: 13,
                   fontWeight: 500,
-                  color: isActive ? "#FFFFFF" : "var(--ink-3)",
+                  color: isActive ? "var(--paper)" : "var(--ink-3)",
                   background: isActive ? "var(--accent)" : "var(--surface-1)",
                   cursor: "pointer",
                   transition: "all 0.2s",
@@ -229,6 +241,8 @@ export default function Home() {
           </div>
         </div>
 
+        </div>{/* /an-lede-column */}
+
         {/* ── Articles + Sidebar ── */}
         <section style={{ padding: "28px 0 48px" }}>
           <div className="an-content-with-sidebar">
@@ -246,17 +260,13 @@ export default function Home() {
                 )}
               </div>
 
-              <div key={fadeKey} className="an-grid-3 an-articles-fade">
+              <div key={fadeKey} className="an-story-list an-articles-fade">
                 {latestLoading || isFetching ? (
+                  /* Row-shaped, matching what loads in — the old 16/9 card
+                     skeleton described a layout the feed no longer uses and
+                     made the page jump when articles arrived. */
                   Array(6).fill(0).map((_, i) => (
-                    <div key={i} style={{ background: "var(--surface-1)", borderRadius: 10, overflow: "hidden", border: "1px solid var(--paper-3)" }}>
-                      <div className="an-skeleton" style={{ aspectRatio: "16/9", width: "100%" }} />
-                      <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 8 }}>
-                        <div className="an-skeleton" style={{ height: 14 }} />
-                        <div className="an-skeleton" style={{ height: 14, width: "80%" }} />
-                        <div className="an-skeleton" style={{ height: 14, width: "60%" }} />
-                      </div>
-                    </div>
+                    <div key={i} className="an-skeleton an-skeleton-row" />
                   ))
                 ) : latestNews?.articles && latestNews.articles.length > 0 ? (
                   latestNews.articles.map((article) => (
@@ -329,7 +339,7 @@ function PagBtn({ children, onClick, disabled, active }: { children: React.React
         borderRadius: 6,
         border: `1px solid ${active ? "var(--accent)" : "var(--paper-3)"}`,
         background: active ? "var(--accent)" : "var(--surface-1)",
-        color: active ? "#FFFFFF" : disabled ? "var(--ink-4)" : "var(--ink-2)",
+        color: active ? "var(--paper)" : disabled ? "var(--ink-4)" : "var(--ink-2)",
         fontFamily: "var(--font-ui)",
         fontSize: 13,
         fontWeight: 500,

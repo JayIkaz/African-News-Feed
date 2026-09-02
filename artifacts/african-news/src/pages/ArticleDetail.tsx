@@ -174,9 +174,9 @@ export default function ArticleDetail() {
               href={article.url}
               target="_blank"
               rel="noopener noreferrer"
-              style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "var(--anchor)", color: "#FFFFFF", padding: "14px 28px", borderRadius: 100, fontFamily: "var(--font-ui)", fontSize: 14, fontWeight: 500, textDecoration: "none", transition: "background 0.2s, transform 0.2s" }}
-              onMouseEnter={e => { e.currentTarget.style.background = "var(--accent-2)"; e.currentTarget.style.transform = "translateY(-2px)"; }}
-              onMouseLeave={e => { e.currentTarget.style.background = "var(--anchor)"; e.currentTarget.style.transform = "none"; }}
+              style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "var(--accent)", color: "var(--paper)", padding: "14px 28px", borderRadius: 100, fontFamily: "var(--font-ui)", fontSize: 14, fontWeight: 500, textDecoration: "none", transition: "transform 0.2s" }}
+              onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; }}
+              onMouseLeave={e => { e.currentTarget.style.transform = "none"; }}
             >
               Read full article on {article.sourceName} <ExternalLink size={14} />
             </a>
@@ -194,7 +194,7 @@ export default function ArticleDetail() {
                 More in {article.category}
               </h2>
             </div>
-            <div className="an-grid-3">
+            <div className="an-story-list">
               {relatedArticles.map(related => (
                 <ArticleCard key={related.id} article={related} isRead={isRead(related.id)} />
               ))}

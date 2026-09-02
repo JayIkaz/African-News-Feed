@@ -35,14 +35,34 @@ export default function Countries() {
   return (
     <AppLayout>
       {/* Header */}
-      <div className="bg-primary text-primary-foreground py-16">
+      {/* Spec §1: structure comes from hairline dividers and spacing, not
+          filled blocks, and colour is reserved for signal. A full-bleed amber
+          banner was the largest piece of decorative colour left on the site.
+          It now sits on --paper with the eyebrow carrying the accent, which
+          also matches how the top story introduces itself. */}
+      <div className="py-16" style={{ borderBottom: "1px solid var(--line)" }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3 mb-4">
-            <Globe2 className="w-8 h-8 text-accent" />
-            <span className="text-accent font-bold tracking-widest uppercase text-sm">Browse by Country</span>
+            <Globe2 className="w-5 h-5" style={{ color: "var(--accent)" }} />
+            <span
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: 10,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                color: "var(--accent)",
+              }}
+            >
+              Browse by Country
+            </span>
           </div>
-          <h1 className="font-serif text-4xl md:text-6xl font-bold mb-4">African Coverage</h1>
-          <p className="text-primary-foreground/70 text-lg md:text-xl max-w-3xl">
+          <h1
+            className="text-4xl md:text-6xl mb-4"
+            style={{ fontFamily: "var(--font-display)", fontWeight: 600, lineHeight: 1.15, color: "var(--ink)" }}
+          >
+            African Coverage
+          </h1>
+          <p className="text-lg md:text-xl max-w-3xl" style={{ fontFamily: "var(--font-body)", color: "var(--ink-muted)" }}>
             Explore news from {countries?.length ?? 0} African countries — from breaking news to in-depth reporting sourced directly from the continent's leading publications.
           </p>
         </div>
