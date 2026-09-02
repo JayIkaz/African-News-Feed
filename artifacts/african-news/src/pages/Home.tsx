@@ -77,6 +77,11 @@ export default function Home() {
 
       <div className="an-container">
 
+        {/* Spec §7: the lede block — top stories, divider, ad and pills — is
+            held to the same column as the latest-news feed below, so the page
+            reads at one measure instead of switching width mid-scroll. */}
+        <div className="an-lede-column">
+
         {/* ── Hero / Top Stories ── */}
         <section style={{ paddingTop: 36 }}>
           <h2 style={{ fontFamily: "var(--font-headline)", fontSize: 15, fontWeight: 600, margin: "0 0 12px", paddingLeft: 10, borderLeft: "3px solid var(--yellow)" }}>Top stories</h2>
@@ -235,6 +240,8 @@ export default function Home() {
             )}
           </div>
         </div>
+
+        </div>{/* /an-lede-column */}
 
         {/* ── Articles + Sidebar ── */}
         <section style={{ padding: "28px 0 48px" }}>

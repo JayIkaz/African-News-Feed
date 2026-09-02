@@ -57,15 +57,29 @@ Measured on `--paper`:
 | `--ink-faint` | **2.97:1** | **fail** |
 
 The rest of the ramp is healthy — this is one value, not a palette-wide
-problem. Raising the alpha from 0.35 to roughly 0.58 clears AA while keeping
-three distinct text levels.
+problem.
 
-**Shipped as:** the spec value, verbatim, with the debt documented at the token
-definition in `index.css`. No local workarounds at call sites, so changing the
-token once fixes every instance.
+**RESOLVED — spec owner ruled to raise it.** `--ink-faint` is now
+`rgba(242,241,237,0.50)`, measuring **4.78:1 on `--paper`** and **4.61:1 on
+`--paper-raised`**.
 
-**Needs a decision from the spec author.** This was deliberately not resolved
-in implementation.
+The value is 0.50, not the ~0.58 first proposed, for two reasons found while
+implementing it:
+
+- 0.58 measures 6.02:1 — *brighter* than `--ink-muted` at 5.53:1. It would
+  have inverted the ramp, making tertiary text louder than secondary.
+- The value must also clear AA on `--paper-raised`, where tags and dropdown
+  text sit. That rules out 0.48, which passes on `--paper` (4.50) but fails on
+  raised (4.36).
+
+0.50 is the lowest alpha that clears AA on both surfaces while staying below
+`--ink-muted`, so it preserves as much of the intended faintness as the
+threshold allows.
+
+**Spec §1 should be updated** to carry 0.50 as the `--ink-faint` value.
+
+Effect: home page contrast failures went from 58 to 2, and `/countries` from
+90 to 0. The two remaining are the ad placeholder (see §7 below).
 
 ---
 
@@ -110,13 +124,32 @@ Several of these are revenue or engagement surface. Conforming literally to §7
 would mean removing the sidebar and reflowing ads, which is a product decision,
 not a visual one.
 
-**Shipped as:** the existing information architecture, restyled. The feed is
-single-column per §6/§7, but sits in the 1320px container beside the sidebar
-rather than in a 900px column.
+**RESOLVED — spec owner ruled to keep the sidebar and hold one content
+measure.** Measurement showed the conflict was narrower than it looked. At a
+1440px viewport:
 
-**Needs a decision:** either the spec absorbs these surfaces and drops the
-900px rule, or the product drops the sidebar and ads. Right now the two
-documents disagree and the code follows neither completely.
+| Element | Before | After |
+|---|---|---|
+| Latest-news feed column | 932px | 932px |
+| Top story + its two rows | **1272px** | **932px** |
+| Sidebar | 300px | 300px |
+
+The feed was *already* at the spec's reading measure — the sidebar grid
+constrains it to 932px. The real §7 violation was the lede block, which spanned
+the full container: the top story at 1272px, with row headlines running to
+1150px against 810px for identical rows further down. The page carried two
+different measures stacked on each other.
+
+The lede block (top stories, pulse divider, ad, pills) is now held to the same
+column via `.an-lede-column`, derived as `calc(100% - 340px)` from the sidebar
+width and gap rather than hardcoded to 932px, so the two stay aligned at every
+viewport instead of drifting. Below 1025px the sidebar stacks and the rule
+lifts, so both go full width together. Verified: widths identical and left
+edges 0px apart at 1440px and at 1000px.
+
+**Spec §7 should be updated** to describe a ~900px *content column* beside a
+sidebar, rather than a 900px page. The measure the spec asks for is what the
+site now delivers; the "single column, centred" phrasing is what it never did.
 
 ---
 

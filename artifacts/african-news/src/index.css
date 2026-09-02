@@ -64,14 +64,19 @@
   --paper: #14132B;
   --paper-raised: #1D1B3D;
   --ink: #F2F1ED;
-  --ink-muted: rgba(242,241,237,0.55);   /* 5.53:1 on --paper — passes AA */
-  /* ACCESSIBILITY DEBT: --ink-faint measures 2.97:1 on --paper, below the
-     4.5:1 WCAG AA threshold for normal-size text. The spec (§1) mandates
-     this exact value and §4/§6 apply it to every timestamp, country tag and
-     metadata line, so it is kept verbatim pending a ruling from the spec
-     author. Raising the alpha to ~0.58 would clear AA. Do not "fix" this
-     locally at call sites — change it here or not at all. */
-  --ink-faint: rgba(242,241,237,0.35);
+  --ink-muted: rgba(242,241,237,0.55);   /* 5.53:1 paper / 5.29:1 raised */
+  /* Amended from the spec's 0.35, which measured 2.97:1 on --paper — below
+     the 4.5:1 WCAG AA threshold, and §4/§6 apply this to every timestamp,
+     country tag and metadata line. Ruled by the spec owner to raise it.
+     0.50 rather than the 0.58 first proposed, for two reasons:
+       - 0.58 measured 6.02:1, BRIGHTER than --ink-muted's 5.53:1, which
+         inverted the ramp — tertiary text louder than secondary.
+       - the value must also clear AA on --paper-raised, where tags and
+         dropdown text sit. That rules out 0.48 (4.50 paper / 4.36 raised).
+     0.50 gives 4.78:1 on paper and 4.61:1 on raised, and stays below
+     --ink-muted so the three levels stay ordered.
+     Do not override this locally — change it here or not at all. */
+  --ink-faint: rgba(242,241,237,0.50);
   --accent: #E8A33D;
   --live: #E94F37;
   --line: rgba(242,241,237,0.12);
@@ -341,6 +346,19 @@ h1, h2, h3, h4, h5, h6 {
   grid-template-columns: 1fr 300px;
   gap: 40px;
   align-items: start;
+}
+
+/* Spec §7: one content measure down the whole page.
+   The latest-news feed already sits at ~932px, because the sidebar grid
+   constrains it — but the top-of-page block spanned the full 1272px
+   container, so headlines changed measure mid-scroll (1150px wide up top
+   against 810px below). This puts the lede block on the identical column.
+   Derived from the sidebar rather than hardcoded to 932px, so the two stay
+   aligned at every viewport width instead of drifting apart. */
+@media (min-width: 1025px) {
+  .an-lede-column {
+    max-width: calc(100% - 340px);   /* 300px sidebar + 40px grid gap */
+  }
 }
 
 .an-stats-strip-inner {
