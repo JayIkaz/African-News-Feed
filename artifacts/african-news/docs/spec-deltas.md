@@ -27,15 +27,28 @@ publishedDate, url, createdAt, imageUrl, aiSummary, language, titleEn, summaryEn
 The reference implementation's `breaking: true` is hand-written mock data, so
 this gap is invisible when reading the spec alongside it.
 
-**Shipped as:** derived from `publishedDate` — a story is breaking for its
-first 60 minutes — behind a single helper (`src/lib/breaking.ts`). Both call
-sites already read from it, so a real field is a one-line change.
+**RESOLVED — spec owner ruled to cut the breaking variant.** Removed from §4
+and §6; `src/lib/breaking.ts` and both call sites are deleted.
 
-**Needs a decision:** add `isBreaking` to the API, keep the recency heuristic
-(and if so, ratify the window), or drop the breaking variant from the spec.
-60 minutes is a placeholder chosen to match the reference mock, where a
-14-minute story is breaking and a 2-hour story is not. It is not a considered
-editorial rule.
+Investigation showed the recency proxy was not merely imprecise but misleading:
+
+- **"Top stories" is `ORDER BY published_date DESC LIMIT n`** — no ranking, no
+  editorial weight. The top story *is* the newest article, so a recency-based
+  breaking flag is almost always true for it and restates its position rather
+  than adding information.
+- **12% of recent articles are under 60 minutes old** — one row in eight would
+  have carried the tag.
+- **No urgency signal exists anywhere.** Not in the `articles` table, and not
+  in the copy: of 100 sampled titles, zero contained "breaking", "UPDATE",
+  "LIVE" or "JUST IN". The uppercase prefixes sources use (ANALYSIS,
+  SPOTLIGHT, FUNDING CLIFF) are section labels.
+- **`publishedDate` is not reliable enough to drive a visual state** — 5% of
+  sampled articles were future-dated, one by 56 minutes.
+
+`--live` retains the two uses that are honest: the header live dot and the
+ticker label, which say the *feed* is live, not that a story is urgent. If a
+real editorial signal ever exists, the variant can return — it needs an input,
+not a proxy.
 
 ---
 
@@ -151,6 +164,14 @@ edges 0px apart at 1440px and at 1000px.
 sidebar, rather than a 900px page. The measure the spec asks for is what the
 site now delivers; the "single column, centred" phrasing is what it never did.
 
+**The unspecified surfaces are also resolved,** by a proposed new §9: a short
+set of conformance rules — tokens only, ordered ink levels, structure from
+hairlines, fixed type roles, `--live` for urgency only, one raised surface,
+4.5:1 on whichever surface the text sits on — followed by a named inventory of
+what currently exists. Rules were chosen over per-surface specs because an
+enumerated component catalogue goes stale the first time a page is added, and
+turns a design direction into a parts list. See `spec-amendments.md`.
+
 ---
 
 ## 5. Deviations made during implementation
@@ -200,9 +221,18 @@ for both without crowding. Worth noting the current cost: when a story is
 breaking, its category becomes invisible in the feed. The country tag still
 shows, so the row is not without context.
 
-**"Crop-focus points per image type."** Still unresolved. Everything uses
-`object-position: top center` per §4. This is right for landscape and event
-photography and wrong for portrait subjects, where it crops foreheads.
+**"Crop-focus points per image type."** RESOLVED — house value is
+`object-position: center 30%`, held in one token (`--crop-focus`).
+
+The question's framing turned out to be wrong: the variable is how aggressive
+the crop is, not what the subject is. At the top story's ~2.45:1 crop the spec's
+`top center` was the *worst* option tested against real images — it kept sky and
+cut the subject on landscape and event photography. At the feed row's 104×78 all
+values are near-indistinguishable, because that crop is close to source ratio.
+`center 30%` biases slightly above centre, suiting faces without `top`'s waste,
+and held the subject on every image tested. A single value is deliberate: 91% of
+articles carry a source image with unknown framing and there is no per-image
+focus metadata.
 
 **"Should the pulse divider appear elsewhere?"** Implemented at exactly one
 boundary, as specified, and it works — it reads as a signature. Recommend

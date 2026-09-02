@@ -5,7 +5,6 @@ import { Article } from "@workspace/api-client-react";
 import { getArticleImage } from "@/lib/unsplash";
 import { COUNTRY_FLAGS } from "@/lib/countries";
 import { truncateToWord } from "@/lib/truncate";
-import { isBreakingStory } from "@/lib/breaking";
 
 interface TopStoriesCarouselProps {
   articles: Article[];
@@ -98,7 +97,6 @@ function CarouselSlide({ article, active }: { article: Article; active: boolean 
   const dateStr = article.publishedDate
     ? formatDistanceToNow(new Date(article.publishedDate), { addSuffix: true })
     : "";
-  const isBreaking = isBreakingStory(article);
 
   return (
     <Link
@@ -117,12 +115,9 @@ function CarouselSlide({ article, active }: { article: Article; active: boolean 
       />
       <div className="an-carousel-overlay" />
       <div className="an-carousel-content">
-        {/* Spec §4: --live when breaking, --accent for a standard category */}
-        <span
-          className="an-carousel-eyebrow"
-          style={{ color: isBreaking ? "var(--live)" : "var(--accent)" }}
-        >
-          {isBreaking ? "Breaking" : article.category}
+        {/* Spec §4: category eyebrow in --accent */}
+        <span className="an-carousel-eyebrow" style={{ color: "var(--accent)" }}>
+          {article.category}
         </span>
         {/* No dek here, unlike the §4 desktop card. The spec's scrim only
             reaches full strength at the very bottom, which is fine over

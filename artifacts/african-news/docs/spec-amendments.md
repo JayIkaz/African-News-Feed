@@ -105,20 +105,121 @@ reading measure — and drops the part that was never true of this product.
 
 ---
 
-## Still open
+## Proposed edits to §4 and §6 — remove the breaking state
 
-Not covered by these amendments, and still needing a decision:
+**In §4, replace the eyebrow line:**
 
-- **§4/§6 "breaking" has no data source.** The `Article` schema has no
-  `isBreaking` field; the state is currently derived from a 60-minute recency
-  window. Either the API grows a field, the spec ratifies the heuristic and its
-  window, or the breaking variant is cut. See `spec-deltas.md` §1.
-- **The spec is silent on** the sidebar, ad slots, ticker, category pills,
-  stats strip, translation chips, read-history state, pagination, region
-  colours, and the `/countries`, `/country/:name`, `/search` and `/article/:id`
-  pages. §7 above now acknowledges the sidebar exists, but none of these have
-  specified treatments.
-- **Crop-focus points per image type** — unchanged from the previous spec,
-  still unresolved. Everything currently uses `object-position: top center`,
-  which suits landscape and event photography and crops portrait subjects
-  badly.
+> - Eyebrow: mono, uppercase, `--accent`
+
+**In §6, delete the "Breaking override" bullet entirely.**
+
+### Why
+
+There is no signal in this system for what is breaking, and the proxy that was
+standing in for one was actively misleading:
+
+- **"Top stories" is `ORDER BY published_date DESC LIMIT n`.** There is no
+  ranking or editorial weight — the top story simply *is* the newest article.
+  A recency-based breaking flag is therefore almost always true for it, so the
+  badge restates the story's position rather than telling the reader anything.
+- **12% of recent articles are under 60 minutes old.** One row in eight would
+  carry a breaking tag, which is not what the word means.
+- **No urgency signal exists anywhere.** Not in the `articles` table (no
+  priority or breaking column) and not in the copy: across 100 sampled
+  articles, zero titles contained "breaking", "UPDATE", "LIVE" or "JUST IN".
+  The uppercase prefixes sources do use — ANALYSIS, SPOTLIGHT, FUNDING CLIFF —
+  are section labels, not urgency markers.
+- **`publishedDate` is not reliable enough to carry a visual state.** 5% of
+  sampled articles were future-dated, one by 56 minutes.
+
+Breaking is a newsroom judgement. This product aggregates on a schedule and has
+no newsroom, so it cannot make that judgement honestly. `--live` keeps the two
+uses that are true: the header's live dot and the ticker label, both of which
+say *the feed is live*, not *this story is urgent*.
+
+If an editorial signal ever exists — a curated flag, or a source that marks
+urgency in its feed — this can come back. It needs a real input, not a proxy.
+
+---
+
+## Proposed edit to §4 — crop focus
+
+**Replace:**
+
+> `background-size: cover`, `background-position: top center`
+
+**With:**
+
+> `object-fit: cover`, `object-position: center 30%` — the house crop focus,
+> applied to every article image at every size.
+
+### Why
+
+This also closes the §8 open item asking for "crop-focus points per image
+type". Testing showed the framing was wrong: the variable is **how aggressive
+the crop is**, not what the subject is.
+
+- At the top story's ~2.45:1 crop, `top center` was the worst of the options
+  tested against real source images — it kept sky and cut the subject on
+  landscape and event photography.
+- At the feed row's 104×78 the choices are near-indistinguishable, because that
+  crop is close to source ratio and discards very little.
+- `center 30%` biases slightly above centre, which suits faces, without `top`'s
+  waste. It held the subject on every image tested.
+
+A single value is deliberate: 91% of articles carry a source image with unknown
+framing, and there is no per-image focus metadata to key off. Implemented as
+one token (`--crop-focus`) so it is a single point of change.
+
+---
+
+## Proposed new §9 — surfaces this spec does not specify
+
+> ## 9. Surfaces this spec does not specify
+>
+> This document specifies the header, top story, feed and their supporting
+> elements. The product contains more than that. Anything not specified above
+> must still conform to the following — the absence of a named treatment is not
+> licence to invent one.
+>
+> 1. **Colour comes only from §1.** No new colours, no one-off hex values, no
+>    ad-hoc opacity variants of a token.
+> 2. **Use the three ink levels in their order** — `--ink` for primary,
+>    `--ink-muted` for secondary, `--ink-faint` for tertiary. Do not introduce a
+>    fourth level.
+> 3. **Structure comes from hairlines and spacing.** No card fills, borders,
+>    shadows, or rounded corners beyond the 3px used on thumbnails.
+> 4. **Type roles are fixed.** Display serif for headlines; body sans for deks
+>    and running copy; mono, uppercase, letter-spaced for labels, tags,
+>    metadata and timestamps.
+> 5. **`--live` signals urgency only**, as text or marker, never as a fill.
+> 6. **`--paper-raised` is the only raised surface.** Anything that must read
+>    as lifted off the page uses it.
+> 7. **All text clears 4.5:1** on whichever of `--paper` or `--paper-raised` it
+>    sits on.
+>
+> Surfaces currently in the product and covered only by these rules: the
+> article sidebar, advertising slots, the breaking-news ticker, the category
+> pill bar, the stats strip, translation chips, read-history state, pagination,
+> region wayfinding colours, and the `/countries`, `/country/:name`, `/search`
+> and `/article/:id` pages.
+>
+> Adding a surface does not require amending this spec, provided it conforms.
+> Amend it when a surface genuinely needs to break one of these rules — and say
+> which rule, and why.
+
+### Why this rather than specifying each surface
+
+Ten-plus surfaces enumerated individually would go stale the first time a page
+is added, and would make the spec a component catalogue rather than a design
+direction. Rules scale; inventories do not. The inventory is included anyway so
+a future reader can tell these surfaces were considered rather than forgotten.
+
+---
+
+## Nothing left open
+
+All three items previously listed here are resolved: the breaking state is cut,
+the unspecified surfaces are governed by §9, and crop focus is settled at
+`center 30%`. The spec's own §8 can be deleted — every question in it now has
+an answer above.

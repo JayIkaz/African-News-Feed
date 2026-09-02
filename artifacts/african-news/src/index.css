@@ -145,6 +145,18 @@
   --region-central: #A996E0;
   --region-south: #DBB05C;
 
+  /* House crop focus for every article image (spec §4, resolving the §8
+     open item). Biased slightly above centre: it suits faces without the
+     waste of `top center`, which the spec previously specified.
+     Tested against real source images at the top story's ~2.45:1 crop,
+     where `top center` kept sky and cut the subject on landscape and event
+     photography. At the feed row's 104x78 the choice is near-invisible,
+     because that crop is close to source ratio — the variable is how
+     aggressive the crop is, not what the subject is.
+     Single value on purpose: 91% of articles carry a source image with
+     unknown framing, and there is no per-image focus metadata to key off. */
+  --crop-focus: center 30%;
+
   --transition: 0.2s cubic-bezier(0.4,0,0.2,1);
   --radius: 0.3rem;
 }
@@ -445,6 +457,7 @@ h1, h2, h3, h4, h5, h6 {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: var(--crop-focus);
 }
 
 /* Spec §4 scrim — same gradient as the desktop top story */
