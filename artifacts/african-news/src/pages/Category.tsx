@@ -142,7 +142,7 @@ function PagBtn({ children, onClick, disabled, active }: { children: React.React
         borderRadius: 6,
         border: `1px solid ${active ? "var(--accent)" : "var(--paper-3)"}`,
         background: active ? "var(--accent)" : "var(--surface-1)",
-        color: active ? "#FFFFFF" : disabled ? "var(--ink-4)" : "var(--ink-2)",
+        color: active ? "var(--paper)" : disabled ? "var(--ink-4)" : "var(--ink-2)",
         fontFamily: "var(--font-ui)",
         fontSize: 13,
         fontWeight: 500,

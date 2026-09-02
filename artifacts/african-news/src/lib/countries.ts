@@ -181,13 +181,17 @@ export const REGIONS: Region[] = [
 // Sidebar.tsx's "Browse by Region" widget) instead of hardcoded Tailwind
 // palette colors, so this page's region colors actually match the rest of
 // the site rather than being a disconnected purple/amber/emerald set.
+// Text on these fills is --paper, not white: under the dark theme both
+// --accent and the --region-* tokens are light, so white-on-light failed
+// contrast badly (the active "All" pill measured 2.16:1). Dark-on-light is
+// the correct pairing now.
 export const REGION_COLORS: Record<Region, string> = {
-  "All": "bg-[var(--accent)] text-white",
-  "West Africa": "bg-[var(--region-west)] text-white",
-  "East Africa": "bg-[var(--region-east)] text-white",
-  "North Africa": "bg-[var(--region-north)] text-white",
-  "Southern Africa": "bg-[var(--region-south)] text-white",
-  "Central Africa": "bg-[var(--region-central)] text-white",
+  "All": "bg-[var(--accent)] text-[var(--paper)]",
+  "West Africa": "bg-[var(--region-west)] text-[var(--paper)]",
+  "East Africa": "bg-[var(--region-east)] text-[var(--paper)]",
+  "North Africa": "bg-[var(--region-north)] text-[var(--paper)]",
+  "Southern Africa": "bg-[var(--region-south)] text-[var(--paper)]",
+  "Central Africa": "bg-[var(--region-central)] text-[var(--paper)]",
 };
 
 // Tinted badge version (15% opacity fill + full-strength text) for the

@@ -36,8 +36,12 @@ export function Footer() {
     setSubmitting(false);
   };
 
+  // --anchor now resolves to --paper, so the footer no longer reads as a
+  // distinct block. A hairline top border restores the boundary the old teal
+  // fill used to provide, in keeping with the spec's structure-from-dividers
+  // approach.
   return (
-    <footer style={{ background: "var(--anchor)", color: FOOT_LINK, padding: "48px 0 32px", marginTop: 48 }}>
+    <footer style={{ background: "var(--paper)", borderTop: "1px solid var(--line)", color: FOOT_LINK, padding: "48px 0 32px", marginTop: 48 }}>
       <div style={{ maxWidth: 1320, margin: "0 auto", padding: "0 24px" }}>
         <div className="an-footer-grid" style={{ marginBottom: 40 }}>
 
@@ -132,8 +136,8 @@ export function Footer() {
                   style={{
                     width: "100%",
                     padding: "10px 12px",
-                    background: "#FFFFFF",
-                    border: "1px solid transparent",
+                    background: "var(--paper-raised)",
+                    border: "1px solid var(--line)",
                     borderRadius: 5,
                     fontFamily: "var(--font-ui)",
                     fontSize: 13,

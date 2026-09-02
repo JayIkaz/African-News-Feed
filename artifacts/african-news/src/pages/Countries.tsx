@@ -38,8 +38,11 @@ export default function Countries() {
       <div className="bg-primary text-primary-foreground py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3 mb-4">
-            <Globe2 className="w-8 h-8 text-accent" />
-            <span className="text-accent font-bold tracking-widest uppercase text-sm">Browse by Country</span>
+            {/* Was text-accent on bg-primary — both resolve to --accent under
+                the dark theme, i.e. amber on amber at 1.00:1 (invisible).
+                The banner's own foreground token is the correct pairing. */}
+            <Globe2 className="w-8 h-8 text-primary-foreground" />
+            <span className="text-primary-foreground font-bold tracking-widest uppercase text-sm">Browse by Country</span>
           </div>
           <h1 className="font-serif text-4xl md:text-6xl font-bold mb-4">African Coverage</h1>
           <p className="text-primary-foreground/70 text-lg md:text-xl max-w-3xl">
