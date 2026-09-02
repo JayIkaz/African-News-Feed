@@ -41,11 +41,24 @@ Not the `0.58` first proposed: that measured 6.02:1, *brighter* than
 alpha clearing AA on both `--paper` and `--paper-raised` while staying below
 `--ink-muted`.
 
-## Spec amendments
+## The spec now lives here, and agrees with the code
 
-`docs/spec-amendments.md` carries drop-in replacement text for **§1, §4, §6,
-§7 and a new §9**. The spec's **§8 can be deleted** — every open question in it
-now has an answer.
+The spec had been a `.docx` in a Downloads folder, in two versions, with no
+history — which is how it drifted from the implementation in the first place.
+It is now version-controlled beside the code it governs, with the amendments
+applied and the old §8 "Open items" deleted, since every question in it has an
+answer:
+
+| File | What it is |
+|---|---|
+| `docs/news-feed-design-spec.md` | The current spec — §1, §4, §5, §6, §7 amended; §8 is now a conformance section for surfaces the spec doesn't name |
+| `docs/spec-deltas.md` | Findings, rulings, and the pre-amendment spec preserved verbatim |
+| `docs/spec-amendments.md` | What changed between the two, and why |
+
+Every concrete value in the amended spec was cross-checked against the
+implementation — `--ink-faint`, crop focus, thumbnail sizes, top-story height,
+the 90-character truncation limit and the derived content column all match, and
+"breaking" appears in neither.
 
 Three findings worth calling out:
 
@@ -59,13 +72,16 @@ Three findings worth calling out:
   sidebar constrains it. The real violation was the lede block spanning the
   full 1272px container, so headlines ran to 1150px up top against 810px
   below. Now one measure, derived from the sidebar rather than hardcoded.
-- **Crop focus was framed wrong.** §8 asked for focus points "per image type",
-  but the variable is crop aggressiveness, not subject. The spec's own
+- **Crop focus was framed wrong.** The old §8 asked for focus points "per image
+  type", but the variable is crop aggressiveness, not subject. The spec's own
   `top center` tested *worst* at the top story's 2.45:1 crop. Settled at
   `center 30%` in one token.
 
-`docs/spec-deltas.md` records the full findings, including what the spec is
-silent on and what remains unverified.
+The surfaces the spec never covered — sidebar, ad slots, ticker, pills, stats
+strip, translation chips, read state, pagination, region colours, and four
+pages — are now governed by conformance rules rather than enumerated one by
+one, so adding a page doesn't require amending the spec unless it needs to
+*break* a rule.
 
 ## Verification
 
