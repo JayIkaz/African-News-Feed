@@ -20,7 +20,8 @@
   --color-popover-border: var(--paper-3);
 
   --color-primary: var(--accent);
-  --color-primary-foreground: #FFFFFF;
+  /* Amber accent needs dark text, not white — white on #E8A33D fails contrast */
+  --color-primary-foreground: var(--paper);
   --color-primary-border: var(--accent);
 
   --color-secondary: var(--paper-2);
@@ -32,17 +33,21 @@
   --color-muted-border: var(--paper-3);
 
   --color-accent: var(--accent);
-  --color-accent-foreground: #FFFFFF;
+  --color-accent-foreground: var(--paper);
   --color-accent-border: var(--accent);
 
   --color-destructive: var(--live);
   --color-destructive-foreground: #ffffff;
   --color-destructive-border: var(--live);
 
-  --font-ui: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-headline: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-body: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-data: ui-monospace, "SF Mono", Consolas, monospace;
+  /* Spec §2. The three spec faces are defined in :root as --font-display /
+     --font-body / --font-mono; these are the repo's existing theme keys
+     re-pointed at them, so the ~90 inline var(--font-*) call sites keep
+     working. --font-body is not restated here — :root defines it under the
+     spec's own name. */
+  --font-headline: var(--font-display);
+  --font-ui: var(--font-body);
+  --font-data: var(--font-mono);
 
   --radius-sm: 4px;
   --radius-md: 6px;
@@ -51,53 +56,89 @@
 }
 
 :root {
-  /* Continental light theme — warm grey page, white cards */
-  --paper: #EDEAE5;
-  --paper-2: #E4E1DA;
-  --paper-3: #D8D5CD;
+  /* ══════════════════════════════════════════════════════════════════
+     Dark editorial palette — spec §1, verbatim.
+     Structure comes from hairline dividers and spacing, not boxes:
+     no card backgrounds, borders, shadows, or rounded corners.
+     ══════════════════════════════════════════════════════════════════ */
+  --paper: #14132B;
+  --paper-raised: #1D1B3D;
+  --ink: #F2F1ED;
+  --ink-muted: rgba(242,241,237,0.55);   /* 5.53:1 on --paper — passes AA */
+  /* ACCESSIBILITY DEBT: --ink-faint measures 2.97:1 on --paper, below the
+     4.5:1 WCAG AA threshold for normal-size text. The spec (§1) mandates
+     this exact value and §4/§6 apply it to every timestamp, country tag and
+     metadata line, so it is kept verbatim pending a ruling from the spec
+     author. Raising the alpha to ~0.58 would clear AA. Do not "fix" this
+     locally at call sites — change it here or not at all. */
+  --ink-faint: rgba(242,241,237,0.35);
+  --accent: #E8A33D;
+  --live: #E94F37;
+  --line: rgba(242,241,237,0.12);
+  --line-strong: rgba(242,241,237,0.28);
 
-  /* Card / panel surfaces */
-  --surface-1: #FFFFFF;
-  --surface-2: #FFFFFF;
+  /* Spec §2 — Fraunces display kept serif so the dark layout reads as
+     editorial rather than a generic dark-mode toggle. */
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Inter', -apple-system, sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
 
-  /* Text */
-  --ink: #2B2B2B;
-  --ink-2: #3F3E3C;
-  --ink-3: #6E6C67;
-  --ink-4: #91908A;
+  /* ── Compatibility aliases ────────────────────────────────────────
+     The spec defines nine colours; the repo referenced twenty. Rather
+     than leave the Footer, Sidebar, ticker, pills and country dropdown
+     pointing at undefined variables, the orphans are re-pointed at spec
+     values here. Nothing below introduces a new colour — each is an
+     alias onto a token defined above. Prefer the spec names in new code;
+     these exist so untouched components stay coherent. */
 
-  /* Brand anchor — deep teal: header, nav, primary actions */
-  --accent: #026670;
-  --accent-2: #04808C;
-  --anchor: #026670;
+  /* Surfaces: the old light theme had a page tint, two card whites and a
+     border grey. In a borderless dark layout those collapse to the page
+     itself, the raised fill, and the hairline. */
+  --paper-2: var(--paper-raised);
+  --paper-3: var(--line);
+  --surface-1: var(--paper-raised);
+  --surface-2: var(--paper-raised);
 
-  /* Mint family — active-nav underline, decorative fills, light category tags.
-     Text on a tinted background always uses the darkest shade of the same
-     family, never plain black. */
-  --mint: #9FEDD7;
-  --mint-tint: #E1F5EE;
-  --mint-text: #085041;
+  /* Text ramp: the repo's four levels map onto the spec's three. */
+  --ink-2: var(--ink-muted);
+  --ink-3: var(--ink-muted);
+  --ink-4: var(--ink-faint);
 
-  /* Yellow family — category tag backgrounds (pale-yellow is decorative
-     only: never under text or tags) */
-  --pale-yellow: #FEF9C7;
-  --yellow: #FCE181;
-  --yellow-tint: #FAEEDA;
-  --yellow-text: #633806;
+  /* The teal brand anchor was the header background; the header is now
+     --paper, and accent duty passes to the spec's amber. */
+  --anchor: var(--paper);
+  --accent-2: var(--accent);
 
-  /* Breaking/live only. Reserve for genuine urgency */
-  --live: #B23A2E;
+  /* Mint and yellow families were tag/underline fills.
+     --mint and --yellow are the BRIGHT members: they're used as decorative
+     rules, logo strokes and button fills, so they resolve to --accent.
+     --yellow-text/--mint-text are what sits ON those fills, so they resolve
+     to --paper (dark on amber measures 8.41:1; accent-on-accent would have
+     been invisible). The -tint members are backgrounds, so they stay on the
+     raised fill. Tag pills name --paper-raised explicitly at the call site
+     rather than routing through a tint alias. */
+  --mint: var(--accent);
+  --mint-tint: var(--paper-raised);
+  --mint-text: var(--paper);
+  --pale-yellow: var(--paper-raised);
+  --yellow: var(--accent);
+  --yellow-tint: var(--paper-raised);
+  --yellow-text: var(--paper);
 
-  /* Hairline borders */
-  --border: rgba(43,43,43,0.12);
-  --border-strong: rgba(43,43,43,0.28);
+  /* The spec names dividers --line/--line-strong; these are the repo's
+     older names for the same two values. */
+  --border: var(--line);
+  --border-strong: var(--line-strong);
 
-  /* Region colors — darkened to hold contrast on the light page */
-  --region-north: #A05E2C;
-  --region-west: #1D7A5F;
-  --region-east: #2F6AA8;
-  --region-central: #7B5FC4;
-  --region-south: #B58020;
+  /* Region wayfinding colours in the country dropdown. The spec is silent
+     on these. Hues are unchanged from the light theme, lifted in
+     luminance so they stay legible on --paper — see the note in my
+     summary, this is the one place I went beyond the spec's palette. */
+  --region-north: #D69A5E;
+  --region-west: #5FBF9E;
+  --region-east: #7BA9DC;
+  --region-central: #A996E0;
+  --region-south: #DBB05C;
 
   --transition: 0.2s cubic-bezier(0.4,0,0.2,1);
   --radius: 0.3rem;
@@ -201,9 +242,10 @@ h1, h2, h3, h4, h5, h6 {
   overflow: hidden;
 }
 
-/* Search input lives on the teal header — placeholder needs its own rule */
+/* Search input sits on --paper-raised in the header — placeholder needs its
+   own rule to pick up the faint ink level */
 .an-nav-search::placeholder {
-  color: rgba(255,255,255,0.55);
+  color: var(--ink-faint);
 }
 
 .an-skeleton {
@@ -221,22 +263,72 @@ h1, h2, h3, h4, h5, h6 {
   padding: 0 24px;
 }
 
-/* Spec §5: latest-news cards sit on a 2-column grid, 12px gap.
-   (Class name kept from the old 3-col layout to avoid touching every page.) */
+/* Spec §6/§7: the feed is a single-column borderless stream, so the old
+   2-column card grid collapses to one column with no gap — the hairline
+   under each row is the separator now, and a gap would break the stream.
+   (Class name kept from the old 3-col layout to avoid touching every page
+   that references it.) */
 .an-grid-3 {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
 }
 
-/* Latest-news card — full 16/9 image band (photos drive clicks; the old
-   100px strip cropped them to a sliver). Cards size naturally; the grid
-   keeps rows aligned. */
+/* ── Spec §6: borderless feed row ────────────────────────────────────
+   No background, border, radius or shadow. Thumbnail left, content right,
+   18px gap, 1px hairline under every row. */
+.an-story-row {
+  display: flex;
+  gap: 18px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s;
+}
+
+.an-story-thumb {
+  width: 104px;
+  height: 78px;
+  flex-shrink: 0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.an-story-row-headline {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.35;
+  margin: 0 0 6px;
+  color: var(--ink);
+  transition: color 0.15s;
+}
+
+/* Read articles dim. Declared BEFORE the hover rules: both selectors have
+   equal specificity, so source order decides, and hover must win. */
+.an-story-row--read .an-story-row-headline { color: var(--ink-faint); }
+
+/* Spec §6: on hover the divider brightens and the headline shifts to accent. */
+.an-story-row:hover { border-color: var(--line-strong); }
+.an-story-row:hover .an-story-row-headline { color: var(--accent); }
+
+/* Still used by the secondary top-story loading skeletons in Home. */
 .an-news-card { height: auto; }
 .an-news-card-media { aspect-ratio: 16 / 9; flex-shrink: 0; }
 
-/* Top story media — crop focus top-third */
-.an-top-media { height: 300px; }
+/* Spec §4: top story — fixed height, image cropped top-centre so faces and
+   headlines survive the crop. Spec §7 steps both down on mobile. */
+.an-top-story { height: 380px; }
+.an-top-story-headline { font-size: 32px; }
+
+/* Spec §5: pulse divider — a thin SVG waveform echoing the logo's
+   pulse-through-Africa mark. It replaces a plain hairline at this ONE
+   structural boundary (top story → feed); deliberately not repeated
+   elsewhere, so it stays a signature rather than becoming decoration. */
+.an-pulse-divider { padding: 6px 24px; }
+.an-pulse-divider svg { display: block; width: 100%; height: 16px; }
 
 .an-content-with-sidebar {
   display: grid;
@@ -427,9 +519,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ── TABLET (≤1024px) ── */
 @media (max-width: 1024px) {
-  .an-grid-3 {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  /* .an-grid-3 is single-column at every width now (spec §7) — no override. */
 
   .an-content-with-sidebar {
     grid-template-columns: 1fr;
@@ -527,13 +617,14 @@ h1, h2, h3, h4, h5, h6 {
     scroll-snap-align: start;
   }
 
-  .an-grid-3 {
-    grid-template-columns: 1fr;
-  }
+  /* Spec §6/§7: thumbnails go square and headlines step down on mobile. */
+  .an-story-thumb { width: 72px; height: 72px; }
+  .an-story-row-headline { font-size: 15px; }
 
   .an-news-card { height: auto; }
   .an-news-card-media { height: auto; aspect-ratio: 16 / 9; }
-  .an-top-media { height: 200px; }
+  .an-top-story { height: 300px; }
+  .an-top-story-headline { font-size: 24px; }
 
   .an-stats-strip-inner {
     gap: 20px;

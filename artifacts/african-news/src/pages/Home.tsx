@@ -5,6 +5,7 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { ArticleCard } from "@/components/article/ArticleCard";
 import { TopStoriesCarousel } from "@/components/article/TopStoriesCarousel";
 import { Sidebar } from "@/components/article/Sidebar";
+import { PulseDivider } from "@/components/common/PulseDivider";
 import { AdBanner } from "@/components/ads/AdBanner";
 import { useReadHistory } from "@/lib/useReadHistory";
 
@@ -99,7 +100,8 @@ export default function Home() {
             <>
               {topLoading ? (
                 <>
-                  <div className="an-skeleton" style={{ height: 260, borderRadius: 12, marginBottom: 12 }} />
+                  {/* Matches the top story's 380px so the feed doesn't jump on load */}
+                  <div className="an-skeleton an-top-story" style={{ borderRadius: 0, marginBottom: 12 }} />
                   <div className="an-grid-3">
                     <div className="an-skeleton an-news-card" style={{ borderRadius: 12 }} />
                     <div className="an-skeleton an-news-card" style={{ borderRadius: 12 }} />
@@ -125,6 +127,10 @@ export default function Home() {
             </>
           )}
         </section>
+
+        {/* Spec §5: the one place the pulse divider appears — the structural
+            boundary between the top story and everything below it. */}
+        <PulseDivider />
 
         {/* ── Ad Leaderboard ── */}
         <div style={{ margin: "20px 0" }}>
@@ -155,7 +161,7 @@ export default function Home() {
                   fontFamily: "var(--font-ui)",
                   fontSize: 13,
                   fontWeight: 500,
-                  color: isActive ? "#FFFFFF" : "var(--ink-3)",
+                  color: isActive ? "var(--paper)" : "var(--ink-3)",
                   background: isActive ? "var(--accent)" : "var(--surface-1)",
                   cursor: "pointer",
                   transition: "all 0.2s",
@@ -329,7 +335,7 @@ function PagBtn({ children, onClick, disabled, active }: { children: React.React
         borderRadius: 6,
         border: `1px solid ${active ? "var(--accent)" : "var(--paper-3)"}`,
         background: active ? "var(--accent)" : "var(--surface-1)",
-        color: active ? "#FFFFFF" : disabled ? "var(--ink-4)" : "var(--ink-2)",
+        color: active ? "var(--paper)" : disabled ? "var(--ink-4)" : "var(--ink-2)",
         fontFamily: "var(--font-ui)",
         fontSize: 13,
         fontWeight: 500,
