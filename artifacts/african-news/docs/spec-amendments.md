@@ -1,4 +1,13 @@
-# Draft amendments to `news-feed-design-spec.md`
+# Amendments to `news-feed-design-spec.md`
+
+> **APPLIED.** These are now folded into
+> [`news-feed-design-spec.md`](./news-feed-design-spec.md), which lives in this
+> repo as the canonical copy. This document is kept as the record of what
+> changed and why — the spec itself carries only the resulting rules.
+>
+> One numbering note: the new section proposed below as §9 became **§8** in the
+> applied spec, because the old §8 ("Open items for future review") was deleted
+> rather than left as an empty heading. Every question it raised is answered.
 
 Replacement text for §1 and §7, following the spec-owner rulings recorded in
 [`spec-deltas.md`](./spec-deltas.md). Written to drop into the spec as-is.
