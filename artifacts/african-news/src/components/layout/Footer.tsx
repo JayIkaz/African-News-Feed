@@ -3,9 +3,14 @@ import { Link } from "wouter";
 import { useTriggerIngestion } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
 
-const FOOT_LINK = "rgba(255,255,255,0.72)";
-const FOOT_DIM = "rgba(255,255,255,0.45)";
-const FOOT_RULE = "rgba(255,255,255,0.15)";
+// These were hardcoded whites tuned for the old teal footer. On --paper they
+// landed at 4.49:1 — just under AA — as a separate near-miss nobody would
+// think to look for. Mapped onto the ink ramp instead, so footer text obeys
+// the same rules as the rest of the site and the --ink-faint ruling covers
+// it rather than leaving a second, undocumented contrast decision here.
+const FOOT_LINK = "var(--ink-muted)";
+const FOOT_DIM = "var(--ink-faint)";
+const FOOT_RULE = "var(--line)";
 
 export function Footer() {
   const { toast } = useToast();
@@ -54,7 +59,7 @@ export function Footer() {
                 <circle cx="91" cy="109" r="7.5" fill="var(--live)"/>
                 <circle cx="165" cy="104" r="7.5" fill="var(--live)"/>
               </svg>
-              <div style={{ fontFamily: "var(--font-headline)", fontSize: 24, fontWeight: 700, color: "#FFFFFF", letterSpacing: "-0.02em" }}>AfricaNews</div>
+              <div style={{ fontFamily: "var(--font-display)", fontSize: 24, fontWeight: 700, color: "var(--ink)", letterSpacing: "-0.02em" }}>AfricaNews</div>
             </Link>
             <div style={{ fontFamily: "var(--font-ui)", fontSize: 9, fontWeight: 500, letterSpacing: "0.18em", textTransform: "uppercase", color: FOOT_DIM, marginBottom: 14 }}>The Continent's Pulse</div>
             <p style={{ fontFamily: "var(--font-ui)", fontSize: 13, lineHeight: 1.6, color: FOOT_LINK, marginBottom: 16 }}>
@@ -62,9 +67,9 @@ export function Footer() {
             </p>
             <div style={{ display: "flex", gap: 10 }}>
               {["𝕏", "f", "in"].map((s, i) => (
-                <a key={i} href="#" style={{ width: 32, height: 32, borderRadius: "50%", background: "rgba(255,255,255,0.12)", display: "flex", alignItems: "center", justifyContent: "center", color: "#FFFFFF", fontFamily: "var(--font-ui)", fontSize: 12, textDecoration: "none", transition: "background 0.2s" }}
-                  onMouseEnter={e => (e.currentTarget.style.background = "rgba(255,255,255,0.25)")}
-                  onMouseLeave={e => (e.currentTarget.style.background = "rgba(255,255,255,0.12)")}
+                <a key={i} href="#" style={{ width: 32, height: 32, borderRadius: "50%", background: "var(--paper-raised)", border: "1px solid var(--line)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--ink)", fontFamily: "var(--font-ui)", fontSize: 12, textDecoration: "none", transition: "border-color 0.2s" }}
+                  onMouseEnter={e => (e.currentTarget.style.borderColor = "var(--line-strong)")}
+                  onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--line)")}
                 >
                   {s}
                 </a>
@@ -177,7 +182,7 @@ export function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               style={{ color: FOOT_DIM, textDecoration: "none", transition: "color 0.2s" }}
-              onMouseEnter={e => (e.currentTarget.style.color = "#FFFFFF")}
+              onMouseEnter={e => (e.currentTarget.style.color = "var(--ink)")}
               onMouseLeave={e => (e.currentTarget.style.color = FOOT_DIM)}
             >
               Powered by Aukizan
@@ -186,7 +191,7 @@ export function Footer() {
           <div style={{ display: "flex", alignItems: "center", gap: 20, flexWrap: "wrap" }}>
             {["About", "Sources", "Privacy", "Terms"].map(item => (
               <Link key={item} href={`/${item.toLowerCase()}`} style={{ fontFamily: "var(--font-ui)", fontSize: 12, color: FOOT_DIM, textDecoration: "none", transition: "color 0.2s" }}
-                onMouseEnter={e => (e.currentTarget.style.color = "#FFFFFF")}
+                onMouseEnter={e => (e.currentTarget.style.color = "var(--ink)")}
                 onMouseLeave={e => (e.currentTarget.style.color = FOOT_DIM)}
               >
                 {item}

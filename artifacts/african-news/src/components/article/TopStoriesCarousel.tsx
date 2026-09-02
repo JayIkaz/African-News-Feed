@@ -4,7 +4,8 @@ import { formatDistanceToNow } from "date-fns";
 import { Article } from "@workspace/api-client-react";
 import { getArticleImage } from "@/lib/unsplash";
 import { COUNTRY_FLAGS } from "@/lib/countries";
-import { catTag } from "./ArticleCard";
+import { truncateToWord } from "@/lib/truncate";
+import { isBreakingStory } from "@/lib/breaking";
 
 interface TopStoriesCarouselProps {
   articles: Article[];
@@ -75,7 +76,7 @@ export function TopStoriesCarousel({ articles }: TopStoriesCarouselProps) {
             onClick={() => goTo(i)}
             className="an-carousel-dot"
             style={{
-              background: i === current ? "#fff" : "rgba(255,255,255,0.4)",
+              background: i === current ? "var(--accent)" : "var(--line-strong)",
               transform: i === current ? "scale(1.2)" : "scale(1)",
             }}
             aria-label={`Go to slide ${i + 1}`}
@@ -86,13 +87,18 @@ export function TopStoriesCarousel({ articles }: TopStoriesCarouselProps) {
   );
 }
 
+// This is the ENTIRE top-story experience below 640px — Home swaps the §4
+// card out for this carousel — so it carries the same composition: eyebrow,
+// display headline, dek, mono meta line, over the spec's scrim. The only
+// deliberate divergence is that the headline and dek are clamped, because
+// the slide is a fixed 300px (spec §7) and has to leave room for the dots.
 function CarouselSlide({ article, active }: { article: Article; active: boolean }) {
   const imageUrl = getArticleImage(article, "featured");
   const flag = COUNTRY_FLAGS[article.country ?? ""] ?? "🌍";
-  const tag = catTag(article.category);
   const dateStr = article.publishedDate
     ? formatDistanceToNow(new Date(article.publishedDate), { addSuffix: true })
     : "";
+  const isBreaking = isBreakingStory(article);
 
   return (
     <Link
@@ -111,13 +117,21 @@ function CarouselSlide({ article, active }: { article: Article; active: boolean 
       />
       <div className="an-carousel-overlay" />
       <div className="an-carousel-content">
+        {/* Spec §4: --live when breaking, --accent for a standard category */}
         <span
-          className="an-carousel-cat"
-          style={{ background: tag.bg, color: tag.fg }}
+          className="an-carousel-eyebrow"
+          style={{ color: isBreaking ? "var(--live)" : "var(--accent)" }}
         >
-          {article.category}
+          {isBreaking ? "Breaking" : article.category}
         </span>
-        <h2 className="an-carousel-title">{article.title}</h2>
+        {/* No dek here, unlike the §4 desktop card. The spec's scrim only
+            reaches full strength at the very bottom, which is fine over
+            380px but leaves a dek sitting on bright image detail at 300px —
+            it tested unreadable over busy photos. Dropping the least
+            essential element beat weakening a scrim value the spec fixes. */}
+        <h2 className="an-carousel-title line-clamp-3">
+          {truncateToWord(article.title, 110)}
+        </h2>
         <div className="an-carousel-meta">
           <span>{flag} {article.country}</span>
           <span>·</span>
