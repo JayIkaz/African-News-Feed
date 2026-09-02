@@ -252,3 +252,89 @@ instances later is trivial if that changes.
   this spec, so the two apps now diverge visually.
 - No automated contrast test exists. The audit used to produce the numbers here
   was ad hoc and is not committed; the figures will drift as the site changes.
+
+---
+
+## Appendix — the spec as it stood before these amendments
+
+Preserved verbatim. This is the dark-editorial spec as delivered, before
+implementation surfaced the issues recorded above: `--ink-faint` below AA, the
+breaking state with no data source, §7's 900px page, and `top center` crop
+focus.
+
+It is here because it existed only as a `.docx` in a Downloads folder with no
+version history — which is how it drifted from the code in the first place.
+Quoted rather than reproduced as live markdown, so it cannot be mistaken for
+current guidance. The current spec is
+[`news-feed-design-spec.md`](./news-feed-design-spec.md).
+
+````markdown
+# AfricaNews — visual design spec (dark editorial)
+
+This supersedes the earlier light-palette, card-based version of this spec. The site has moved to a dark, high-contrast editorial layout inspired by The Intercept, borderless feed rows instead of boxed cards, reserving colour for category/urgency signals rather than decoration.
+
+## 1. Colour tokens
+
+| Token | Hex | Use |
+|---|---|---|
+| `--paper` | `#14132B` | Page background (deep indigo-black, not pure black) |
+| `--paper-raised` | `#1D1B3D` | Placeholder/loading fill for images before they load |
+| `--ink` | `#F2F1ED` | Primary text (warm off-white, not stark white) |
+| `--ink-muted` | `rgba(242,241,237,0.55)` | Secondary text — deks, summaries |
+| `--ink-faint` | `rgba(242,241,237,0.35)` | Tertiary text — metadata, timestamps |
+| `--accent` | `#E8A33D` | Category labels, active nav state, hover highlight on headlines |
+| `--live` | `#E94F37` | Breaking/live indicators only. Reserve for genuine urgency, never decorative |
+| `--line` | `rgba(242,241,237,0.12)` | Hairline dividers between feed rows and header border |
+| `--line-strong` | `rgba(242,241,237,0.28)` | Divider colour on hover |
+
+No card backgrounds, borders, shadows, or rounded corners in this direction. Structure comes from hairline dividers and spacing, not boxes.
+
+## 2. Typography
+
+- **Display (`--font-display`)**: Fraunces — used for the site name, the top-story headline, and every feed-row headline. Kept serif deliberately so the dark layout reads as editorial rather than a generic dark-mode UI toggle.
+- **Body (`--font-body`)**: Inter — deks and any longer-form copy.
+- **Mono (`--font-mono`)**: IBM Plex Mono — nav items, eyebrows, tags, timestamps. Always uppercase, letter-spacing ~0.05–0.08em.
+
+## 3. Header
+
+- Background: `--paper`, 1px bottom border in `--line`
+- Site name in `--font-display`, 20px, weight 700
+- Live indicator: a small `--live` dot with a CSS pulse animation (`@keyframes`, 1.8s ease-in-out, opacity/scale) next to a mono "Live" label
+- Nav items: mono, uppercase, `--ink-muted`; active item switches to `--accent` with a 1px bottom border in `--accent`
+
+## 4. Top story
+
+- Full-bleed background image, fixed height (380px desktop / 300px mobile), `background-size: cover`, `background-position: top center`
+- Scrim: gradient from near-transparent at the top to `rgba(10,9,25,0.95)` at the bottom, mandatory whenever text sits over the image
+- Eyebrow: mono, uppercase, `--live` if breaking or `--accent` for a standard category
+- Headline: `--font-display`, 32px desktop / 24px mobile, weight 600
+- Dek: `--font-body`, 14px, `--ink-muted`, upright (not italic)
+- Metadata line (country · time · source): mono, uppercase, `--ink-faint`
+
+## 5. Pulse divider (signature element)
+
+A thin SVG waveform line sits between the top story and the feed, echoing the AfricaNews pulse-through-Africa-silhouette logo. Stroke colour `rgba(242,241,237,0.18)`, 1px weight. This replaces a plain hairline rule at this one structural boundary — it is not repeated elsewhere, so it stays a signature rather than becoming decoration.
+
+## 6. Latest news feed
+
+Borderless row list, not boxed cards. This is the single biggest structural change from the previous spec.
+
+- **Row layout**: thumbnail (104px × 78px desktop, 72px × 72px mobile) on the left, content to the right, flex gap 18px
+- **Divider**: 1px `--line` under every row; on hover, brightens to `--line-strong` and the headline text shifts to `--accent`
+- **Tag row**: category tag (mono, `--accent`) and country tag (mono, `--ink-faint`) sit side by side above the headline
+- **Breaking override**: when a story is breaking, the breaking tag (`--live`, with a small dot marker) replaces the category tag in that slot rather than stacking alongside it — there isn't room for both without crowding the dense row layout
+- **Headline**: `--font-display`, 17px desktop / 15px mobile, weight 600, clamped to 2 lines
+- **Truncation**: do not rely on CSS `line-clamp` alone for the cut point, since it can break mid-word. Run headline/summary text through a helper that finds the last full word before the character limit (currently 90 characters for feed-row headlines), then apply the ellipsis there
+- **Timestamp**: mono, `--ink-faint`, below the headline
+
+## 7. Grid and breakpoints
+
+- Desktop: single-column feed, max content width 900px, centred
+- Mobile (≤640px): thumbnails shrink to 72px × 72px, top-story height drops to 300px, headline sizes step down as above
+
+## 8. Open items for future review
+
+- Confirm whether breaking stories should ever show both the breaking tag and the category tag (e.g. a smaller secondary label), now that the two are mutually exclusive in the row layout.
+- Decide on a house style for crop-focus points per image type (portrait subjects vs. landscape/event photos) — unchanged from the previous spec, still unresolved.
+- Confirm whether the pulse-divider motif should also appear anywhere else on the site (e.g. between other major sections) or stay unique to this one boundary.
+````
