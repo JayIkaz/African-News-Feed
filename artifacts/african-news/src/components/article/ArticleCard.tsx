@@ -5,6 +5,7 @@ import { getArticleImage } from "@/lib/unsplash";
 import { CountryFlag } from "@/components/common/CountryFlag";
 import { useTranslate } from "@/lib/useTranslate";
 import { truncateToWord } from "@/lib/truncate";
+import { isBreakingStory } from "@/lib/breaking";
 
 // Small pill shown on non-English cards; toggles between original and English.
 export function TranslateChip({ t, light = false }: { t: ReturnType<typeof useTranslate>; light?: boolean }) {
@@ -144,6 +145,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
     : "";
   const fallbackBg = IMAGE_FALLBACK_BG;
   const tag = catTag(article.category);
+  const isBreaking = isBreakingStory(article);
 
   if (compact) {
     return (
@@ -227,24 +229,23 @@ export function ArticleCard({ article, featured = false, compact = false, side =
           }}
         />
         <div style={{ position: "relative", padding: "28px 24px", maxWidth: 640 }}>
-          {/* Eyebrow — --accent for a standard category. Spec §4 also calls
-              for a --live variant when the story is breaking, but the Article
-              schema carries no breaking flag, so only the category form can
-              be built today. */}
+          {/* Spec §4: eyebrow is --live when the story is breaking, --accent
+              for a standard category. Breaking state is derived from recency
+              — see lib/breaking.ts. */}
           <div
             style={{
               fontFamily: "var(--font-mono)",
               fontSize: 10,
               letterSpacing: "0.08em",
               textTransform: "uppercase",
-              color: "var(--accent)",
+              color: isBreaking ? "var(--live)" : "var(--accent)",
               marginBottom: 10,
               display: "flex",
               alignItems: "center",
               gap: 10,
             }}
           >
-            {article.category}
+            {isBreaking ? "Breaking" : article.category}
             <TranslateChip t={t} light />
           </div>
           <h2
@@ -326,22 +327,40 @@ export function ArticleCard({ article, featured = false, compact = false, side =
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         {/* Spec §6: category tag (--accent) and country tag (--ink-faint)
-            side by side above the headline. The spec's breaking override —
-            a --live tag replacing the category in this slot — has no field
-            in the Article schema to drive it, so only the category form is
-            built. */}
+            side by side above the headline. When a story is breaking, the
+            --live breaking tag REPLACES the category tag in this slot rather
+            than stacking alongside it — the spec is explicit that there
+            isn't room for both in a dense row. */}
         <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 6, flexWrap: "wrap" }}>
-          <span
-            style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: 9,
-              letterSpacing: "0.06em",
-              textTransform: "uppercase",
-              color: "var(--accent)",
-            }}
-          >
-            {article.category}
-          </span>
+          {isBreaking ? (
+            <span
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: 9,
+                letterSpacing: "0.06em",
+                textTransform: "uppercase",
+                color: "var(--live)",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 4,
+              }}
+            >
+              <span aria-hidden="true" style={{ fontSize: 7, lineHeight: 1 }}>●</span>
+              Breaking
+            </span>
+          ) : (
+            <span
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: 9,
+                letterSpacing: "0.06em",
+                textTransform: "uppercase",
+                color: "var(--accent)",
+              }}
+            >
+              {article.category}
+            </span>
+          )}
           <span
             style={{
               fontFamily: "var(--font-mono)",
