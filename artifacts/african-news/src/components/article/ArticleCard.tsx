@@ -89,30 +89,6 @@ export function CatTag({ category, size = 11 }: { category?: string | null; size
   );
 }
 
-// Country tag — mint tint with flag, per spec §4 (kept independent of the
-// category tag; both appear together).
-export function CountryTag({ country }: { country?: string | null }) {
-  return (
-    <span
-      style={{
-        background: "var(--mint-tint)",
-        color: "var(--mint-text)",
-        fontSize: 10,
-        fontWeight: 600,
-        fontFamily: "var(--font-ui)",
-        padding: "2px 6px",
-        borderRadius: 4,
-        display: "inline-flex",
-        alignItems: "center",
-        gap: 4,
-      }}
-    >
-      <CountryFlag country={country ?? ""} size={11} />
-      {country}
-    </span>
-  );
-}
-
 // Spec §1 assigns --paper-raised the job of image placeholder/fallback fill.
 // This replaces the old per-category fills (browns, greens, teal), which were
 // tuned for the light theme and read as garish blocks on --paper — and which

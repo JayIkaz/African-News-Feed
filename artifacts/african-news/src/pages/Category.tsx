@@ -72,17 +72,11 @@ export default function Category() {
               )}
             </div>
 
-            <div className="an-grid-3" style={{ marginBottom: 32 }}>
+            <div className="an-story-list" style={{ marginBottom: 32 }}>
               {isLoading || isFetching ? (
+                /* Row-shaped, matching the feed rows that load in */
                 Array(6).fill(0).map((_, i) => (
-                  <div key={i} style={{ background: "var(--surface-1)", borderRadius: 10, overflow: "hidden", border: "1px solid var(--paper-3)" }}>
-                    <div className="an-skeleton" style={{ aspectRatio: "16/9", width: "100%" }} />
-                    <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 8 }}>
-                      <div className="an-skeleton" style={{ height: 14 }} />
-                      <div className="an-skeleton" style={{ height: 14, width: "80%" }} />
-                      <div className="an-skeleton" style={{ height: 14, width: "60%" }} />
-                    </div>
-                  </div>
+                  <div key={i} className="an-skeleton an-skeleton-row" />
                 ))
               ) : data?.articles && data.articles.length > 0 ? (
                 data.articles.map(article => <ArticleCard key={article.id} article={article} />)

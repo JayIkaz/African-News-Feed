@@ -194,7 +194,7 @@ export default function ArticleDetail() {
                 More in {article.category}
               </h2>
             </div>
-            <div className="an-grid-3">
+            <div className="an-story-list">
               {relatedArticles.map(related => (
                 <ArticleCard key={related.id} article={related} isRead={isRead(related.id)} />
               ))}

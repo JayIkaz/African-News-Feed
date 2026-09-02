@@ -263,12 +263,11 @@ h1, h2, h3, h4, h5, h6 {
   padding: 0 24px;
 }
 
-/* Spec §6/§7: the feed is a single-column borderless stream, so the old
-   2-column card grid collapses to one column with no gap — the hairline
-   under each row is the separator now, and a gap would break the stream.
-   (Class name kept from the old 3-col layout to avoid touching every page
-   that references it.) */
-.an-grid-3 {
+/* Spec §6/§7: the feed is a single-column borderless stream. The hairline
+   under each row is the separator, so there is no gap — a gap would break
+   the stream. (Renamed from .an-grid-3: it had already stopped being a
+   3-column grid two redesigns ago and the name was actively misleading.) */
+.an-story-list {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 0;
@@ -314,9 +313,16 @@ h1, h2, h3, h4, h5, h6 {
 .an-story-row:hover { border-color: var(--line-strong); }
 .an-story-row:hover .an-story-row-headline { color: var(--accent); }
 
-/* Still used by the secondary top-story loading skeletons in Home. */
-.an-news-card { height: auto; }
-.an-news-card-media { aspect-ratio: 16 / 9; flex-shrink: 0; }
+/* Loading placeholder shaped like a feed row, so the skeleton and the
+   loaded content occupy the same height and the feed doesn't jump. Matches
+   .an-story-row: 78px of content between 18px paddings. (Replaces
+   .an-news-card / .an-news-card-media, which described the 16/9 card the
+   rows no longer are.) */
+.an-skeleton-row {
+  height: 78px;          /* desktop: the 78px thumbnail sets the row height */
+  margin: 18px 0 19px;   /* 18px padding each side + the 1px row hairline */
+  border-radius: 3px;
+}
 
 /* Spec §4: top story — fixed height, image cropped top-centre so faces and
    headlines survive the crop. Spec §7 steps both down on mobile. */
@@ -514,7 +520,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ── TABLET (≤1024px) ── */
 @media (max-width: 1024px) {
-  /* .an-grid-3 is single-column at every width now (spec §7) — no override. */
+  /* .an-story-list is single-column at every width now (spec §7) — no override. */
 
   .an-content-with-sidebar {
     grid-template-columns: 1fr;
@@ -616,8 +622,9 @@ h1, h2, h3, h4, h5, h6 {
   .an-story-thumb { width: 72px; height: 72px; }
   .an-story-row-headline { font-size: 15px; }
 
-  .an-news-card { height: auto; }
-  .an-news-card-media { height: auto; aspect-ratio: 16 / 9; }
+  /* Mobile: the thumbnail shrinks to 72px but headlines wrap to two lines,
+     so the text column becomes the taller side at ~84px. */
+  .an-skeleton-row { height: 84px; }
   .an-top-story { height: 300px; }
   .an-top-story-headline { font-size: 24px; }
 

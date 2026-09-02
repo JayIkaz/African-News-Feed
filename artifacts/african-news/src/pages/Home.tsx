@@ -85,7 +85,8 @@ export default function Home() {
             /* Mobile: swipeable carousel */
             topLoading ? (
               <div className="an-carousel-root">
-                <div className="an-skeleton" style={{ height: 340 }} />
+                {/* Matches the carousel slide's 300px (spec §7) */}
+                <div className="an-skeleton" style={{ height: 300 }} />
               </div>
             ) : topStories?.articles && topStories.articles.length > 0 ? (
               <TopStoriesCarousel articles={topStories.articles} />
@@ -95,16 +96,16 @@ export default function Home() {
               </div>
             )
           ) : (
-            /* Desktop: spec §3 top-story card full width, next two stories
-               as standard cards beneath it */
+            /* Desktop: spec §4 top-story card full width, with the next two
+               stories as ordinary feed rows beneath it */
             <>
               {topLoading ? (
                 <>
                   {/* Matches the top story's 380px so the feed doesn't jump on load */}
                   <div className="an-skeleton an-top-story" style={{ borderRadius: 0, marginBottom: 12 }} />
-                  <div className="an-grid-3">
-                    <div className="an-skeleton an-news-card" style={{ borderRadius: 12 }} />
-                    <div className="an-skeleton an-news-card" style={{ borderRadius: 12 }} />
+                  <div className="an-story-list">
+                    <div className="an-skeleton an-skeleton-row" />
+                    <div className="an-skeleton an-skeleton-row" />
                   </div>
                 </>
               ) : topStories?.articles && topStories.articles.length > 0 ? (
@@ -113,7 +114,7 @@ export default function Home() {
                     <ArticleCard article={topStories.articles[0]} featured />
                   </div>
                   {(topStories.articles[1] || topStories.articles[2]) && (
-                    <div className="an-grid-3">
+                    <div className="an-story-list">
                       {topStories.articles[1] && <ArticleCard article={topStories.articles[1]} />}
                       {topStories.articles[2] && <ArticleCard article={topStories.articles[2]} />}
                     </div>
@@ -252,17 +253,13 @@ export default function Home() {
                 )}
               </div>
 
-              <div key={fadeKey} className="an-grid-3 an-articles-fade">
+              <div key={fadeKey} className="an-story-list an-articles-fade">
                 {latestLoading || isFetching ? (
+                  /* Row-shaped, matching what loads in — the old 16/9 card
+                     skeleton described a layout the feed no longer uses and
+                     made the page jump when articles arrived. */
                   Array(6).fill(0).map((_, i) => (
-                    <div key={i} style={{ background: "var(--surface-1)", borderRadius: 10, overflow: "hidden", border: "1px solid var(--paper-3)" }}>
-                      <div className="an-skeleton" style={{ aspectRatio: "16/9", width: "100%" }} />
-                      <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 8 }}>
-                        <div className="an-skeleton" style={{ height: 14 }} />
-                        <div className="an-skeleton" style={{ height: 14, width: "80%" }} />
-                        <div className="an-skeleton" style={{ height: 14, width: "60%" }} />
-                      </div>
-                    </div>
+                    <div key={i} className="an-skeleton an-skeleton-row" />
                   ))
                 ) : latestNews?.articles && latestNews.articles.length > 0 ? (
                   latestNews.articles.map((article) => (
