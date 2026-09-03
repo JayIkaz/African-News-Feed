@@ -9,7 +9,9 @@ nonetheless contains, or a deliberate deviation made during implementation.
 Contrast ratios were measured against rendered pages, not calculated from the
 palette in isolation.
 
-Branch: `redesign/dark-editorial`.
+Landed on `master` in [#1](https://github.com/JayIkaz/African-News-Feed/pull/1).
+The `redesign/dark-editorial` branch this was written on has since been deleted;
+the PR is the durable reference.
 
 ---
 
