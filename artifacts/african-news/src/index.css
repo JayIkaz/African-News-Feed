@@ -57,33 +57,45 @@
 
 :root {
   /* ══════════════════════════════════════════════════════════════════
-     Dark editorial palette — spec §1, verbatim.
+     Light editorial palette — spec §1 (revised 3 Oct 2026).
+     Warm paper, near-black ink, one rust accent. The previous dark indigo
+     and amber palette is recorded in docs/spec-amendments.md.
      Structure comes from hairline dividers and spacing, not boxes:
      no card backgrounds, borders, shadows, or rounded corners.
+     All contrast figures below are measured, not eyeballed.
      ══════════════════════════════════════════════════════════════════ */
-  --paper: #14132B;
-  --paper-raised: #1D1B3D;
-  --ink: #F2F1ED;
-  --ink-muted: rgba(242,241,237,0.55);   /* 5.53:1 paper / 5.29:1 raised */
-  /* Amended from the spec's 0.35, which measured 2.97:1 on --paper — below
-     the 4.5:1 WCAG AA threshold, and §4/§6 apply this to every timestamp,
-     country tag and metadata line. Ruled by the spec owner to raise it.
-     0.50 rather than the 0.58 first proposed, for two reasons:
-       - 0.58 measured 6.02:1, BRIGHTER than --ink-muted's 5.53:1, which
-         inverted the ramp — tertiary text louder than secondary.
-       - the value must also clear AA on --paper-raised, where tags and
-         dropdown text sit. That rules out 0.48 (4.50 paper / 4.36 raised).
-     0.50 gives 4.78:1 on paper and 4.61:1 on raised, and stays below
-     --ink-muted so the three levels stay ordered.
-     Do not override this locally — change it here or not at all. */
-  --ink-faint: rgba(242,241,237,0.50);
-  --accent: #E8A33D;
-  --live: #E94F37;
-  --line: rgba(242,241,237,0.12);
-  --line-strong: rgba(242,241,237,0.28);
+  color-scheme: light;
 
-  /* Spec §2 — Fraunces display kept serif so the dark layout reads as
-     editorial rather than a generic dark-mode toggle. */
+  --paper: #F7F5F0;
+  --paper-raised: #EDE9E0;
+  --ink: #1A1916;                          /* 16.13:1 paper / 14.51:1 raised */
+  /* The three ink levels are ordered and must stay ordered:
+     ink > ink-muted > ink-faint. Each text token has to clear 4.5:1 on BOTH
+     --paper and --paper-raised, because tags, the search field and dropdown
+     items sit on the raised fill. */
+  --ink-muted: rgba(26,25,22,0.74);        /* 7.17:1 paper / 6.74:1 raised */
+  --ink-faint: rgba(26,25,22,0.64);        /* 5.10:1 paper / 4.88:1 raised */
+  --accent: #9A3412;                       /* 6.71:1 paper / 6.03:1 raised */
+  --live: #B42318;                         /* 6.03:1 paper / 5.43:1 raised */
+  --line: rgba(26,25,22,0.14);
+  --line-strong: rgba(26,25,22,0.30);
+
+  /* Text and controls that sit ON an image, over a scrim. These do not
+     follow the light/dark of the page: the scrim is dark whatever the page
+     is, so the text on it is light. */
+  --on-image: #F7F5F0;                     /* 16:1 on the scrim's lower half */
+  --on-image-muted: rgba(247,245,240,0.82);
+  --on-image-faint: rgba(247,245,240,0.72);
+  --scrim: linear-gradient(180deg, rgba(26,25,22,0.10) 30%, rgba(14,13,11,0.95) 100%);
+  /* Empty image box under the scrim (an article with no usable image) */
+  --image-empty: #1A1916;
+
+  /* The logo is a mark, not UI: its pulse line keeps the original amber.
+     Used nowhere else. */
+  --brand-amber: #E8A33D;
+
+  /* Spec §2 — Fraunces display kept serif so the layout reads as editorial
+     rather than a generic news template. */
   --font-display: 'Fraunces', Georgia, serif;
   --font-body: 'Inter', -apple-system, sans-serif;
   --font-mono: 'IBM Plex Mono', monospace;
@@ -135,15 +147,15 @@
   --border: var(--line);
   --border-strong: var(--line-strong);
 
-  /* Region wayfinding colours in the country dropdown. The spec is silent
-     on these. Hues are unchanged from the light theme, lifted in
-     luminance so they stay legible on --paper — see the note in my
-     summary, this is the one place I went beyond the spec's palette. */
-  --region-north: #D69A5E;
-  --region-west: #5FBF9E;
-  --region-east: #7BA9DC;
-  --region-central: #A996E0;
-  --region-south: #DBB05C;
+  /* Region wayfinding. Five hues (tan, green, blue, purple, gold) were the
+     loudest colour on the Countries page and the country dropdown. The five
+     names stay so existing call sites keep working; they now all resolve to
+     the muted ink, and the region is named by its label, not by a colour. */
+  --region-north: var(--ink-muted);
+  --region-west: var(--ink-muted);
+  --region-east: var(--ink-muted);
+  --region-central: var(--ink-muted);
+  --region-south: var(--ink-muted);
 
   /* House crop focus for every article image (spec §4, resolving the §8
      open item). Biased slightly above centre: it suits faces without the
@@ -176,7 +188,12 @@ body {
   padding: 0;
 }
 
-a { color: inherit; text-decoration: none; }
+/* In @layer base so Tailwind utilities can still colour a link. Unlayered,
+   this rule beat every text-* class on an <a>, which is how a rust button
+   ended up with ink text on the advertise page. */
+@layer base {
+  a { color: inherit; text-decoration: none; }
+}
 
 /* Keyboard focus: one visible ring for every interactive element. It only
    shows for keyboard focus (:focus-visible), so mouse users see no change.
@@ -406,6 +423,9 @@ h1, h2, h3, h4, h5, h6 {
   height: 44px;
   max-width: 1320px;
   margin: 0 auto;
+  /* Same 24px gutter as .an-container. It had none, so below 1320px the
+     first stat sat on the viewport edge and the last one was clipped. */
+  padding: 0 24px;
 }
 
 .an-hero-grid {
@@ -473,7 +493,7 @@ h1, h2, h3, h4, h5, h6 {
   height: 300px;
   display: block;
   overflow: hidden;
-  background: var(--paper-raised);
+  background: var(--image-empty);
   text-decoration: none;
 }
 
@@ -490,7 +510,7 @@ h1, h2, h3, h4, h5, h6 {
 .an-carousel-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(20,19,43,0.1) 30%, rgba(10,9,25,0.95) 100%);
+  background: var(--scrim);
 }
 
 .an-carousel-content {
@@ -499,7 +519,7 @@ h1, h2, h3, h4, h5, h6 {
   left: 0;
   right: 0;
   padding: 20px 18px 44px;
-  color: var(--ink);
+  color: var(--on-image);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -508,6 +528,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Spec §4: eyebrow is mono/uppercase coloured text, not a filled chip —
    the colour is the signal, the chip was decoration. */
 .an-carousel-eyebrow {
+  color: var(--on-image-muted);
   font-family: var(--font-mono);
   font-size: 12px;
   letter-spacing: 0.08em;
@@ -521,7 +542,7 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 24px;
   font-weight: 600;
   line-height: 1.15;
-  color: var(--ink);
+  color: var(--on-image);
   margin: 0;
 }
 
@@ -530,7 +551,7 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 12px;
   letter-spacing: 0.03em;
   text-transform: uppercase;
-  color: var(--ink-faint);
+  color: var(--on-image-faint);
   display: flex;
   gap: 6px;
   align-items: center;
@@ -555,6 +576,29 @@ h1, h2, h3, h4, h5, h6 {
   cursor: pointer;
   padding: 0;
   transition: background 0.2s, transform 0.2s;
+}
+
+/* The carousel sits on a photograph and its dark scrim, so the global rust
+   focus ring would be low contrast there. The slide also fills its clipping
+   parents (an outside ring is cut off) and its image paints over its own
+   outline, so the ring is a pseudo-element drawn on top, inset, in two tones
+   (paper inside, ink outside) to read on both light and dark photographs. */
+.an-carousel-slide:focus-visible {
+  outline: none;
+}
+
+.an-carousel-slide:focus-visible::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  z-index: 5;
+  border: 2px solid var(--on-image);
+  outline: 2px solid var(--ink);
+  pointer-events: none;
+}
+
+.an-carousel-dot:focus-visible {
+  outline-color: var(--on-image);
 }
 
 /* ── CATEGORY PILL BAR ── */

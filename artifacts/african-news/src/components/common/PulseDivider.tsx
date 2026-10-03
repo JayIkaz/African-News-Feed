@@ -12,7 +12,7 @@ export function PulseDivider() {
         <polyline
           points="0,8 160,8 172,2 184,14 196,8 400,8"
           fill="none"
-          stroke="rgba(242,241,237,0.18)"
+          stroke="var(--line-strong)"
           strokeWidth="1"
         />
       </svg>

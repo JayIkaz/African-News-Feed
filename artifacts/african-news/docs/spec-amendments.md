@@ -9,6 +9,12 @@
 > applied spec, because the old §8 ("Open items for future review") was deleted
 > rather than left as an empty heading. Every question it raised is answered.
 
+> **Palette note, 3 October 2026.** The colour values and contrast figures in
+> the sections below describe the dark palette they were written against. The
+> palette was replaced afterwards; see [Palette revision, 3 October
+> 2026](#palette-revision-3-october-2026) at the end of this file. Section
+> numbers, layout rules and the §8 surface rules are unaffected.
+
 Replacement text for §1 and §7, following the spec-owner rulings recorded in
 [`spec-deltas.md`](./spec-deltas.md). Written to drop into the spec as-is.
 
@@ -232,3 +238,61 @@ All three items previously listed here are resolved: the breaking state is cut,
 the unspecified surfaces are governed by §9, and crop focus is settled at
 `center 30%`. The spec's own §8 can be deleted — every question in it now has
 an answer above.
+
+---
+
+## Palette revision, 3 October 2026
+
+**Why.** The site owner reviewed the dark indigo and amber palette and found
+it too gaudy. Several alternatives were compared against the real home page.
+The owner chose the light paper option and asked for the country flag images
+on feed rows to stay.
+
+**What changed in §1**
+
+| Token | Was (dark) | Now (light paper) |
+|---|---|---|
+| `--paper` | `#14132B` | `#F7F5F0` |
+| `--paper-raised` | `#1D1B3D` | `#EDE9E0` |
+| `--ink` | `#F2F1ED` | `#1A1916` |
+| `--ink-muted` | `rgba(242,241,237,0.55)` | `rgba(26,25,22,0.74)` |
+| `--ink-faint` | `rgba(242,241,237,0.50)` | `rgba(26,25,22,0.64)` |
+| `--accent` | `#E8A33D` (amber) | `#9A3412` (rust) |
+| `--live` | `#E94F37` | `#B42318` |
+| `--line` | `rgba(242,241,237,0.12)` | `rgba(26,25,22,0.14)` |
+| `--line-strong` | `rgba(242,241,237,0.28)` | `rgba(26,25,22,0.30)` |
+
+Measured contrast on `--paper` / `--paper-raised`: ink 16.13 / 14.51, muted
+7.17 / 6.74, faint 5.10 / 4.88, accent 6.71 / 6.03, live 6.03 / 5.43. The three
+ink levels keep their order and every text token clears 4.5:1 on both
+surfaces, as §1 requires. An axe colour-contrast scan of ten routes at desktop
+and mobile widths reports zero failures.
+
+In the comparison mock-up, `--ink-faint` at 0.54 measured about 3.5:1. It was
+raised to 0.64 before any code changed.
+
+**New tokens.** Text over photographs cannot follow the page, because the
+photo and its scrim stay dark. Added `--on-image`, `--on-image-muted`,
+`--on-image-faint`, `--scrim` and `--image-empty` (values in §1), and
+`--brand-amber` for the logo pulse line only. `--accent` rust fails contrast
+on the scrim, so the top-story and carousel eyebrow uses `--on-image-muted`.
+
+**Removed.** Emoji on category pills, the stats strip, the category page and
+empty states (replaced by Lucide icons where an icon is useful, otherwise
+dropped). The per-region wayfinding colours (`--region-*` now all resolve to
+`--ink-muted`). The drop shadow on the article hero image. The fallback
+globe emoji in `CountryFlag` (a Lucide `Globe` now).
+
+**Kept.** Country flag images on feed rows, the translate chip (now with a
+Lucide `Languages` icon), layout, type, and every rule in §8.
+
+**Rule 1 of §8 ("Colour comes only from §1")** still holds and was what the
+removal of per-region colours and the Advertise and API pages' Tailwind
+blue, emerald, amber and violet cards enforced.
+
+**Two fixes found while checking, not part of the palette**
+- `a { color: inherit }` sat outside `@layer base`, so it beat every Tailwind
+  `text-*` class on a link. It now sits inside the layer.
+- The stats strip had no side padding below 1320px, so its first item touched
+  the viewport edge and its last item was clipped. It now uses the same 24px
+  gutter as `.an-container`.

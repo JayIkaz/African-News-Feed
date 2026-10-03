@@ -87,19 +87,19 @@ export default function ApiAccess() {
   return (
     <AppLayout>
       {/* Hero */}
-      <div className="bg-primary text-primary-foreground py-20">
+      <div className="bg-secondary text-foreground py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
           <span className="text-accent font-bold tracking-widest uppercase text-sm mb-4 block">Developer API</span>
-          <h1 className="font-serif text-4xl md:text-6xl font-bold text-white mb-6">
+          <h1 className="font-serif text-4xl md:text-6xl font-bold text-foreground mb-6">
             African News Data, Delivered
           </h1>
-          <p className="text-primary-foreground/70 text-xl leading-relaxed max-w-2xl mx-auto">
+          <p className="text-secondary-foreground text-xl leading-relaxed max-w-2xl mx-auto">
             Access 1,300+ articles from 54 African news sources via a clean REST API.
             Build research tools, dashboards, newsletters, and more.
           </p>
           <a
             href="mailto:api@africanews.com"
-            className="inline-flex items-center gap-2 mt-8 px-8 py-4 bg-accent text-white font-bold rounded-full shadow-lg hover:bg-accent/90 transition-all hover:-translate-y-1 duration-200"
+            className="inline-flex items-center gap-2 mt-8 px-8 py-4 bg-accent text-accent-foreground font-bold rounded-full shadow-lg hover:bg-accent/90 transition-all hover:-translate-y-1 duration-200"
           >
             <Mail className="w-5 h-5" /> Request API Access
           </a>
@@ -141,11 +141,11 @@ export default function ApiAccess() {
                 {ENDPOINTS.map(({ method, path, description, params }) => (
                   <div key={path} className="bg-background rounded-xl border border-border p-4">
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xs font-bold text-white bg-emerald-600 px-2 py-0.5 rounded font-mono">{method}</span>
+                      <span className="text-xs font-bold text-accent-foreground bg-accent px-2 py-0.5 rounded font-mono">{method}</span>
                       <code className="text-sm font-mono text-primary">{path}</code>
                     </div>
                     <p className="text-sm text-muted-foreground mb-1">{description}</p>
-                    {params && <code className="text-xs text-muted-foreground/70 font-mono">{params}</code>}
+                    {params && <code className="text-xs text-muted-foreground font-mono">{params}</code>}
                   </div>
                 ))}
               </div>
@@ -156,7 +156,7 @@ export default function ApiAccess() {
                 <Terminal className="w-7 h-7 text-accent" /> Sample Response
               </h2>
               <p className="text-muted-foreground mb-8">Clean, consistent JSON — ready for your application.</p>
-              <pre className="bg-primary text-primary-foreground rounded-xl p-5 text-xs leading-relaxed overflow-x-auto">
+              <pre className="bg-secondary text-foreground rounded-xl p-5 text-xs leading-relaxed overflow-x-auto">
                 <code>{SAMPLE_RESPONSE}</code>
               </pre>
             </div>
@@ -174,18 +174,18 @@ export default function ApiAccess() {
               <div
                 key={name}
                 className={`rounded-2xl border p-8 flex flex-col ${
-                  accent ? "bg-primary text-primary-foreground border-primary shadow-xl scale-105" : "bg-background border-border"
+                  accent ? "bg-secondary text-foreground border-primary shadow-xl scale-105" : "bg-background border-border"
                 }`}
               >
                 <h3 className="font-serif text-xl font-bold mb-2">{name}</h3>
                 <div className="flex items-baseline gap-1 mb-1">
                   <span className="text-4xl font-black">{price}</span>
-                  {period && <span className={`text-sm ${accent ? "text-primary-foreground/70" : "text-muted-foreground"}`}>{period}</span>}
+                  {period && <span className={`text-sm ${accent ? "text-secondary-foreground" : "text-muted-foreground"}`}>{period}</span>}
                 </div>
-                <p className={`text-sm mb-6 ${accent ? "text-primary-foreground/70" : "text-muted-foreground"}`}>{requests}</p>
+                <p className={`text-sm mb-6 ${accent ? "text-secondary-foreground" : "text-muted-foreground"}`}>{requests}</p>
                 <ul className="space-y-2 mb-8 flex-1">
                   {features.map(f => (
-                    <li key={f} className={`text-sm flex items-center gap-2 ${accent ? "text-primary-foreground/80" : "text-foreground/80"}`}>
+                    <li key={f} className={`text-sm flex items-center gap-2 ${accent ? "text-secondary-foreground" : "text-foreground/80"}`}>
                       <span className="text-accent">✓</span> {f}
                     </li>
                   ))}
@@ -194,7 +194,7 @@ export default function ApiAccess() {
                   href="mailto:api@africanews.com"
                   className={`block text-center py-3 rounded-full font-bold text-sm transition-all ${
                     accent
-                      ? "bg-accent text-white hover:bg-accent/90"
+                      ? "bg-accent text-accent-foreground hover:bg-accent/90"
                       : "border border-border hover:bg-secondary"
                   }`}
                 >
@@ -213,7 +213,7 @@ export default function ApiAccess() {
           <p className="text-muted-foreground mb-8">Email us to get your API key and documentation.</p>
           <a
             href="mailto:api@africanews.com"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-bold rounded-full hover:bg-accent transition-colors"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-secondary text-foreground font-bold rounded-full hover:bg-accent transition-colors"
           >
             <Mail className="w-5 h-5" /> api@africanews.com
           </a>

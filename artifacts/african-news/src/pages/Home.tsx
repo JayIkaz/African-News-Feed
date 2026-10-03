@@ -7,17 +7,18 @@ import { TopStoriesCarousel } from "@/components/article/TopStoriesCarousel";
 import { Sidebar } from "@/components/article/Sidebar";
 import { PulseDivider } from "@/components/common/PulseDivider";
 import { AdBanner } from "@/components/ads/AdBanner";
+import { Inbox } from "lucide-react";
 import { useReadHistory } from "@/lib/useReadHistory";
 
 const CATEGORY_PILLS = [
-  { label: "All", icon: "🌐", value: null },
-  { label: "Politics", icon: "🏛️", value: "Politics" },
-  { label: "Business", icon: "💼", value: "Business" },
-  { label: "Technology", icon: "💡", value: "Technology" },
-  { label: "Economy", icon: "📊", value: "Economy" },
-  { label: "Society", icon: "👥", value: "Society" },
-  { label: "Environment", icon: "🌿", value: "Environment" },
-  { label: "International", icon: "🤝", value: "International" },
+  { label: "All", value: null },
+  { label: "Politics", value: "Politics" },
+  { label: "Business", value: "Business" },
+  { label: "Technology", value: "Technology" },
+  { label: "Economy", value: "Economy" },
+  { label: "Society", value: "Society" },
+  { label: "Environment", value: "Environment" },
+  { label: "International", value: "International" },
 ];
 
 export default function Home() {
@@ -52,23 +53,20 @@ export default function Home() {
           users already have the masthead. */}
       <h1 className="sr-only">AfricaNews: headlines from African news publishers</h1>
 
-      {/* ── Dark Stats Strip ── */}
+      {/* ── Stats strip ── */}
       <div style={{ background: "var(--paper-2)", color: "var(--ink)", overflow: "hidden" }}>
         <div className="an-stats-strip-inner" style={{ fontFamily: "var(--font-ui)", fontSize: 12 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-            <span style={{ opacity: 0.6, fontSize: 13 }}>🌍</span>
             <span style={{ fontWeight: 600, fontSize: 13 }}>{countryCount > 0 ? countryCount : "25"}+</span>
             <span style={{ color: "var(--ink-3)" }}>African countries</span>
           </div>
           <div style={{ width: 1, height: 16, background: "var(--paper-3)", flexShrink: 0 }} />
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-            <span style={{ opacity: 0.6, fontSize: 13 }}>📡</span>
             <span style={{ fontWeight: 600, fontSize: 13 }}>65+</span>
             <span style={{ color: "var(--ink-3)" }}>news sources</span>
           </div>
           <div style={{ width: 1, height: 16, background: "var(--paper-3)", flexShrink: 0 }} />
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-            <span style={{ opacity: 0.6, fontSize: 13 }}>📰</span>
             <span style={{ fontWeight: 600, fontSize: 13 }}>{totalArticles > 0 ? totalArticles.toLocaleString() : "1,000"}+</span>
             <span style={{ color: "var(--ink-3)" }}>articles indexed</span>
           </div>
@@ -149,7 +147,7 @@ export default function Home() {
 
         {/* ── Category Pills ── */}
         <div className="an-pill-bar">
-          {CATEGORY_PILLS.map(({ label, icon, value }) => {
+          {CATEGORY_PILLS.map(({ label, value }) => {
             const isActive = activeCat === value;
             const pillKey = value ?? "__all__";
             return (
@@ -180,7 +178,6 @@ export default function Home() {
                 onMouseEnter={e => { if (!isActive) { e.currentTarget.style.borderColor = "var(--ink-3)"; e.currentTarget.style.color = "var(--ink)"; } }}
                 onMouseLeave={e => { if (!isActive) { e.currentTarget.style.borderColor = "var(--paper-3)"; e.currentTarget.style.color = "var(--ink-3)"; } }}
               >
-                <span style={{ fontSize: 15 }}>{icon}</span>
                 {label}
               </button>
             );
@@ -278,7 +275,7 @@ export default function Home() {
                   ))
                 ) : (
                   <div style={{ gridColumn: "1/3", textAlign: "center", padding: "60px 24px", color: "var(--ink-4)" }}>
-                    <div style={{ fontSize: 48, marginBottom: 16 }}>📭</div>
+                    <Inbox size={40} strokeWidth={1.5} aria-hidden="true" style={{ marginBottom: 16 }} />
                     <h3 style={{ fontFamily: "var(--font-headline)", fontSize: 20, color: "var(--ink-3)", marginBottom: 8 }}>No articles found</h3>
                     <p style={{ fontFamily: "var(--font-ui)", fontSize: 14 }}>Try a different category or check back soon.</p>
                   </div>

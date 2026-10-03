@@ -28,13 +28,13 @@ function AdPlaceholder({
       style={{ minHeight: h }}
       data-ad-slot={adSlot}
     >
-      <p className="text-xs uppercase tracking-widest text-muted-foreground/50 font-medium mb-1">
+      <p className="text-xs uppercase tracking-widest text-muted-foreground font-medium mb-1">
         Advertisement
       </p>
-      <p className="text-xs text-muted-foreground/40">{label}</p>
+      <p className="text-xs text-muted-foreground">{label}</p>
       <a
         href="/advertise"
-        className="mt-2 text-xs text-accent/70 hover:text-accent transition-colors underline"
+        className="mt-2 text-xs text-accent underline"
       >
         Advertise here
       </a>
