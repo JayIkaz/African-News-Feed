@@ -27,7 +27,7 @@ function ArticleHero({ article }: { article: Parameters<typeof useArticleImage>[
   return (
     <div className="an-article-hero-img">
       <div style={{ aspectRatio: "21/9", borderRadius: 12, overflow: "hidden", background: "var(--paper-2)" }}>
-        <img src={image.src} alt="" onError={image.onError} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        <img src={image.src} alt="" referrerPolicy="no-referrer" onError={image.onError} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
       </div>
     </div>
   );

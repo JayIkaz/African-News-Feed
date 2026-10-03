@@ -111,6 +111,7 @@ function CarouselSlide({ article, active }: { article: Article; active: boolean 
           alt=""
           className="an-carousel-img"
           loading="eager"
+          referrerPolicy="no-referrer"
           onError={image.onError}
         />
       )}

@@ -132,6 +132,7 @@ export function ArticleCard({ article, featured = false, isRead = false }: Artic
             alt=""
             style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "var(--crop-focus)" }}
             loading="eager"
+            referrerPolicy="no-referrer"
             onError={image.onError}
           />
         )}
@@ -244,6 +245,7 @@ export function ArticleCard({ article, featured = false, isRead = false }: Artic
             alt=""
             style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "var(--crop-focus)" }}
             loading="lazy"
+            referrerPolicy="no-referrer"
             onError={image.onError}
           />
         </div>
