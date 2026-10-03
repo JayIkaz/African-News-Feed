@@ -1,19 +1,58 @@
 import { Router } from "express";
 import { Resend } from "resend";
+import { eq } from "drizzle-orm";
 import { db } from "@workspace/db";
 import { subscribersTable } from "@workspace/db/schema";
+import { subscribeRateLimit, unsubscribeRateLimit } from "../middlewares/rateLimit";
+import { buildWelcomeEmail, emailConfig, isValidUnsubscribeToken, newsletterSecret, SITE_ORIGIN } from "../lib/newsletter";
 
 const router = Router();
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const MAX_EMAIL_LENGTH = 254;
+const SEND_TIMEOUT_MS = 8000;
 
-const resend = process.env.RESEND_API_KEY
-  ? new Resend(process.env.RESEND_API_KEY)
-  : null;
+// Sends the welcome email and says whether it went. A failure here must not
+// undo the sign-up, so it returns false instead of throwing. The send is
+// awaited: on a serverless function the work is frozen once the response is
+// sent, so a fire-and-forget call can be dropped before it reaches Resend.
+async function sendWelcome(email: string): Promise<boolean> {
+  const config = emailConfig();
+  if (!config) {
+    console.warn("[newsletter] RESEND_API_KEY or NEWSLETTER_SECRET is not set; no welcome email sent");
+    return false;
+  }
+  const { subject, html, text, headers } = buildWelcomeEmail(email, config.secret);
+  try {
+    const resend = new Resend(config.apiKey);
+    const result = await Promise.race([
+      resend.emails.send({
+        from: config.from,
+        to: email,
+        replyTo: "enquiries@africannewsfeed.news",
+        subject,
+        html,
+        text,
+        headers,
+      }),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("timed out waiting for Resend")), SEND_TIMEOUT_MS),
+      ),
+    ]);
+    if (result.error) {
+      console.error("[newsletter] Resend rejected the welcome email:", result.error);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.error("[newsletter] welcome email failed:", err);
+    return false;
+  }
+}
 
-router.post("/subscribe", async (req, res) => {
-  const { email } = req.body as { email?: string };
+router.post("/subscribe", subscribeRateLimit, async (req, res) => {
+  const { email } = (req.body ?? {}) as { email?: unknown };
 
-  if (!email || !EMAIL_RE.test(email.trim())) {
+  if (typeof email !== "string" || email.length > MAX_EMAIL_LENGTH || !EMAIL_RE.test(email.trim())) {
     res.status(400).json({ error: "invalid_email", message: "A valid email address is required." });
     return;
   }
@@ -27,100 +66,53 @@ router.post("/subscribe", async (req, res) => {
       .onConflictDoNothing({ target: subscribersTable.email })
       .returning();
 
-    const isNew = result.length > 0;
+    // Only a new address gets the welcome email, so repeating the form cannot
+    // be used to send someone repeated emails.
+    const emailSent = result.length > 0 ? await sendWelcome(normalised) : false;
 
-    if (isNew && resend) {
-      resend.emails.send({
-        from: "AfricaNews <onboarding@resend.dev>",
-        to: normalised,
-        subject: "Welcome to AfricaNews — you're on the list! 🌍",
-        html: `
-          <!DOCTYPE html>
-          <html lang="en">
-          <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-          <body style="margin:0;padding:0;background:#faf9f6;font-family:'Georgia',serif;">
-            <table width="100%" cellpadding="0" cellspacing="0" style="background:#faf9f6;padding:40px 0;">
-              <tr><td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
-
-                  <!-- Header -->
-                  <tr>
-                    <td style="background:#0f0e0d;padding:28px 40px;border-radius:10px 10px 0 0;">
-                      <p style="margin:0;font-family:Georgia,serif;font-size:26px;font-weight:700;color:#fff;letter-spacing:-0.02em;">AfricaNews</p>
-                      <p style="margin:4px 0 0;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.4);font-family:Arial,sans-serif;">The Continent's Pulse</p>
-                    </td>
-                  </tr>
-
-                  <!-- Body -->
-                  <tr>
-                    <td style="background:#fff;padding:40px;border-left:1px solid #e8e5de;border-right:1px solid #e8e5de;">
-                      <p style="margin:0 0 20px;font-size:13px;font-family:Arial,sans-serif;color:#c1392b;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;">Welcome aboard</p>
-                      <h1 style="margin:0 0 20px;font-family:Georgia,serif;font-size:30px;font-weight:700;color:#0f0e0d;line-height:1.25;letter-spacing:-0.02em;">
-                        Africa's most important stories, delivered to you daily.
-                      </h1>
-                      <p style="margin:0 0 24px;font-family:Arial,sans-serif;font-size:15px;line-height:1.7;color:#5a5750;">
-                        Thank you for subscribing to AfricaNews. Every morning we'll send you a curated digest of the top stories from across the continent — politics, business, technology, and more, sourced from 65+ trusted local and international outlets.
-                      </p>
-                      <p style="margin:0 0 32px;font-family:Arial,sans-serif;font-size:15px;line-height:1.7;color:#5a5750;">
-                        You won't miss a thing.
-                      </p>
-                      <table cellpadding="0" cellspacing="0">
-                        <tr>
-                          <td style="background:#c1392b;border-radius:6px;">
-                            <a href="https://africannewsfeed.news" style="display:inline-block;padding:13px 28px;font-family:Arial,sans-serif;font-size:14px;font-weight:600;color:#fff;text-decoration:none;letter-spacing:0.02em;">
-                              Read Today's Top Stories →
-                            </a>
-                          </td>
-                        </tr>
-                      </table>
-                    </td>
-                  </tr>
-
-                  <!-- Regions highlight -->
-                  <tr>
-                    <td style="background:#f3f1ec;padding:28px 40px;border-left:1px solid #e8e5de;border-right:1px solid #e8e5de;">
-                      <p style="margin:0 0 14px;font-family:Arial,sans-serif;font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#9a978f;">Coverage across</p>
-                      <table width="100%" cellpadding="0" cellspacing="0">
-                        <tr>
-                          ${[
-                            ["🌍", "West Africa"],
-                            ["🌍", "East Africa"],
-                            ["🌍", "North Africa"],
-                            ["🌍", "Southern Africa"],
-                            ["🌍", "Central Africa"],
-                          ].map(([icon, region]) => `
-                            <td style="padding:6px 10px 6px 0;font-family:Arial,sans-serif;font-size:12px;color:#2c2b29;white-space:nowrap;">
-                              ${icon} ${region}
-                            </td>
-                          `).join("")}
-                        </tr>
-                      </table>
-                    </td>
-                  </tr>
-
-                  <!-- Footer -->
-                  <tr>
-                    <td style="background:#0f0e0d;padding:24px 40px;border-radius:0 0 10px 10px;">
-                      <p style="margin:0;font-family:Arial,sans-serif;font-size:12px;color:rgba(255,255,255,0.4);line-height:1.6;">
-                        You're receiving this because you subscribed at africannewsfeed.news.<br>
-                        © ${new Date().getFullYear()} AfricaNews Aggregator. All rights reserved.
-                      </p>
-                    </td>
-                  </tr>
-
-                </table>
-              </td></tr>
-            </table>
-          </body>
-          </html>
-        `,
-      }).catch(err => console.error("[newsletter] welcome email failed:", err));
-    }
-
-    res.json({ ok: true, message: "Subscribed successfully." });
+    res.json({ ok: true, message: "Subscribed successfully.", emailSent });
   } catch (err) {
     console.error("[newsletter] subscribe error:", err);
     res.status(500).json({ error: "server_error", message: "Could not save subscription." });
+  }
+});
+
+function readUnsubscribeParams(req: { query: Record<string, unknown>; body?: unknown }) {
+  const body = (req.body ?? {}) as Record<string, unknown>;
+  const e = req.query.e ?? body.e;
+  const t = req.query.t ?? body.t;
+  return {
+    email: typeof e === "string" ? e.trim().toLowerCase() : "",
+    token: typeof t === "string" ? t : "",
+  };
+}
+
+// A person who opens the link in an email lands on the site's own page, which
+// asks them to confirm. Mail scanners that fetch links in advance therefore
+// cannot unsubscribe anyone by accident.
+router.get("/unsubscribe", (req, res) => {
+  const { email, token } = readUnsubscribeParams(req);
+  res.redirect(302, `${SITE_ORIGIN}/unsubscribe?e=${encodeURIComponent(email)}&t=${encodeURIComponent(token)}`);
+});
+
+// Used by the confirm page and by mail clients' one-click unsubscribe (RFC 8058).
+router.post("/unsubscribe", unsubscribeRateLimit, async (req, res) => {
+  const secret = newsletterSecret();
+  const { email, token } = readUnsubscribeParams(req);
+
+  if (!secret || !email || !token || !isValidUnsubscribeToken(email, token, secret)) {
+    res.status(400).json({ error: "invalid_link", message: "This unsubscribe link is not valid." });
+    return;
+  }
+
+  try {
+    // Deleting the row is what the privacy page promises: we keep an address
+    // until the person unsubscribes. Unsubscribing twice is not an error.
+    await db.delete(subscribersTable).where(eq(subscribersTable.email, email));
+    res.json({ ok: true, message: "Unsubscribed." });
+  } catch (err) {
+    console.error("[newsletter] unsubscribe error:", err);
+    res.status(500).json({ error: "server_error", message: "Could not unsubscribe you. Please try again." });
   }
 });
 

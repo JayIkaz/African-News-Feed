@@ -1,8 +1,8 @@
-import { useState } from "react";
 import { Link } from "wouter";
 import { useGetTrendingArticles, useListCountries } from "@workspace/api-client-react";
 import { ArticleCard } from "./ArticleCard";
 import { COUNTRY_REGIONS } from "@/lib/countries";
+import { NewsletterForm } from "@/components/common/NewsletterForm";
 
 const REGIONS = [
   { label: "North Africa", key: "North Africa", color: "var(--region-north)" },
@@ -36,31 +36,11 @@ function Widget({ children }: { children: React.ReactNode }) {
 export function Sidebar() {
   const { data: trendingData, isLoading: trendingLoading } = useGetTrendingArticles({ limit: 5 });
   const { data: countries } = useListCountries();
-  const [email, setEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-
   const regionCounts = REGIONS.reduce<Record<string, number>>((acc, { key }) => {
     acc[key] = (countries ?? []).filter(c => COUNTRY_REGIONS[c.country] === key)
       .reduce((sum, c) => sum + c.articleCount, 0);
     return acc;
   }, {});
-
-  const handleSubscribe = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email.trim()) return;
-    setSubmitting(true);
-    try {
-      const base = import.meta.env.BASE_URL?.replace(/\/$/, "") || "";
-      const res = await fetch(`${base}/api/newsletter/subscribe`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim() }),
-      });
-      if (res.ok) { setSubscribed(true); setEmail(""); }
-    } catch {}
-    setSubmitting(false);
-  };
 
   return (
     <aside style={{ display: "flex", flexDirection: "column", gap: 24 }}>
@@ -148,56 +128,7 @@ export function Sidebar() {
           overflow: "hidden",
         }}
       >
-        <h3 style={{ fontFamily: "var(--font-headline)", fontSize: 18, fontWeight: 700, marginBottom: 8, color: "var(--ink)" }}>
-          Africa in Your Inbox
-        </h3>
-        <p style={{ fontFamily: "var(--font-ui)", fontSize: 13, color: "var(--ink-3)", marginBottom: 16, lineHeight: 1.5 }}>
-          Daily digest of the continent's most important stories, curated from 65+ sources.
-        </p>
-        {subscribed ? (
-          <div style={{ fontFamily: "var(--font-ui)", fontSize: 13, color: "var(--mint-text)", fontWeight: 500 }}>
-            ✓ You're subscribed! Check your inbox.
-          </div>
-        ) : (
-          <form onSubmit={handleSubscribe} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <input
-              type="email"
-              placeholder="your@email.com"
-              aria-label="Email address"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              required
-              style={{
-                width: "100%",
-                padding: "10px 12px",
-                background: "var(--surface-1)",
-                border: "1px solid var(--paper-3)",
-                borderRadius: 5,
-                fontFamily: "var(--font-ui)",
-                fontSize: 13,
-                color: "var(--ink)",
-              }}
-            />
-            <button
-              type="submit"
-              disabled={submitting}
-              style={{
-                width: "100%",
-                padding: "10px",
-                background: "var(--yellow)",
-                color: "var(--yellow-text)",
-                border: "none",
-                borderRadius: 5,
-                fontFamily: "var(--font-ui)",
-                fontSize: 13,
-                fontWeight: 500,
-                cursor: "pointer",
-              }}
-            >
-              {submitting ? "Subscribing…" : "Subscribe — it's free"}
-            </button>
-          </form>
-        )}
+        <NewsletterForm />
       </div>
     </aside>
   );

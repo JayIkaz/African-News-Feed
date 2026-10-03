@@ -12,9 +12,11 @@ interface CountryFlagProps {
 // the OS having a font that pairs two "regional indicator" characters into
 // a flag glyph — Windows (and some Linux distros) don't, and show the raw
 // two-letter code as plain text instead (e.g. "ZA"). Images render
-// identically everywhere.
+// identically everywhere. They are SVGs served from this site (public/flags),
+// so a reader's browser makes no request to a third party for them.
 export function CountryFlag({ country, size = 20, style, className }: CountryFlagProps) {
   const code = COUNTRY_CODES[country];
+  const base = import.meta.env.BASE_URL?.replace(/\/$/, "") || "";
   const width = size;
   const height = Math.round(size * 0.75);
 
@@ -33,8 +35,7 @@ export function CountryFlag({ country, size = 20, style, className }: CountryFla
 
   return (
     <img
-      src={`https://flagcdn.com/w80/${code}.png`}
-      srcSet={`https://flagcdn.com/w80/${code}.png 1x, https://flagcdn.com/w160/${code}.png 2x`}
+      src={`${base}/flags/${code}.svg`}
       alt={country}
       width={width}
       height={height}
