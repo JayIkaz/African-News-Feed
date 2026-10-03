@@ -106,12 +106,12 @@ export function Navbar() {
                     Reuses the existing pulse-dot keyframes at the spec's 1.8s. */}
                 <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
                   <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--live)", animation: "pulse-dot 1.8s ease-in-out infinite", display: "inline-block" }} />
-                  <span style={{ fontFamily: "var(--font-mono)", fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--live)" }}>
+                  <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--live)" }}>
                     Live
                   </span>
                 </span>
               </div>
-              <div style={{ fontFamily: "var(--font-mono)", fontSize: 9.5, fontWeight: 400, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink-faint)" }}>
+              <div style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 400, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink-faint)" }}>
                 The Continent's Pulse
               </div>
             </div>
@@ -126,6 +126,7 @@ export function Navbar() {
             <input
               type="text"
               placeholder="Search news, topics, countries…"
+              aria-label="Search news, topics and countries"
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               className="an-nav-search"
@@ -139,7 +140,6 @@ export function Navbar() {
                 fontFamily: "var(--font-body)",
                 fontSize: 13.5,
                 color: "var(--ink)",
-                outline: "none",
                 transition: "border-color 0.15s",
               }}
               onFocus={e => { e.target.style.borderColor = "var(--accent)"; }}
@@ -147,13 +147,14 @@ export function Navbar() {
             />
             <button
               type="submit"
+              aria-label="Search"
               style={{
                 position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)",
                 background: "none", border: "none", cursor: "pointer", color: "var(--ink-faint)",
                 display: "flex", padding: 4,
               }}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
               </svg>
             </button>
@@ -171,7 +172,7 @@ export function Navbar() {
                 padding: "0 16px",
                 height: 36,
                 fontFamily: "var(--font-mono)",
-                fontSize: 11,
+                fontSize: 12,
                 letterSpacing: "0.05em",
                 textTransform: "uppercase",
                 fontWeight: 500,
@@ -181,7 +182,9 @@ export function Navbar() {
                 whiteSpace: "nowrap",
                 textDecoration: "none",
               }}
-              onClick={() => document.getElementById("footer-newsletter")?.scrollIntoView({ behavior: "smooth" })}
+              onClick={() => document.getElementById("footer-newsletter")?.scrollIntoView({
+                behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+              })}
             >
               Newsletter
             </Link>
@@ -190,6 +193,8 @@ export function Navbar() {
           {/* Mobile hamburger */}
           <button
             className="md:hidden"
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            aria-expanded={mobileOpen}
             onClick={() => setMobileOpen(!mobileOpen)}
             style={{ background: "none", border: "none", cursor: "pointer", padding: 4, color: "var(--ink)" }}
           >
@@ -234,13 +239,15 @@ export function Navbar() {
             {/* Countries dropdown — outside scroll area so position:absolute is never clipped */}
             <div style={{ position: "relative", flexShrink: 0 }} ref={dropdownRef}>
               <button
+                aria-expanded={countriesOpen}
+                aria-haspopup="true"
                 onClick={(e) => {
                   e.stopPropagation();
                   setCountriesOpen(!countriesOpen);
                 }}
                 style={{
                   fontFamily: "var(--font-mono)",
-                  fontSize: 11,
+                  fontSize: 12,
                   letterSpacing: "0.05em",
                   textTransform: "uppercase",
                   fontWeight: 400,
@@ -291,7 +298,7 @@ export function Navbar() {
                         <h4
                           style={{
                             fontFamily: "var(--font-ui)",
-                            fontSize: 10,
+                            fontSize: 12,
                             fontWeight: 600,
                             letterSpacing: "0.1em",
                             textTransform: "uppercase",
@@ -361,6 +368,7 @@ export function Navbar() {
               <input
                 type="text"
                 placeholder="Search…"
+                aria-label="Search news, topics and countries"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 className="an-nav-search"
@@ -374,7 +382,6 @@ export function Navbar() {
                   fontFamily: "var(--font-body)",
                   fontSize: 13.5,
                   color: "var(--ink)",
-                  outline: "none",
                 }}
               />
             </form>
@@ -418,7 +425,7 @@ function NavLink({ href, active, children }: { href: string; active: boolean; ch
       href={href}
       style={{
         fontFamily: "var(--font-mono)",
-        fontSize: 11,
+        fontSize: 12,
         letterSpacing: "0.05em",
         textTransform: "uppercase",
         fontWeight: 400,

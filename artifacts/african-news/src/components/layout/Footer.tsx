@@ -61,7 +61,7 @@ export function Footer() {
               </svg>
               <div style={{ fontFamily: "var(--font-display)", fontSize: 24, fontWeight: 700, color: "var(--ink)", letterSpacing: "-0.02em" }}>AfricaNews</div>
             </Link>
-            <div style={{ fontFamily: "var(--font-ui)", fontSize: 9, fontWeight: 500, letterSpacing: "0.18em", textTransform: "uppercase", color: FOOT_DIM, marginBottom: 14 }}>The Continent's Pulse</div>
+            <div style={{ fontFamily: "var(--font-ui)", fontSize: 12, fontWeight: 500, letterSpacing: "0.18em", textTransform: "uppercase", color: FOOT_DIM, marginBottom: 14 }}>The Continent's Pulse</div>
             <p style={{ fontFamily: "var(--font-ui)", fontSize: 13, lineHeight: 1.6, color: FOOT_LINK, marginBottom: 16 }}>
               Aggregating the continent's most important stories from 65+ trusted local and international sources.
             </p>
@@ -79,7 +79,7 @@ export function Footer() {
 
           {/* Sections */}
           <div>
-            <h4 style={{ fontFamily: "var(--font-ui)", fontSize: 11, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: FOOT_DIM, marginBottom: 14 }}>
+            <h4 style={{ fontFamily: "var(--font-ui)", fontSize: 12, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: FOOT_DIM, marginBottom: 14 }}>
               Sections
             </h4>
             {["Politics", "Business", "Technology", "Economy", "Society", "Environment", "International"].map(cat => (
@@ -94,7 +94,7 @@ export function Footer() {
 
           {/* Regions & Platform */}
           <div>
-            <h4 style={{ fontFamily: "var(--font-ui)", fontSize: 11, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: FOOT_DIM, marginBottom: 14 }}>
+            <h4 style={{ fontFamily: "var(--font-ui)", fontSize: 12, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: FOOT_DIM, marginBottom: 14 }}>
               Regions
             </h4>
             {["West Africa", "East Africa", "North Africa", "Southern Africa", "Central Africa"].map(r => (
@@ -106,7 +106,7 @@ export function Footer() {
               </Link>
             ))}
             <div style={{ marginTop: 16, paddingTop: 16, borderTop: `1px solid ${FOOT_RULE}` }}>
-              <h4 style={{ fontFamily: "var(--font-ui)", fontSize: 11, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: FOOT_DIM, marginBottom: 10 }}>Platform</h4>
+              <h4 style={{ fontFamily: "var(--font-ui)", fontSize: 12, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: FOOT_DIM, marginBottom: 10 }}>Platform</h4>
               <Link href="/advertise" style={{ display: "block", fontFamily: "var(--font-ui)", fontSize: 13, color: FOOT_LINK, padding: "4px 0", textDecoration: "none" }}
                 onMouseEnter={e => (e.currentTarget.style.color = "var(--mint)")}
                 onMouseLeave={e => (e.currentTarget.style.color = FOOT_LINK)}
@@ -120,7 +120,7 @@ export function Footer() {
 
           {/* Newsletter */}
           <div id="footer-newsletter">
-            <h4 style={{ fontFamily: "var(--font-ui)", fontSize: 11, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: FOOT_DIM, marginBottom: 14 }}>
+            <h4 style={{ fontFamily: "var(--font-ui)", fontSize: 12, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: FOOT_DIM, marginBottom: 14 }}>
               Daily Digest
             </h4>
             <p style={{ fontFamily: "var(--font-ui)", fontSize: 13, color: FOOT_LINK, marginBottom: 14, lineHeight: 1.6 }}>
@@ -135,6 +135,7 @@ export function Footer() {
                 <input
                   type="email"
                   placeholder="your@email.com"
+                  aria-label="Email address"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   required
@@ -147,7 +148,6 @@ export function Footer() {
                     fontFamily: "var(--font-ui)",
                     fontSize: 13,
                     color: "var(--ink)",
-                    outline: "none",
                   }}
                 />
                 <button
