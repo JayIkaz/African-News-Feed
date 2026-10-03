@@ -282,28 +282,56 @@ h1, h2, h3, h4, h5, h6 {
   gap: 40px;
 }
 
-/* ── AD BANNERS ── */
-.an-ad-container {
-  max-width: 100%;
+/* ── ADVERTISING ──
+   A slot is in the page only when a creative is configured (see
+   src/lib/ads.ts). The frame has a fixed aspect ratio, so the box is the same
+   size before and after its image loads. */
+.an-ad {
+  margin: 24px 0;
+}
+
+.an-ad-label {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--ink-faint);
+  margin: 0 0 6px;
+}
+
+.an-ad-frame {
+  display: block;
   width: 100%;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--paper-raised);
 }
 
-.an-ad-leaderboard-desktop {
-  display: flex;
+.an-ad-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
-.an-ad-mobile-banner {
-  display: none;
+/* The sidebar's own gap spaces the rail slot. */
+.an-ad--rail {
+  margin: 0;
+}
+
+.an-ad--rail .an-ad-frame {
+  max-width: 300px;
+  aspect-ratio: 300 / 250;
+}
+
+.an-ad--inline .an-ad-frame {
+  max-width: 728px;
+  aspect-ratio: 728 / 90;
 }
 
 /* ── TICKER ANIMATION ── */
 @keyframes ticker {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
-}
-@keyframes pulse-dot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.7); }
 }
 @keyframes shimmer {
   0% { background-position: -400px 0; }
@@ -478,6 +506,30 @@ h1, h2, h3, h4, h5, h6 {
   /* Same 24px gutter as .an-container. It had none, so below 1320px the
      first stat sat on the viewport edge and the last one was clipped. */
   padding: 0 24px;
+}
+
+/* Figures in the stats strip on the home page. */
+.an-stat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.an-stat-value {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.an-stat-label {
+  color: var(--ink-3);
+}
+
+.an-stat-divider {
+  width: 1px;
+  height: 16px;
+  background: var(--paper-3);
+  flex-shrink: 0;
 }
 
 .an-hero-grid {
@@ -830,12 +882,9 @@ h1, h2, h3, h4, h5, h6 {
     display: block;
   }
 
-  .an-ad-leaderboard-desktop {
-    display: none;
-  }
-
-  .an-ad-mobile-banner {
-    display: flex;
+  .an-ad--inline .an-ad-frame {
+    max-width: 320px;
+    aspect-ratio: 320 / 100;
   }
 }
 
@@ -973,6 +1022,16 @@ h1, h2, h3, h4, h5, h6 {
   text-decoration: underline;
 }
 
+.an-page-list {
+  list-style: disc;
+  margin: 0 0 16px;
+  padding-left: 22px;
+}
+
+.an-page-list li {
+  margin: 0 0 10px;
+}
+
 .an-page-meta {
   font-family: var(--font-mono);
   font-size: 12px;
@@ -1009,6 +1068,10 @@ h1, h2, h3, h4, h5, h6 {
   height: 1em;
   vertical-align: -0.15em;
   border-radius: 3px;
+}
+
+.an-inline-skeleton--wide {
+  width: 7ch;
 }
 
 /* Sources page */

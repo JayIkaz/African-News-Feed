@@ -12,9 +12,10 @@ export function BreakingTicker() {
       style={{
         // Spec §1 reserves --live for urgency signals, "never decorative".
         // A full-bleed red bar above a --paper header read as decoration and
-        // put white on --live at 3.72:1 for every headline. The urgency now
-        // lives in the label — a pulsing --live dot and --live wordmark —
-        // while the headlines sit on --paper as --ink (16:1).
+        // put white on --live at 3.72:1 for every headline. The headlines
+        // now sit on --paper as --ink (16:1). The label no longer claims
+        // urgency: the feed is ingested hourly and nothing marks a story as
+        // breaking, so it says "Latest" in a neutral colour with a still dot.
         background: "var(--paper)",
         color: "var(--ink)",
         borderBottom: "1px solid var(--line)",
@@ -28,7 +29,7 @@ export function BreakingTicker() {
       <div
         className="an-breaking-label"
         style={{
-          color: "var(--live)",
+          color: "var(--ink-3)",
           // The label used to be separated by its own darker fill; with both
           // sides on --paper it needs an explicit hairline.
           borderRight: "1px solid var(--line)",
@@ -48,13 +49,12 @@ export function BreakingTicker() {
           style={{
             width: 6,
             height: 6,
-            background: "var(--live)",
+            background: "var(--ink-faint)",
             borderRadius: "50%",
-            animation: "pulse-dot 1.4s ease-in-out infinite",
             flexShrink: 0,
           }}
         />
-        <span className="an-breaking-label-text">Breaking</span>
+        <span className="an-breaking-label-text">Latest</span>
       </div>
       <div className="an-ticker-viewport" style={{ flex: 1, overflow: "hidden", padding: "0 12px" }}>
         <div

@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { Globe2, ArrowRight, Newspaper } from "lucide-react";
-import { useListCountries, useListSources } from "@workspace/api-client-react";
+import { useListCountries } from "@workspace/api-client-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSiteCounts } from "@/lib/useSiteCounts";
 import { CountryFlag } from "@/components/common/CountryFlag";
 import {
   COUNTRY_REGIONS,
@@ -16,15 +17,16 @@ import {
 export default function Countries() {
   const [activeRegion, setActiveRegion] = useState<Region>("All");
 
-  const { data: countries, isLoading: countriesLoading } = useListCountries();
-  const { data: sources, isLoading: sourcesLoading } = useListSources();
+  const { data: countries } = useListCountries();
+  // Sources are counted the way every other page counts them: active, with a
+  // feed, and at least one story delivered. The raw list also holds
+  // switched-off sources and ones that never delivered, which would overstate.
+  const { deliveredSources, sourceCount, loading: isLoading, ready } = useSiteCounts();
 
-  const sourcesByCountry = sources?.reduce<Record<string, number>>((acc, source) => {
+  const sourcesByCountry = deliveredSources.reduce<Record<string, number>>((acc, source) => {
     acc[source.country] = (acc[source.country] ?? 0) + 1;
     return acc;
-  }, {}) ?? {};
-
-  const isLoading = countriesLoading || sourcesLoading;
+  }, {});
 
   const filtered = activeRegion === "All"
     ? (countries ?? [])
@@ -63,7 +65,7 @@ export default function Countries() {
             African Coverage
           </h1>
           <p className="text-lg md:text-xl max-w-3xl" style={{ fontFamily: "var(--font-body)", color: "var(--ink-muted)" }}>
-            Explore news from {countries?.length ?? 0} African countries — from breaking news to in-depth reporting sourced directly from the continent's leading publications.
+            {ready ? `Headlines from publishers in ${countries?.length ?? 0} African countries.` : "Headlines from African publishers, country by country."} Pick a country to see its latest stories.
           </p>
         </div>
       </div>
@@ -71,36 +73,29 @@ export default function Countries() {
       <section className="py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-          {/* Stats bar */}
-          <div className="flex flex-wrap items-center gap-8 mb-10 pb-8 border-b border-border">
-            <div className="text-center">
-              <div className="font-serif text-3xl font-bold text-primary">{countries?.length ?? "—"}</div>
-              <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mt-1">Countries</div>
+          {/* Stats bar. Figures come from the API; a skeleton holds the place
+              while they load, and a failed load leaves the bar out. */}
+          {(isLoading || ready) && (
+            <div className="flex flex-wrap items-center gap-8 mb-10 pb-8 border-b border-border">
+              <StatBlock label="Countries" value={ready ? (countries?.length ?? 0).toLocaleString() : null} />
+              <div className="w-px h-10 bg-border hidden sm:block" />
+              <StatBlock label="News Sources" value={ready ? sourceCount.toLocaleString() : null} />
+              <div className="w-px h-10 bg-border hidden sm:block" />
+              <StatBlock label="Total Articles" value={ready ? totalArticles.toLocaleString() : null} />
+              <div className="w-px h-10 bg-border hidden sm:block" />
+              <StatBlock label="Regions" value={(REGIONS.length - 1).toString()} />
             </div>
-            <div className="w-px h-10 bg-border hidden sm:block" />
-            <div className="text-center">
-              <div className="font-serif text-3xl font-bold text-primary">{sources?.length ?? "—"}</div>
-              <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mt-1">News Sources</div>
-            </div>
-            <div className="w-px h-10 bg-border hidden sm:block" />
-            <div className="text-center">
-              <div className="font-serif text-3xl font-bold text-primary">{totalArticles.toLocaleString()}</div>
-              <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mt-1">Total Articles</div>
-            </div>
-            <div className="w-px h-10 bg-border hidden sm:block" />
-            <div className="text-center">
-              <div className="font-serif text-3xl font-bold text-primary">5</div>
-              <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mt-1">Regions</div>
-            </div>
-          </div>
+          )}
 
           {/* Region filter */}
           <div className="flex flex-wrap gap-2 mb-8">
             {REGIONS.map((region) => {
               const isActive = activeRegion === region;
-              const count = region === "All"
-                ? countries?.length ?? 0
-                : countries?.filter((c) => COUNTRY_REGIONS[c.country] === region).length ?? 0;
+              const count = countries === undefined
+                ? null
+                : region === "All"
+                  ? countries.length
+                  : countries.filter((c) => COUNTRY_REGIONS[c.country] === region).length;
               return (
                 <button
                   key={region}
@@ -112,11 +107,13 @@ export default function Countries() {
                   }`}
                 >
                   {region}
-                  <span className={`text-xs font-bold px-1.5 py-0.5 rounded-full ${
-                    isActive ? "bg-white/20" : REGION_BADGE_COLORS[region]
-                  }`}>
-                    {count}
-                  </span>
+                  {count !== null && (
+                    <span className={`text-xs font-bold px-1.5 py-0.5 rounded-full ${
+                      isActive ? "bg-white/20" : REGION_BADGE_COLORS[region]
+                    }`}>
+                      {count}
+                    </span>
+                  )}
                 </button>
               );
             })}
@@ -181,5 +178,16 @@ export default function Countries() {
         </div>
       </section>
     </AppLayout>
+  );
+}
+
+function StatBlock({ label, value }: { label: string; value: string | null }) {
+  return (
+    <div className="text-center">
+      <div className="font-serif text-3xl font-bold text-primary">
+        {value ?? <Skeleton className="h-9 w-16 mx-auto" />}
+      </div>
+      <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mt-1">{label}</div>
+    </div>
   );
 }

@@ -2,7 +2,7 @@ import { Link } from "wouter";
 import { Languages } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { Article } from "@workspace/api-client-react";
-import { getArticleImage } from "@/lib/unsplash";
+import { useArticleImage } from "@/lib/articleImage";
 import { CountryFlag } from "@/components/common/CountryFlag";
 import { useTranslate } from "@/lib/useTranslate";
 import { truncateToWord } from "@/lib/truncate";
@@ -93,86 +93,18 @@ export function CatTag({ category, size = 12 }: { category?: string | null; size
   );
 }
 
-// Spec §1 assigns --paper-raised the job of image placeholder/fallback fill.
-// This replaces the old per-category fills (browns, greens, teal), which were
-// tuned for the light theme and read as garish blocks on --paper — and which
-// the dark direction rules out anyway: colour is reserved for category and
-// urgency signals, never decoration.
-const IMAGE_FALLBACK_BG = "var(--paper-raised)";
-
-function imgFallback(e: React.SyntheticEvent<HTMLImageElement>, background: string = IMAGE_FALLBACK_BG) {
-  const el = e.currentTarget;
-  el.style.display = "none";
-  const parent = el.parentElement;
-  if (parent) {
-    parent.style.background = background;
-  }
-}
-
 interface ArticleCardProps {
   article: Article;
   featured?: boolean;
-  compact?: boolean;
-  side?: boolean;
   isRead?: boolean;
 }
 
-export function ArticleCard({ article, featured = false, compact = false, side = false, isRead = false }: ArticleCardProps) {
+export function ArticleCard({ article, featured = false, isRead = false }: ArticleCardProps) {
   const t = useTranslate(article);
-  const imageUrl = getArticleImage(article, featured ? "featured" : side ? "side" : compact ? "compact" : "card");
+  const image = useArticleImage(article);
   const dateStr = article.publishedDate
     ? formatDistanceToNow(new Date(article.publishedDate), { addSuffix: true })
     : "";
-  const fallbackBg = IMAGE_FALLBACK_BG;
-  const tag = catTag(article.category);
-
-  if (compact) {
-    return (
-      <Link
-        href={`/article/${article.id}`}
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 56px",
-          gap: 10,
-          padding: "14px 18px",
-          borderBottom: "1px solid var(--border)",
-          cursor: "pointer",
-          transition: "background 0.15s",
-          textDecoration: "none",
-          alignItems: "start",
-        }}
-        onMouseEnter={e => (e.currentTarget.style.background = "var(--paper-2)")}
-        onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
-      >
-        <div>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 3 }}>
-            <span style={{ fontFamily: "var(--font-ui)", fontSize: 12, fontWeight: 600, color: tag.fg, textTransform: "uppercase", letterSpacing: "0.06em" }}>
-              {article.category}
-            </span>
-            <TranslateChip t={t} />
-          </div>
-          <div lang={t.lang} dir="auto" style={{ fontFamily: "var(--font-headline)", fontSize: 13.5, fontWeight: 600, lineHeight: 1.3, color: isRead ? "var(--ink-4)" : "var(--ink)", opacity: isRead ? 0.7 : 1 }}>
-            {t.title}
-          </div>
-          <div style={{ fontFamily: "var(--font-ui)", fontSize: 12, color: "var(--ink-4)", marginTop: 4, display: "flex", gap: 4, alignItems: "center" }}>
-            <CountryFlag country={article.country ?? ""} size={13} />
-            <span>{article.country}</span>
-            <span>·</span>
-            <span>{dateStr}</span>
-          </div>
-        </div>
-        <div style={{ width: 56, height: 56, borderRadius: 6, overflow: "hidden", background: fallbackBg, flexShrink: 0 }}>
-          <img
-            src={imageUrl}
-            alt=""
-            style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "var(--crop-focus)" }}
-            loading="lazy"
-            onError={e => imgFallback(e)}
-          />
-        </div>
-      </Link>
-    );
-  }
 
   if (featured) {
     // Spec §4: top story — full-bleed image cropped top-centre at a fixed
@@ -192,13 +124,18 @@ export function ArticleCard({ article, featured = false, compact = false, side =
           textDecoration: "none",
         }}
       >
-        <img
-          src={imageUrl}
-          alt=""
-          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "var(--crop-focus)" }}
-          loading="eager"
-          onError={e => imgFallback(e, "var(--image-empty)")}
-        />
+        {/* With no usable image the card is a plain --image-empty block with
+            the same text on it, not an empty frame or a stand-in photo. */}
+        {image.src && (
+          <img
+            src={image.src}
+            alt=""
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "var(--crop-focus)" }}
+            loading="eager"
+            referrerPolicy="no-referrer"
+            onError={image.onError}
+          />
+        )}
         {/* Scrim — mandatory whenever text sits over the image */}
         <div
           style={{
@@ -290,7 +227,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
   // Spec §6: latest-news row — a borderless stream, not a boxed card. This is
   // the biggest structural change in the spec: no background, no border, no
   // radius, no shadow. Structure comes from the hairline under each row and
-  // the spacing. `side` uses the same construction.
+  // the spacing. A story with no usable image has no thumbnail slot at all.
   //
   // Hover (divider brightening to --line-strong, headline shifting to
   // --accent) and the read state live in index.css rather than inline style
@@ -301,15 +238,18 @@ export function ArticleCard({ article, featured = false, compact = false, side =
       href={`/article/${article.id}`}
       className={`an-story-row${isRead ? " an-story-row--read" : ""}`}
     >
-      <div className="an-story-thumb" style={{ background: fallbackBg }}>
-        <img
-          src={imageUrl}
-          alt=""
-          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "var(--crop-focus)" }}
-          loading={side ? "eager" : "lazy"}
-          onError={e => imgFallback(e)}
-        />
-      </div>
+      {image.src && (
+        <div className="an-story-thumb">
+          <img
+            src={image.src}
+            alt=""
+            style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "var(--crop-focus)" }}
+            loading="lazy"
+            referrerPolicy="no-referrer"
+            onError={image.onError}
+          />
+        </div>
+      )}
       <div style={{ flex: 1, minWidth: 0 }}>
         {/* Spec §6: category tag (--accent) and country tag (--ink-faint)
             side by side above the headline. The spec's breaking override —

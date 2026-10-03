@@ -1,8 +1,8 @@
 import { Link } from "wouter";
-import { useGetTrendingArticles, useListCountries } from "@workspace/api-client-react";
-import { ArticleCard } from "./ArticleCard";
+import { useListCountries } from "@workspace/api-client-react";
 import { COUNTRY_REGIONS } from "@/lib/countries";
 import { NewsletterForm } from "@/components/common/NewsletterForm";
+import { AdBanner } from "@/components/ads/AdBanner";
 
 const REGIONS = [
   { label: "North Africa", key: "North Africa", color: "var(--region-north)" },
@@ -12,12 +12,9 @@ const REGIONS = [
   { label: "Southern Africa", key: "Southern Africa", color: "var(--region-south)" },
 ];
 
-function WidgetHeader({ dot, title }: { dot?: boolean; title: string }) {
+function WidgetHeader({ title }: { title: string }) {
   return (
     <div style={{ padding: "14px 18px", borderBottom: "1px solid var(--paper-2)", display: "flex", alignItems: "center", gap: 8 }}>
-      {dot && (
-        <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--accent)", animation: "pulse-dot 1.4s ease-in-out infinite", display: "inline-block" }} />
-      )}
       <h3 style={{ fontFamily: "var(--font-ui)", fontSize: 12, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--ink-2)" }}>
         {title}
       </h3>
@@ -34,7 +31,6 @@ function Widget({ children }: { children: React.ReactNode }) {
 }
 
 export function Sidebar() {
-  const { data: trendingData, isLoading: trendingLoading } = useGetTrendingArticles({ limit: 5 });
   const { data: countries } = useListCountries();
   const regionCounts = REGIONS.reduce<Record<string, number>>((acc, { key }) => {
     acc[key] = (countries ?? []).filter(c => COUNTRY_REGIONS[c.country] === key)
@@ -44,45 +40,10 @@ export function Sidebar() {
 
   return (
     <aside style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-      {/* Trending Now */}
-      <Widget>
-        <WidgetHeader dot title="Trending Now" />
-        <div>
-          {trendingLoading
-            ? Array(4).fill(0).map((_, i) => (
-                <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 56px", gap: 10, padding: "14px 18px", borderBottom: "1px solid var(--paper-2)" }}>
-                  <div>
-                    <div className="an-skeleton" style={{ width: 60, height: 11, marginBottom: 4 }} />
-                    <div className="an-skeleton" style={{ height: 13, marginBottom: 4 }} />
-                    <div className="an-skeleton" style={{ width: "80%", height: 13 }} />
-                  </div>
-                  <div className="an-skeleton" style={{ width: 56, height: 56, borderRadius: 6 }} />
-                </div>
-              ))
-            : (trendingData?.articles ?? []).map((article, i) => (
-                <div key={article.id} style={{ position: "relative" }}>
-                  <span style={{
-                    position: "absolute",
-                    top: 14,
-                    left: 18,
-                    fontFamily: "var(--font-ui)",
-                    fontSize: 12,
-                    fontWeight: 600,
-                    color: "var(--accent)",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.06em",
-                    zIndex: 1,
-                    pointerEvents: "none",
-                  }}>
-                    #{i + 1}
-                  </span>
-                  <div style={{ paddingLeft: 28 }}>
-                    <ArticleCard article={article} compact />
-                  </div>
-                </div>
-              ))}
-        </div>
-      </Widget>
+      {/* The Trending widget was removed: the API has no trending signal (its
+          trending list is the same newest-first query as the main feed), so
+          the label promised a ranking nothing computes. Restore it with a
+          real signal (plan row P3-3). */}
 
       {/* Browse by Region */}
       <Widget>
@@ -130,6 +91,9 @@ export function Sidebar() {
       >
         <NewsletterForm />
       </div>
+
+      {/* The foot of the right-hand column: the one rail ad slot. */}
+      <AdBanner slot="rail" />
     </aside>
   );
 }

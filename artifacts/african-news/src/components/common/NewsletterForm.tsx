@@ -67,8 +67,8 @@ export function NewsletterForm({ headingLevel: Heading = "h3" }: NewsletterFormP
       {status === "done" ? (
         <p className="an-nl-status" role="status">
           {emailSent
-            ? `You are on the list. A welcome email is on its way to ${subscribedAs}.`
-            : "You are on the list. We have saved your address."}
+            ? `You are on the list. A welcome email is on its way to ${subscribedAs}. If it does not arrive within a few minutes, check your spam folder.`
+            : "You are on the list. If this address was already subscribed, we have not sent a second welcome email."}
         </p>
       ) : (
         <form className="an-nl-form" onSubmit={submit}>

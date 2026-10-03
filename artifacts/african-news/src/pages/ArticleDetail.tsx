@@ -9,13 +9,29 @@ import {
   getListArticlesQueryKey,
 } from "@workspace/api-client-react";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { getArticleImage } from "@/lib/unsplash";
+import { useArticleImage } from "@/lib/articleImage";
 import { ArticleCard, CatTag } from "@/components/article/ArticleCard";
 import { useReadHistory } from "@/lib/useReadHistory";
 import { useTranslate } from "@/lib/useTranslate";
 import { SITE_ORIGIN } from "@/lib/site";
 import { useToast } from "@/hooks/use-toast";
 import { TranslateChip } from "@/components/article/ArticleCard";
+
+// The publisher's own image, shown only when it loads. No image, or one that
+// fails, leaves no frame behind. Empty alt: the image is not captioned or
+// described by the publisher feed, and the headline above already names the
+// story, so a screen reader gains nothing from hearing it twice.
+function ArticleHero({ article }: { article: Parameters<typeof useArticleImage>[0] }) {
+  const image = useArticleImage(article);
+  if (!image.src) return null;
+  return (
+    <div className="an-article-hero-img">
+      <div style={{ aspectRatio: "21/9", borderRadius: 12, overflow: "hidden", background: "var(--paper-2)" }}>
+        <img src={image.src} alt="" referrerPolicy="no-referrer" onError={image.onError} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+      </div>
+    </div>
+  );
+}
 
 export default function ArticleDetail() {
   const { id } = useParams<{ id: string }>();
@@ -94,7 +110,6 @@ export default function ArticleDetail() {
     );
   }
 
-  const imageUrl = getArticleImage(article);
   const relatedArticles = relatedData?.articles.filter(a => a.id !== article.id).slice(0, 3) ?? [];
 
   return (
@@ -167,14 +182,7 @@ export default function ArticleDetail() {
         </header>
 
         {/* ── Hero Image ── */}
-        <div className="an-article-hero-img">
-          <div style={{ aspectRatio: "21/9", borderRadius: 12, overflow: "hidden", background: "var(--paper-2)" }}>
-            <img src={imageUrl} alt={article.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-          </div>
-          <p style={{ fontFamily: "var(--font-ui)", fontSize: 12, color: "var(--ink-4)", textAlign: "right", marginTop: 6, fontStyle: "italic" }}>
-            Image representation for {article.category}
-          </p>
-        </div>
+        <ArticleHero key={article.id} article={article} />
 
         {/* ── Article Body ── */}
         <div className="an-article-body">

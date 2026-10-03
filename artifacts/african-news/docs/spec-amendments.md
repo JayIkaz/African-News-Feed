@@ -296,3 +296,37 @@ blue, emerald, amber and violet cards enforced.
 - The stats strip had no side padding below 1320px, so its first item touched
   the viewport edge and its last item was clipped. It now uses the same 24px
   gutter as `.an-container`.
+
+---
+
+## Live indicators removed, 4 October 2026
+
+**Departure from §3 and the 3 October amendment above.** The pulsing `--live`
+dot and "Live" label beside the site name are gone, and so is the pulsing dot
+on the "Updated every hour" note on the home page. The ticker label was already
+changed from "Breaking" to "Latest" with a static dot.
+
+### Why
+
+The site reads publisher feeds once an hour. A pulsing red dot and the word
+"Live" say the page is updating as the reader watches, which is not true, and
+the 3 October amendment's argument for keeping them ("the feed is live") does
+not hold for an hourly job. What the site can honestly say is when it last
+updated, and the home page, the footer and the Sources page already say that.
+
+### What `--live` is for now
+
+Error text (`.an-nl-error`, `.an-page-error`, destructive buttons) and the two
+dots in the logo mark. It is no longer used for a live indicator, and the
+`pulse-dot` keyframes were deleted with the last element that used them.
+Spec §1's line "Live indicators only" should read "Errors and destructive
+actions only".
+
+## Publisher counts, 4 October 2026
+
+Every public count of publishers (home stats strip, About, Advertise,
+Countries) counts sources that are switched on, have a feed **and have
+delivered at least one story**. On 4 October 2026 that was 55, where "switched
+on with a feed" gave 57: Garowe Online and Sudan Tribune had never delivered a
+story. The Sources page still lists every switched-on source, marks the ones
+without a story "no stories yet", and says how many of each there are.
