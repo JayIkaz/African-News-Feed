@@ -1,174 +1,65 @@
-import { Mail, BarChart2, Globe, Users, Rss, TrendingUp } from "lucide-react";
+import { useListCountries } from "@workspace/api-client-react";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { Button } from "@/components/ui/button";
+import { usePageMeta } from "@/lib/usePageMeta";
+import { useSiteCounts } from "@/lib/useSiteCounts";
+import { ADVERTISE_EMAIL } from "@/lib/site";
 
-const STATS = [
-  { label: "Countries covered", value: "14+", icon: Globe },
-  { label: "News sources", value: "54", icon: Rss },
-  { label: "Articles indexed", value: "1,300+", icon: BarChart2 },
-  { label: "Updates per hour", value: "Hourly", icon: TrendingUp },
-];
-
-const AD_PLACEMENTS = [
-  {
-    name: "Leaderboard Banner",
-    dimensions: "728 × 90 px",
-    placement: "Top of homepage and category pages — maximum visibility",
-    color: "border-border bg-card",
-    badge: "Most Popular",
-    badgeColor: "bg-accent",
-  },
-  {
-    name: "Rectangle",
-    dimensions: "300 × 250 px",
-    placement: "Sidebar on articles and category pages — high dwell-time position",
-    color: "border-border bg-card",
-    badge: "Best ROI",
-    badgeColor: "bg-accent",
-  },
-  {
-    name: "Inline Content",
-    dimensions: "Full-width",
-    placement: "Native-style placement between article cards — unobtrusive, high engagement",
-    color: "border-border bg-card",
-    badge: "Native",
-    badgeColor: "bg-accent",
-  },
-  {
-    name: "Sponsored Section",
-    dimensions: "Custom",
-    placement: "Branded country or category section — premium exclusive placement",
-    color: "border-border bg-card",
-    badge: "Premium",
-    badgeColor: "bg-accent",
-  },
-];
-
-const AUDIENCES = [
-  { label: "Business professionals", pct: "38%" },
-  { label: "Government & policy readers", pct: "22%" },
-  { label: "Investors & entrepreneurs", pct: "19%" },
-  { label: "Students & academics", pct: "21%" },
-];
-
+// Every figure on this page is read from the API. Audience size, reader
+// demographics and read times are not here because the site does not measure
+// them. If analytics are added later, quote them only with their source.
 export default function Advertise() {
+  usePageMeta({
+    title: "Advertise | AfricaNews",
+    description: "Where adverts appear on AfricaNews, how they are labelled, and how to get in touch.",
+  });
+  const { sourceCount, countryCount, loading, ready } = useSiteCounts();
+  const { data: countries } = useListCountries();
+  const articleCount = (countries ?? []).reduce((sum, c) => sum + c.articleCount, 0);
+
+  const skeleton = (wide = false) => <span className={`an-skeleton an-inline-skeleton${wide ? " an-inline-skeleton--wide" : ""}`} aria-hidden="true" />;
+
   return (
     <AppLayout>
-      {/* Hero */}
-      <div className="bg-secondary text-foreground py-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <span className="text-accent font-bold tracking-widest uppercase text-sm mb-4 block">Advertising</span>
-          <h1 className="font-serif text-4xl md:text-6xl font-bold text-foreground mb-6">
-            Reach Africa's Most Engaged News Readers
-          </h1>
-          <p className="text-secondary-foreground text-xl leading-relaxed max-w-2xl mx-auto">
-            AfricaNews aggregates breaking news from 54 trusted sources across 14+ countries.
-            Put your brand in front of a highly engaged, pan-continental audience.
-          </p>
-          <a
-            href="mailto:advertise@africannewsfeed.news"
-            className="inline-flex items-center gap-2 mt-8 px-8 py-4 bg-accent text-accent-foreground font-bold rounded-full shadow-lg hover:bg-accent/90 transition-all hover:-translate-y-1 duration-200"
-          >
-            <Mail className="w-5 h-5" /> Get a Media Kit
-          </a>
-        </div>
+      <div className="an-page">
+        <h1>Advertise on AfricaNews</h1>
+        <p>
+          AfricaNews shows headlines from{" "}
+          {ready ? (
+            <>{sourceCount} African news publishers in {countryCount} countries, and has collected {articleCount.toLocaleString()} stories so far.</>
+          ) : loading ? (
+            <>{skeleton()} African news publishers in {skeleton()} countries, and has collected {skeleton(true)} stories so far.</>
+          ) : (
+            <>African news publishers in one stream.</>
+          )}{" "}
+          Adverts sit beside those headlines and are always labelled.
+        </p>
+
+        <h2>Where adverts appear</h2>
+        <ul className="an-page-list">
+          <li>
+            <strong>Right-hand column, 300 × 250.</strong> The foot of the right-hand column on the home, category and country pages. On a phone it comes after the list of stories.
+          </li>
+          <li>
+            <strong>Between stories, full width.</strong> One row after the tenth story of the home page feed, 728 × 90 on a desktop screen and 320 × 100 on a phone.
+          </li>
+        </ul>
+        <p>Both placements are available now.</p>
+
+        <h2>How adverts are shown</h2>
+        <p>
+          Every advert carries the label "Advertisement". None appears above the first headline. Stories are ordered by the time their publisher posted them, and nobody can pay to move one.
+        </p>
+
+        <h2>What we can tell you</h2>
+        <p>
+          This page quotes only figures the site counts for itself. We do not publish audience size or reader demographics. Write to us and we will tell you what we can measure at the time you ask.
+        </p>
+
+        <h2>Get in touch</h2>
+        <p>
+          Write to <a href={`mailto:${ADVERTISE_EMAIL}`}>{ADVERTISE_EMAIL}</a> with the placement you want, your dates and the size of your advert. We will reply with availability and terms.
+        </p>
       </div>
-
-      {/* Platform Stats */}
-      <section className="py-16 border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="font-serif text-3xl font-bold text-center mb-12">Platform at a Glance</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {STATS.map(({ label, value, icon: Icon }) => (
-              <div key={label} className="text-center">
-                <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-4">
-                  <Icon className="w-7 h-7 text-accent" />
-                </div>
-                <p className="font-serif text-4xl font-black text-primary mb-1">{value}</p>
-                <p className="text-sm text-muted-foreground">{label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Audience */}
-      <section className="py-16 bg-secondary/30 border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-            <div>
-              <h2 className="font-serif text-3xl font-bold mb-4">Who Reads AfricaNews?</h2>
-              <p className="text-muted-foreground mb-8 text-lg leading-relaxed">
-                Our readers are decision-makers across business, government, and civil society — actively tracking African markets, politics, and policy.
-              </p>
-              <div className="space-y-4">
-                {AUDIENCES.map(({ label, pct }) => (
-                  <div key={label}>
-                    <div className="flex justify-between text-sm font-medium mb-1">
-                      <span>{label}</span><span className="text-accent">{pct}</span>
-                    </div>
-                    <div className="h-2 bg-secondary rounded-full overflow-hidden">
-                      <div className="h-full bg-accent rounded-full" style={{ width: pct }} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                { label: "Countries reached", value: "54" },
-                { label: "Languages", value: "3+" },
-                { label: "Articles/month", value: "5,000+" },
-                { label: "Avg read time", value: "4 min" },
-              ].map(({ label, value }) => (
-                <div key={label} className="bg-background rounded-xl p-6 border border-border text-center">
-                  <p className="font-serif text-3xl font-black text-primary mb-1">{value}</p>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider">{label}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Ad Placements */}
-      <section className="py-16 border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="font-serif text-3xl font-bold text-center mb-4">Ad Placements</h2>
-          <p className="text-center text-muted-foreground mb-12 max-w-xl mx-auto">
-            Choose from standard IAB ad units or discuss a custom branded integration with our team.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {AD_PLACEMENTS.map(({ name, dimensions, placement, color, badge, badgeColor }) => (
-              <div key={name} className={`relative rounded-xl border p-6 ${color}`}>
-                <span className={`absolute top-4 right-4 text-accent-foreground text-xs font-bold px-2 py-0.5 rounded-full ${badgeColor}`}>
-                  {badge}
-                </span>
-                <h3 className="font-serif text-xl font-bold mb-1">{name}</h3>
-                <p className="text-sm text-muted-foreground font-mono mb-3">{dimensions}</p>
-                <p className="text-sm text-foreground/80">{placement}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="py-20 bg-secondary text-foreground text-center">
-        <div className="max-w-2xl mx-auto px-4">
-          <Users className="w-12 h-12 text-accent mx-auto mb-6" />
-          <h2 className="font-serif text-4xl font-bold text-foreground mb-4">Ready to Advertise?</h2>
-          <p className="text-secondary-foreground mb-8 text-lg">
-            Contact us for a media kit, rate card, and custom campaign planning.
-          </p>
-          <a
-            href="mailto:advertise@africannewsfeed.news"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-accent text-accent-foreground font-bold rounded-full shadow-lg hover:bg-accent/90 transition-all"
-          >
-            <Mail className="w-5 h-5" /> advertise@africannewsfeed.news
-          </a>
-        </div>
-      </section>
     </AppLayout>
   );
 }

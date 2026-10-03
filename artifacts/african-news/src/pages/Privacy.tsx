@@ -7,7 +7,7 @@ import { CONTACT_EMAIL } from "@/lib/site";
 //  - ads go live: add an Advertising section (network, cookies, how readers
 //    accept or decline) and a consent banner, and rewrite "Cookies" and
 //    "Technical data" to match
-//  - the image fixes (P0-6, P3-1) ship: delete the thumbnails paragraph
+//  - story images are proxied or removed (P3-1): rewrite the thumbnails paragraph
 //  - a regular newsletter starts: say what is sent and how often
 export default function Privacy() {
   usePageMeta({
@@ -19,7 +19,7 @@ export default function Privacy() {
     <AppLayout>
       <div className="an-page">
         <h1>Privacy policy</h1>
-        <p className="an-page-meta">Last updated: 3 October 2026</p>
+        <p className="an-page-meta">Last updated: 4 October 2026</p>
 
         <h2>Who we are</h2>
         <p>
@@ -49,7 +49,7 @@ export default function Privacy() {
           DeepL translates stories on request. When you translate a story, its title and summary are sent to DeepL, and the English text is saved with the story. Nothing about you is sent.
         </p>
         <p>
-          Story thumbnails load from the publisher's own server, or from the stock-photo service loremflickr.com when a story has no image, so those services see your request.
+          Story images load from the publisher's own server, so the publisher can see your request, including your IP address.
         </p>
 
         <h2>How long we keep data</h2>

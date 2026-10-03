@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import { Link } from "wouter";
 import { formatDistanceToNow } from "date-fns";
 import { Article } from "@workspace/api-client-react";
-import { getArticleImage } from "@/lib/unsplash";
+import { useArticleImage } from "@/lib/articleImage";
 import { COUNTRY_FLAGS } from "@/lib/countries";
 import { truncateToWord } from "@/lib/truncate";
 
@@ -93,7 +93,7 @@ export function TopStoriesCarousel({ articles }: TopStoriesCarouselProps) {
 // deliberate divergence is that the headline and dek are clamped, because
 // the slide is a fixed 300px (spec §7) and has to leave room for the dots.
 function CarouselSlide({ article, active }: { article: Article; active: boolean }) {
-  const imageUrl = getArticleImage(article, "featured");
+  const image = useArticleImage(article);
   const flag = COUNTRY_FLAGS[article.country ?? ""] ?? "";
   const dateStr = article.publishedDate
     ? formatDistanceToNow(new Date(article.publishedDate), { addSuffix: true })
@@ -105,15 +105,15 @@ function CarouselSlide({ article, active }: { article: Article; active: boolean 
       className="an-carousel-slide"
       style={{ pointerEvents: active ? "auto" : "none" }}
     >
-      <img
-        src={imageUrl}
-        alt=""
-        className="an-carousel-img"
-        loading="eager"
-        onError={e => {
-          e.currentTarget.style.display = "none";
-        }}
-      />
+      {image.src && (
+        <img
+          src={image.src}
+          alt=""
+          className="an-carousel-img"
+          loading="eager"
+          onError={image.onError}
+        />
+      )}
       <div className="an-carousel-overlay" />
       <div className="an-carousel-content">
         {/* Spec §4: category eyebrow in --accent */}
