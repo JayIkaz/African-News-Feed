@@ -98,7 +98,7 @@ export default function Home() {
             ) : null,
           )}
           <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "var(--ink-3)", flexShrink: 0 }}>
-            <span style={{ width: 6, height: 6, background: "var(--live)", borderRadius: "50%", animation: "pulse-dot 2s ease-in-out infinite", display: "inline-block" }} />
+            <span style={{ width: 6, height: 6, background: "var(--ink-faint)", borderRadius: "50%", display: "inline-block" }} />
             Updated every hour
           </div>
         </div>

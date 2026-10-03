@@ -17,6 +17,7 @@ export default function Sources() {
     description: "The news publishers AfricaNews reads every hour, by country, with the time of each last fetch.",
   });
   const { activeSources, sourceCount, loading, ready } = useSiteCounts();
+  const waiting = activeSources.length - sourceCount;
   const status = useGetIngestionStatus();
   const statusById = new Map((status.data ?? []).map(s => [s.sourceId, s]));
 
@@ -33,9 +34,12 @@ export default function Sources() {
       <div className="an-page">
         <h1>Sources</h1>
         <p>
-          AfricaNews reads the public news feeds of the{" "}
-          {ready ? sourceCount : loading ? <span className="an-skeleton an-inline-skeleton" aria-hidden="true" /> : ""}{" "}
-          publishers below every hour. Select a name to visit the publisher. A source marked "no stories yet" is switched on but has not delivered an article.
+          AfricaNews reads the public news feeds of the publishers below every hour. Select a name to visit the publisher.{" "}
+          {ready ? (
+            waiting > 0
+              ? <>{sourceCount} of them have delivered stories so far. The other {waiting === 1 ? "one is" : `${waiting} are`} switched on and marked "no stories yet".</>
+              : <>All {sourceCount} have delivered stories.</>
+          ) : loading ? <span className="an-skeleton an-inline-skeleton" aria-hidden="true" /> : null}
         </p>
         <p>
           If you publish one of these sources and want it removed or corrected, write to <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
@@ -55,8 +59,9 @@ export default function Sources() {
                 const href = safeHref(source.homepage);
                 const lastFetched = info?.lastFetched ? new Date(info.lastFetched) : null;
                 const failed = info?.status === "error";
+                // "no stories yet" is exactly the set left out of the count above.
                 let meta = "";
-                if (source.articleCount === 0 && !lastFetched) meta = "no stories yet";
+                if (source.articleCount === 0) meta = failed ? "no stories yet, last fetch failed" : "no stories yet";
                 else if (failed) meta = lastFetched ? `last fetch failed, last success ${formatDistanceToNow(lastFetched, { addSuffix: true })}` : "last fetch failed";
                 else if (lastFetched) meta = `fetched ${formatDistanceToNow(lastFetched, { addSuffix: true })}`;
                 return (

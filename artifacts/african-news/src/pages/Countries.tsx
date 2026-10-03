@@ -18,11 +18,12 @@ export default function Countries() {
   const [activeRegion, setActiveRegion] = useState<Region>("All");
 
   const { data: countries } = useListCountries();
-  // Sources are counted the way the Sources page counts them: active, with a
-  // feed. The raw list also holds switched-off sources, which would overstate.
-  const { activeSources, sourceCount, loading: isLoading, ready } = useSiteCounts();
+  // Sources are counted the way every other page counts them: active, with a
+  // feed, and at least one story delivered. The raw list also holds
+  // switched-off sources and ones that never delivered, which would overstate.
+  const { deliveredSources, sourceCount, loading: isLoading, ready } = useSiteCounts();
 
-  const sourcesByCountry = activeSources.reduce<Record<string, number>>((acc, source) => {
+  const sourcesByCountry = deliveredSources.reduce<Record<string, number>>((acc, source) => {
     acc[source.country] = (acc[source.country] ?? 0) + 1;
     return acc;
   }, {});

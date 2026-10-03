@@ -101,15 +101,10 @@ export function Navbar() {
                 <span style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 700, color: "var(--ink)", letterSpacing: "-0.01em" }}>
                   AfricaNews
                 </span>
-                {/* Spec §3: live is a pulsing dot plus a mono label, not a
-                    filled chip — colour signals urgency, it doesn't decorate.
-                    Reuses the existing pulse-dot keyframes at the spec's 1.8s. */}
-                <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--live)", animation: "pulse-dot 1.8s ease-in-out infinite", display: "inline-block" }} />
-                  <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--live)" }}>
-                    Live
-                  </span>
-                </span>
+                {/* No "Live" label or pulsing dot beside the name. The site reads
+                    publisher feeds once an hour, which is not live, and the
+                    Latest ticker and the "Updated every hour" note already say
+                    what it does. See spec-amendments.md, 4 October 2026. */}
               </div>
               <div style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 400, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink-faint)" }}>
                 The Continent's Pulse
