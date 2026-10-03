@@ -75,7 +75,8 @@ export function TopStoriesCarousel({ articles }: TopStoriesCarouselProps) {
             onClick={() => goTo(i)}
             className="an-carousel-dot"
             style={{
-              background: i === current ? "var(--accent)" : "var(--line-strong)",
+              background: "var(--on-image)",
+              opacity: i === current ? 1 : 0.45,
               transform: i === current ? "scale(1.2)" : "scale(1)",
             }}
             aria-label={`Go to slide ${i + 1}`}
@@ -93,7 +94,7 @@ export function TopStoriesCarousel({ articles }: TopStoriesCarouselProps) {
 // the slide is a fixed 300px (spec §7) and has to leave room for the dots.
 function CarouselSlide({ article, active }: { article: Article; active: boolean }) {
   const imageUrl = getArticleImage(article, "featured");
-  const flag = COUNTRY_FLAGS[article.country ?? ""] ?? "🌍";
+  const flag = COUNTRY_FLAGS[article.country ?? ""] ?? "";
   const dateStr = article.publishedDate
     ? formatDistanceToNow(new Date(article.publishedDate), { addSuffix: true })
     : "";
@@ -116,7 +117,7 @@ function CarouselSlide({ article, active }: { article: Article; active: boolean 
       <div className="an-carousel-overlay" />
       <div className="an-carousel-content">
         {/* Spec §4: category eyebrow in --accent */}
-        <span className="an-carousel-eyebrow" style={{ color: "var(--accent)" }}>
+        <span className="an-carousel-eyebrow">
           {article.category}
         </span>
         {/* No dek here, unlike the §4 desktop card. The spec's scrim only

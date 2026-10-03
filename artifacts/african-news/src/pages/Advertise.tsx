@@ -14,33 +14,33 @@ const AD_PLACEMENTS = [
     name: "Leaderboard Banner",
     dimensions: "728 × 90 px",
     placement: "Top of homepage and category pages — maximum visibility",
-    color: "border-blue-200 bg-blue-50",
+    color: "border-border bg-card",
     badge: "Most Popular",
-    badgeColor: "bg-blue-600",
+    badgeColor: "bg-accent",
   },
   {
     name: "Rectangle",
     dimensions: "300 × 250 px",
     placement: "Sidebar on articles and category pages — high dwell-time position",
-    color: "border-emerald-200 bg-emerald-50",
+    color: "border-border bg-card",
     badge: "Best ROI",
-    badgeColor: "bg-emerald-600",
+    badgeColor: "bg-accent",
   },
   {
     name: "Inline Content",
     dimensions: "Full-width",
     placement: "Native-style placement between article cards — unobtrusive, high engagement",
-    color: "border-amber-200 bg-amber-50",
+    color: "border-border bg-card",
     badge: "Native",
-    badgeColor: "bg-amber-600",
+    badgeColor: "bg-accent",
   },
   {
     name: "Sponsored Section",
     dimensions: "Custom",
     placement: "Branded country or category section — premium exclusive placement",
-    color: "border-violet-200 bg-violet-50",
+    color: "border-border bg-card",
     badge: "Premium",
-    badgeColor: "bg-violet-600",
+    badgeColor: "bg-accent",
   },
 ];
 
@@ -55,19 +55,19 @@ export default function Advertise() {
   return (
     <AppLayout>
       {/* Hero */}
-      <div className="bg-primary text-primary-foreground py-20">
+      <div className="bg-secondary text-foreground py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
           <span className="text-accent font-bold tracking-widest uppercase text-sm mb-4 block">Advertising</span>
-          <h1 className="font-serif text-4xl md:text-6xl font-bold text-white mb-6">
+          <h1 className="font-serif text-4xl md:text-6xl font-bold text-foreground mb-6">
             Reach Africa's Most Engaged News Readers
           </h1>
-          <p className="text-primary-foreground/70 text-xl leading-relaxed max-w-2xl mx-auto">
+          <p className="text-secondary-foreground text-xl leading-relaxed max-w-2xl mx-auto">
             AfricaNews aggregates breaking news from 54 trusted sources across 14+ countries.
             Put your brand in front of a highly engaged, pan-continental audience.
           </p>
           <a
             href="mailto:advertise@africannewsfeed.news"
-            className="inline-flex items-center gap-2 mt-8 px-8 py-4 bg-accent text-white font-bold rounded-full shadow-lg hover:bg-accent/90 transition-all hover:-translate-y-1 duration-200"
+            className="inline-flex items-center gap-2 mt-8 px-8 py-4 bg-accent text-accent-foreground font-bold rounded-full shadow-lg hover:bg-accent/90 transition-all hover:-translate-y-1 duration-200"
           >
             <Mail className="w-5 h-5" /> Get a Media Kit
           </a>
@@ -141,7 +141,7 @@ export default function Advertise() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {AD_PLACEMENTS.map(({ name, dimensions, placement, color, badge, badgeColor }) => (
               <div key={name} className={`relative rounded-xl border p-6 ${color}`}>
-                <span className={`absolute top-4 right-4 text-white text-xs font-bold px-2 py-0.5 rounded-full ${badgeColor}`}>
+                <span className={`absolute top-4 right-4 text-accent-foreground text-xs font-bold px-2 py-0.5 rounded-full ${badgeColor}`}>
                   {badge}
                 </span>
                 <h3 className="font-serif text-xl font-bold mb-1">{name}</h3>
@@ -154,16 +154,16 @@ export default function Advertise() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 bg-primary text-primary-foreground text-center">
+      <section className="py-20 bg-secondary text-foreground text-center">
         <div className="max-w-2xl mx-auto px-4">
           <Users className="w-12 h-12 text-accent mx-auto mb-6" />
-          <h2 className="font-serif text-4xl font-bold text-white mb-4">Ready to Advertise?</h2>
-          <p className="text-primary-foreground/70 mb-8 text-lg">
+          <h2 className="font-serif text-4xl font-bold text-foreground mb-4">Ready to Advertise?</h2>
+          <p className="text-secondary-foreground mb-8 text-lg">
             Contact us for a media kit, rate card, and custom campaign planning.
           </p>
           <a
             href="mailto:advertise@africannewsfeed.news"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-accent text-white font-bold rounded-full shadow-lg hover:bg-accent/90 transition-all"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-accent text-accent-foreground font-bold rounded-full shadow-lg hover:bg-accent/90 transition-all"
           >
             <Mail className="w-5 h-5" /> advertise@africannewsfeed.news
           </a>

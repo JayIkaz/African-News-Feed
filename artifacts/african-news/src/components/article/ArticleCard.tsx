@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import { Languages } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { Article } from "@workspace/api-client-react";
 import { getArticleImage } from "@/lib/unsplash";
@@ -9,13 +10,17 @@ import { truncateToWord } from "@/lib/truncate";
 // Small pill shown on non-English cards; toggles between original and English.
 export function TranslateChip({ t, light = false }: { t: ReturnType<typeof useTranslate>; light?: boolean }) {
   if (!t.canTranslate) return null;
-  const label = t.isTranslating
+  const label: React.ReactNode = t.isTranslating
     ? "Translating…"
     : t.showEnglish
       ? "Show original"
       : t.translateFailed
         ? "Translation unavailable"
-        : "🌐 English";
+        : (
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+            <Languages size={12} aria-hidden="true" /> English
+          </span>
+        );
   return (
     <button
       onClick={t.toggle}
@@ -29,9 +34,9 @@ export function TranslateChip({ t, light = false }: { t: ReturnType<typeof useTr
         textTransform: "uppercase",
         padding: "2px 7px",
         borderRadius: 4,
-        border: light ? "1px solid rgba(255,255,255,0.5)" : "1px solid var(--border)",
-        background: light ? "rgba(0,0,0,0.35)" : "var(--paper-2)",
-        color: light ? "#fff" : "var(--ink-3)",
+        border: light ? "1px solid var(--on-image-faint)" : "1px solid var(--border)",
+        background: light ? "transparent" : "var(--paper-2)",
+        color: light ? "var(--on-image)" : "var(--ink-3)",
         cursor: t.isTranslating ? "wait" : "pointer",
         lineHeight: 1.4,
       }}
@@ -95,12 +100,12 @@ export function CatTag({ category, size = 12 }: { category?: string | null; size
 // urgency signals, never decoration.
 const IMAGE_FALLBACK_BG = "var(--paper-raised)";
 
-function imgFallback(e: React.SyntheticEvent<HTMLImageElement>) {
+function imgFallback(e: React.SyntheticEvent<HTMLImageElement>, background: string = IMAGE_FALLBACK_BG) {
   const el = e.currentTarget;
   el.style.display = "none";
   const parent = el.parentElement;
   if (parent) {
-    parent.style.background = IMAGE_FALLBACK_BG;
+    parent.style.background = background;
   }
 }
 
@@ -182,7 +187,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
           alignItems: "flex-end",
           position: "relative",
           overflow: "hidden",
-          background: fallbackBg,
+          background: "var(--image-empty)",
           cursor: "pointer",
           textDecoration: "none",
         }}
@@ -192,14 +197,14 @@ export function ArticleCard({ article, featured = false, compact = false, side =
           alt=""
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "var(--crop-focus)" }}
           loading="eager"
-          onError={e => imgFallback(e)}
+          onError={e => imgFallback(e, "var(--image-empty)")}
         />
         {/* Scrim — mandatory whenever text sits over the image */}
         <div
           style={{
             position: "absolute",
             inset: 0,
-            background: "linear-gradient(180deg, rgba(20,19,43,0.1) 30%, rgba(10,9,25,0.95) 100%)",
+            background: "var(--scrim)",
           }}
         />
         <div style={{ position: "relative", padding: "28px 24px", maxWidth: 640 }}>
@@ -214,7 +219,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
               fontSize: 12,
               letterSpacing: "0.08em",
               textTransform: "uppercase",
-              color: "var(--accent)",
+              color: "var(--on-image-muted)",
               marginBottom: 10,
               display: "flex",
               alignItems: "center",
@@ -230,7 +235,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
             dir="auto"
             style={{
               margin: "0 0 12px",
-              color: "var(--ink)",
+              color: "var(--on-image)",
               fontFamily: "var(--font-display)",
               fontWeight: 600,
               lineHeight: 1.15,
@@ -246,7 +251,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
               style={{
                 fontFamily: "var(--font-body)",
                 fontSize: 14,
-                color: "var(--ink-muted)",
+                color: "var(--on-image-muted)",
                 fontStyle: "normal",
                 margin: "0 0 12px",
                 lineHeight: 1.5,
@@ -261,7 +266,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
               fontSize: 12,
               letterSpacing: "0.03em",
               textTransform: "uppercase",
-              color: "var(--ink-faint)",
+              color: "var(--on-image-faint)",
               margin: 0,
               display: "flex",
               alignItems: "center",

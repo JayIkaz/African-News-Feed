@@ -1,3 +1,4 @@
+import { Globe } from "lucide-react";
 import { COUNTRY_CODES } from "@/lib/countries";
 
 interface CountryFlagProps {
@@ -22,10 +23,10 @@ export function CountryFlag({ country, size = 20, style, className }: CountryFla
       <span
         role="img"
         aria-label={country}
-        style={{ fontSize: size * 0.8, lineHeight: 1, display: "inline-block", ...style }}
+        style={{ lineHeight: 1, display: "inline-flex", color: "var(--ink-faint)", ...style }}
         className={className}
       >
-        🌍
+        <Globe size={Math.round(size * 0.8)} strokeWidth={1.5} aria-hidden="true" />
       </span>
     );
   }

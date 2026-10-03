@@ -54,8 +54,8 @@ export function Footer() {
           <div>
             <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 10, marginBottom: 2 }}>
               <svg width="30" height="30" viewBox="0 0 240 240" style={{ flexShrink: 0 }}>
-                <path d="M120,26 C144,24 162,34 174,47 C184,58 190,64 186,76 C182,86 172,84 176,97 C181,108 193,110 189,123 C185,135 172,128 168,141 C164,154 173,161 164,172 C158,181 151,177 147,190 C143,203 135,212 126,218 C122,221 118,223 115,218 C109,206 105,195 99,187 C92,177 79,173 75,162 C71,151 80,145 74,134 C67,122 54,120 51,107 C48,94 58,88 53,77 C48,66 39,60 46,49 C53,38 70,34 83,31 C96,28 108,29 120,26 Z" fill="#FFFFFF"/>
-                <polyline points="30,132 78,132 91,109 106,155 121,132 152,132 165,104 178,160 210,132" fill="none" stroke="var(--mint)" strokeWidth="11" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M120,26 C144,24 162,34 174,47 C184,58 190,64 186,76 C182,86 172,84 176,97 C181,108 193,110 189,123 C185,135 172,128 168,141 C164,154 173,161 164,172 C158,181 151,177 147,190 C143,203 135,212 126,218 C122,221 118,223 115,218 C109,206 105,195 99,187 C92,177 79,173 75,162 C71,151 80,145 74,134 C67,122 54,120 51,107 C48,94 58,88 53,77 C48,66 39,60 46,49 C53,38 70,34 83,31 C96,28 108,29 120,26 Z" fill="var(--ink)"/>
+                <polyline points="30,132 78,132 91,109 106,155 121,132 152,132 165,104 178,160 210,132" fill="none" stroke="var(--brand-amber)" strokeWidth="11" strokeLinecap="round" strokeLinejoin="round"/>
                 <circle cx="91" cy="109" r="7.5" fill="var(--live)"/>
                 <circle cx="165" cy="104" r="7.5" fill="var(--live)"/>
               </svg>
@@ -200,10 +200,8 @@ export function Footer() {
             <button
               onClick={() => triggerIngestion.mutate()}
               disabled={triggerIngestion.isPending}
-              style={{ fontFamily: "var(--font-ui)", fontSize: 12, color: FOOT_DIM, background: "none", border: "none", cursor: "pointer", opacity: 0.5, transition: "opacity 0.2s" }}
+              style={{ fontFamily: "var(--font-ui)", fontSize: 12, color: FOOT_DIM, background: "none", border: "none", cursor: "pointer" }}
               title="Admin: Force Update"
-              onMouseEnter={e => (e.currentTarget.style.opacity = "1")}
-              onMouseLeave={e => (e.currentTarget.style.opacity = "0.5")}
             >
               {triggerIngestion.isPending ? "Updating…" : "Force Update"}
             </button>

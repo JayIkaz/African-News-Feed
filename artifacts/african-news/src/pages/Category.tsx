@@ -4,17 +4,17 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { ArticleCard } from "@/components/article/ArticleCard";
 import { Sidebar } from "@/components/article/Sidebar";
 import { useListArticles } from "@workspace/api-client-react";
-import { catTag } from "@/components/article/ArticleCard";
+import { Inbox } from "lucide-react";
 
-const CATEGORY_META: Record<string, { description: string; icon: string }> = {
-  Politics:      { description: "Elections, governance, policy, and political analysis from across the African continent.", icon: "🏛️" },
-  Business:      { description: "Markets, trade, corporate news, and business strategy from Africa's leading economies.", icon: "💼" },
-  Technology:    { description: "Innovation, startups, digital transformation, and tech news from the continent.", icon: "💡" },
-  Economy:       { description: "GDP, inflation, fiscal policy, economic growth, and financial analysis.", icon: "📊" },
-  Society:       { description: "Health, education, culture, community, sports, and social issues.", icon: "👥" },
-  Environment:   { description: "Climate, wildlife, conservation, energy, and environmental reporting.", icon: "🌿" },
-  International: { description: "Africa on the world stage — diplomacy, foreign affairs, and global events.", icon: "🤝" },
-  General:       { description: "A wide range of news and features from across the continent.", icon: "📰" },
+const CATEGORY_META: Record<string, { description: string }> = {
+  Politics:      { description: "Elections, governance, policy, and political analysis from across the African continent." },
+  Business:      { description: "Markets, trade, corporate news, and business strategy from Africa's leading economies." },
+  Technology:    { description: "Innovation, startups, digital transformation, and tech news from the continent." },
+  Economy:       { description: "GDP, inflation, fiscal policy, economic growth, and financial analysis." },
+  Society:       { description: "Health, education, culture, community, sports, and social issues." },
+  Environment:   { description: "Climate, wildlife, conservation, energy, and environmental reporting." },
+  International: { description: "Africa on the world stage — diplomacy, foreign affairs, and global events." },
+  General:       { description: "A wide range of news and features from across the continent." },
 };
 
 const LIMIT = 12;
@@ -29,9 +29,7 @@ export default function Category() {
   const totalPages = data ? Math.ceil(data.total / LIMIT) : 1;
   const meta = CATEGORY_META[decodedCategory] ?? {
     description: `Latest news and analysis on ${decodedCategory.toLowerCase()} from across Africa.`,
-    icon: "📰",
   };
-  const tag = catTag(decodedCategory);
 
   return (
     <AppLayout>
@@ -42,9 +40,6 @@ export default function Category() {
             Section
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 12 }}>
-            <div style={{ width: 56, height: 56, borderRadius: 12, background: tag.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, flexShrink: 0 }}>
-              {meta.icon}
-            </div>
             <h1 style={{ fontFamily: "var(--font-headline)", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 900, letterSpacing: "-0.03em", color: "var(--ink)" }}>
               {decodedCategory}
             </h1>
@@ -82,7 +77,7 @@ export default function Category() {
                 data.articles.map(article => <ArticleCard key={article.id} article={article} />)
               ) : (
                 <div style={{ gridColumn: "1/4", textAlign: "center", padding: "60px 24px", color: "var(--ink-4)" }}>
-                  <div style={{ fontSize: 48, marginBottom: 16 }}>{meta.icon}</div>
+                  <Inbox size={40} strokeWidth={1.5} aria-hidden="true" style={{ marginBottom: 16 }} />
                   <h3 style={{ fontFamily: "var(--font-headline)", fontSize: 20, color: "var(--ink-3)", marginBottom: 8 }}>No articles yet</h3>
                   <p style={{ fontFamily: "var(--font-ui)", fontSize: 14 }}>Check back soon for {decodedCategory.toLowerCase()} updates.</p>
                 </div>

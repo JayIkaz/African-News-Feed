@@ -1,34 +1,48 @@
-# AfricaNews — visual design spec (dark editorial)
+# AfricaNews — visual design spec (light editorial)
 
-This supersedes the earlier light-palette, card-based version of this spec. The site has moved to a dark, high-contrast editorial layout inspired by The Intercept, borderless feed rows instead of boxed cards, reserving colour for category/urgency signals rather than decoration.
+This supersedes the earlier card-based version of this spec. The site uses a quiet editorial layout inspired by The Intercept: borderless feed rows instead of boxed cards, a warm off-white page with near-black text, and one accent colour. Colour carries meaning (the active section, urgency) and is not decoration.
+
+> **Palette revision, 3 October 2026.** §1 was a dark indigo palette with an amber accent. It was replaced with a light paper palette and a rust accent because the owner judged the dark version too gaudy. Layout, type, the feed structure and the rules in §8 are unchanged. The old dark values are recorded in [`spec-amendments.md`](./spec-amendments.md#palette-revision-3-october-2026). Country flag images on feed rows are kept; emoji and per-region colours were removed.
 
 > **Revision — amended after implementation.** Sections 1, 4, 6, 7 and 8 were changed once the direction was built against the real product. The former §8 "Open items" is gone: every question in it has an answer, recorded below. Contrast figures are measured against rendered pages, not calculated from the palette in isolation. The reasoning and evidence behind each change are in [`spec-deltas.md`](./spec-deltas.md).
 
 ## 1. Colour tokens
 
-| Token | Value | Contrast on `--paper` | Use |
+| Token | Value | Contrast on `--paper` / `--paper-raised` | Use |
 |---|---|---|---|
-| `--paper` | `#14132B` | — | Page background (deep indigo-black, not pure black) |
-| `--paper-raised` | `#1D1B3D` | — | The one raised surface: image placeholder/loading fill, and anything that must read as lifted off the page — search field, dropdown panel, tag chip, skeleton |
-| `--ink` | `#F2F1ED` | 16.05:1 | Primary text (warm off-white, not stark white) |
-| `--ink-muted` | `rgba(242,241,237,0.55)` | 5.53:1 | Secondary text — deks, summaries |
-| `--ink-faint` | `rgba(242,241,237,0.50)` | 4.78:1 | Tertiary text — metadata, timestamps, country tags |
-| `--accent` | `#E8A33D` | 8.41:1 | Category labels, active nav state, hover highlight on headlines |
-| `--live` | `#E94F37` | 4.87:1 | Live indicators only. Reserve for genuine urgency, never decorative |
-| `--line` | `rgba(242,241,237,0.12)` | — | Hairline dividers between feed rows and header border |
-| `--line-strong` | `rgba(242,241,237,0.28)` | — | Divider colour on hover |
+| `--paper` | `#F7F5F0` | — | Page background (warm off-white, not stark white) |
+| `--paper-raised` | `#EDE9E0` | — | The one raised surface: image placeholder/loading fill, and anything that must read as lifted off the page — search field, dropdown panel, tag chip, skeleton |
+| `--ink` | `#1A1916` | 16.13:1 / 14.51:1 | Primary text (warm near-black, not pure black) |
+| `--ink-muted` | `rgba(26,25,22,0.74)` | 7.17:1 / 6.74:1 | Secondary text — deks, summaries |
+| `--ink-faint` | `rgba(26,25,22,0.64)` | 5.10:1 / 4.88:1 | Tertiary text — metadata, timestamps, country tags |
+| `--accent` | `#9A3412` | 6.71:1 / 6.03:1 | Category labels, active nav state, links, primary buttons, hover highlight on headlines |
+| `--live` | `#B42318` | 6.03:1 / 5.43:1 | Live indicators only. Reserve for genuine urgency, never decorative |
+| `--line` | `rgba(26,25,22,0.14)` | — | Hairline dividers between feed rows and header border |
+| `--line-strong` | `rgba(26,25,22,0.30)` | — | Divider colour on hover, and the pulse divider stroke |
+
+**Text over photographs** uses its own tokens, because the photograph and the scrim stay dark whatever the page does:
+
+| Token | Value | Use |
+|---|---|---|
+| `--on-image` | `#F7F5F0` | Headlines over the top story and carousel |
+| `--on-image-muted` | `rgba(247,245,240,0.82)` | Eyebrow and dek over an image |
+| `--on-image-faint` | `rgba(247,245,240,0.72)` | Metadata over an image |
+| `--scrim` | `linear-gradient(180deg, rgba(26,25,22,0.10) 30%, rgba(14,13,11,0.95) 100%)` | Mandatory behind any text on an image |
+| `--image-empty` | `#1A1916` | Fill behind a top-story image that has not loaded or does not exist |
+
+`--brand-amber` (`#E8A33D`) exists for the logo's pulse line and nothing else. It is not a UI colour.
 
 No card backgrounds, borders, shadows, or rounded corners in this direction. Structure comes from hairline dividers and spacing, not boxes.
 
 **The three ink levels are ordered and must stay ordered.** `--ink` > `--ink-muted` > `--ink-faint`. Any future change has to preserve that ranking — raising `--ink-faint` past `--ink-muted` makes timestamps louder than summaries, which reads as a bug even when each value passes contrast on its own.
 
-**Text tokens must clear 4.5:1 on both `--paper` and `--paper-raised`.** Tags, dropdown items and search text sit on the raised fill, so a value that passes only against the page background is not sufficient. `--ink-faint` at 0.50 gives 4.78:1 on `--paper` and 4.61:1 on `--paper-raised`.
+**Text tokens must clear 4.5:1 on both `--paper` and `--paper-raised`.** Tags, dropdown items and search text sit on the raised fill, so a value that passes only against the page background is not sufficient. `--ink-faint` at 0.64 gives 5.10:1 on `--paper` and 4.88:1 on `--paper-raised`.
 
-**`--live` is a text and marker colour, not a fill.** Use it for the pulsing dot and the "Breaking" wordmark on the ticker. Do not use it as a background: white on `#E94F37` measures 3.72:1 and fails AA, and a full-bleed red surface contradicts the rule about reserving colour for urgency rather than decoration. If a red fill is ever wanted it needs its own paired foreground token, and white is not it.
+**`--live` is a text and marker colour, not a fill.** Use it for the pulsing dot and the "Breaking" wordmark on the ticker. Do not use it as a background. White on `#B42318` would pass AA (6.57:1), so this is no longer a contrast rule. It stays a rule because a red surface is the loudest thing on the page and the spec reserves colour for urgency rather than decoration.
 
 ## 2. Typography
 
-- **Display (`--font-display`)**: Fraunces — used for the site name, the top-story headline, and every feed-row headline. Kept serif deliberately so the dark layout reads as editorial rather than a generic dark-mode UI toggle.
+- **Display (`--font-display`)**: Fraunces — used for the site name, the top-story headline, and every feed-row headline. Kept serif deliberately so the layout reads as editorial rather than a generic app theme.
 - **Body (`--font-body`)**: Inter — deks and any longer-form copy.
 - **Mono (`--font-mono`)**: IBM Plex Mono — nav items, eyebrows, tags, timestamps. Always uppercase, letter-spacing ~0.05–0.08em.
 
@@ -43,17 +57,17 @@ No card backgrounds, borders, shadows, or rounded corners in this direction. Str
 
 - Full-bleed image, fixed height (380px desktop / 300px mobile), `object-fit: cover`
 - **Crop focus**: `object-position: center 30%` — the house value, applied to every article image at every size. Biased slightly above centre so faces survive the crop, without the waste of `top center`, which this spec previously specified and which kept sky while cutting the subject on landscape and event photography.
-- Scrim: gradient from near-transparent at the top to `rgba(10,9,25,0.95)` at the bottom, mandatory whenever text sits over the image
-- Eyebrow: mono, uppercase, `--accent`, showing the category
-- Headline: `--font-display`, 32px desktop / 24px mobile, weight 600
-- Dek: `--font-body`, 14px, `--ink-muted`, upright (not italic)
-- Metadata line (country · time · source): mono, uppercase, `--ink-faint`
+- Scrim: gradient from near-transparent at the top to `rgba(14,13,11,0.95)` at the bottom (`--scrim`), mandatory whenever text sits over the image
+- Eyebrow: mono, uppercase, `--on-image-muted`, showing the category (`--accent` rust does not clear contrast on the scrim)
+- Headline: `--font-display`, 32px desktop / 24px mobile, weight 600, `--on-image`
+- Dek: `--font-body`, 14px, `--on-image-muted`, upright (not italic)
+- Metadata line (country · time · source): mono, uppercase, `--on-image-faint`
 
 Below 640px the top story is presented as a swipeable carousel. It carries this same composition, minus the dek: the scrim only reaches full strength at the very bottom, which works over 380px but leaves a dek sitting on bright image detail at 300px.
 
 ## 5. Pulse divider (signature element)
 
-A thin SVG waveform line sits between the top story and the feed, echoing the AfricaNews pulse-through-Africa-silhouette logo. Stroke colour `rgba(242,241,237,0.18)`, 1px weight. This replaces a plain hairline rule at this one structural boundary — it is not repeated elsewhere, so it stays a signature rather than becoming decoration.
+A thin SVG waveform line sits between the top story and the feed, echoing the AfricaNews pulse-through-Africa-silhouette logo. Stroke colour `--line-strong`, 1px weight. This replaces a plain hairline rule at this one structural boundary — it is not repeated elsewhere, so it stays a signature rather than becoming decoration.
 
 **It stays unique to this boundary.** Built and reviewed in place; repeating it would turn a signature into a motif.
 
@@ -100,6 +114,6 @@ This document specifies the header, top story, feed and their supporting element
 6. **`--paper-raised` is the only raised surface.** Anything that must read as lifted off the page uses it.
 7. **All text clears 4.5:1** on whichever of `--paper` or `--paper-raised` it sits on.
 
-Surfaces currently in the product and covered only by these rules: the article sidebar, advertising slots, the breaking-news ticker, the category pill bar, the stats strip, translation chips, read-history state, pagination, region wayfinding colours, and the `/countries`, `/country/:name`, `/search` and `/article/:id` pages.
+Surfaces currently in the product and covered only by these rules: the article sidebar, advertising slots, the breaking-news ticker, the category pill bar, the stats strip, translation chips, read-history state, pagination, region wayfinding (neutral ink, no per-region colours), and the `/countries`, `/country/:name`, `/search` and `/article/:id` pages.
 
 Adding a surface does not require amending this spec, provided it conforms. Amend it when a surface genuinely needs to break one of these rules — and say which rule, and why.

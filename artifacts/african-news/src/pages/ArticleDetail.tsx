@@ -1,7 +1,7 @@
 import { useParams, Link } from "wouter";
 import { useEffect } from "react";
 import { format } from "date-fns";
-import { Share2, BookmarkPlus, ArrowLeft, ExternalLink } from "lucide-react";
+import { Share2, BookmarkPlus, ArrowLeft, ExternalLink, Inbox } from "lucide-react";
 import {
   useGetArticle,
   useListArticles,
@@ -58,7 +58,7 @@ export default function ArticleDetail() {
     return (
       <AppLayout>
         <div style={{ maxWidth: 800, margin: "0 auto", padding: "96px 24px", textAlign: "center" }}>
-          <div style={{ fontSize: 48, marginBottom: 16 }}>📭</div>
+          <Inbox size={40} strokeWidth={1.5} aria-hidden="true" style={{ marginBottom: 16, color: "var(--ink-faint)" }} />
           <h1 style={{ fontFamily: "var(--font-headline)", fontSize: 28, fontWeight: 700, color: "var(--ink)", marginBottom: 12 }}>Article Not Found</h1>
           <p style={{ fontFamily: "var(--font-ui)", fontSize: 15, color: "var(--ink-3)", marginBottom: 24 }}>We couldn't find the article you were looking for.</p>
           <Link href="/" style={{ display: "inline-block", background: "var(--paper-2)", color: "var(--ink)", padding: "12px 24px", borderRadius: 6, fontFamily: "var(--font-ui)", fontSize: 14, fontWeight: 500 }}>
@@ -148,7 +148,7 @@ export default function ArticleDetail() {
 
         {/* ── Hero Image ── */}
         <div className="an-article-hero-img">
-          <div style={{ aspectRatio: "21/9", borderRadius: 12, overflow: "hidden", background: "var(--paper-2)", boxShadow: "0 4px 24px rgba(0,0,0,0.35)" }}>
+          <div style={{ aspectRatio: "21/9", borderRadius: 12, overflow: "hidden", background: "var(--paper-2)" }}>
             <img src={imageUrl} alt={article.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </div>
           <p style={{ fontFamily: "var(--font-ui)", fontSize: 12, color: "var(--ink-4)", textAlign: "right", marginTop: 6, fontStyle: "italic" }}>

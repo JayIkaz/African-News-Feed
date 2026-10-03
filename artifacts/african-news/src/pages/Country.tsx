@@ -26,7 +26,7 @@ export default function Country() {
   const countrySources = sources?.filter((s) => s.country === decodedCountry) ?? [];
 
   const totalPages = data ? Math.ceil(data.total / LIMIT) : 1;
-  const flag = COUNTRY_FLAGS[decodedCountry] ?? "🌍";
+  const flag = COUNTRY_FLAGS[decodedCountry] ?? "";
 
   return (
     <AppLayout>
