@@ -8,6 +8,7 @@ import categoriesRouter from "./categories";
 import ingestionRouter from "./ingestion";
 import newsletterRouter from "./newsletter";
 import sitemapRouter from "./sitemap";
+import shareRouter from "./share";
 
 const router = Router();
 router.use(healthRouter);
@@ -19,5 +20,6 @@ router.use("/categories", categoriesRouter);
 router.use("/ingestion", ingestionRouter);
 router.use("/newsletter", newsletterRouter);
 router.use("/sitemap.xml", sitemapRouter);
+router.use("/share", shareRouter);
 
 export default router;
