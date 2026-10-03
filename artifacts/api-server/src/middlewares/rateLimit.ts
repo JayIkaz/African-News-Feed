@@ -17,3 +17,18 @@ export const translateRateLimit = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 });
+
+// Public, and each new address can trigger an email, so keep it tight.
+export const subscribeRateLimit = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  limit: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+export const unsubscribeRateLimit = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  limit: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+});

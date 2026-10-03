@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { Link } from "wouter";
+import { NewsletterForm } from "@/components/common/NewsletterForm";
 
 // These were hardcoded whites tuned for the old teal footer. On --paper they
 // landed at 4.49:1 — just under AA — as a separate near-miss nobody would
@@ -11,26 +11,6 @@ const FOOT_DIM = "var(--ink-faint)";
 const FOOT_RULE = "var(--line)";
 
 export function Footer() {
-  const [email, setEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-
-  const handleSubscribe = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email.trim()) return;
-    setSubmitting(true);
-    try {
-      const base = import.meta.env.BASE_URL?.replace(/\/$/, "") || "";
-      const res = await fetch(`${base}/api/newsletter/subscribe`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim() }),
-      });
-      if (res.ok) { setSubscribed(true); setEmail(""); }
-    } catch {}
-    setSubmitting(false);
-  };
-
   // --anchor now resolves to --paper, so the footer no longer reads as a
   // distinct block. A hairline top border restores the boundary the old teal
   // fill used to provide, in keeping with the spec's structure-from-dividers
@@ -96,55 +76,7 @@ export function Footer() {
 
           {/* Newsletter */}
           <div id="footer-newsletter">
-            <h4 style={{ fontFamily: "var(--font-ui)", fontSize: 12, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: FOOT_DIM, marginBottom: 14 }}>
-              Daily Digest
-            </h4>
-            <p style={{ fontFamily: "var(--font-ui)", fontSize: 13, color: FOOT_LINK, marginBottom: 14, lineHeight: 1.6 }}>
-              Top stories from across Africa delivered every morning.
-            </p>
-            {subscribed ? (
-              <div style={{ fontFamily: "var(--font-ui)", fontSize: 13, color: "var(--mint)", fontWeight: 500 }}>
-                ✓ You're subscribed! Welcome aboard.
-              </div>
-            ) : (
-              <form onSubmit={handleSubscribe} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                <input
-                  type="email"
-                  placeholder="your@email.com"
-                  aria-label="Email address"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  required
-                  style={{
-                    width: "100%",
-                    padding: "10px 12px",
-                    background: "var(--paper-raised)",
-                    border: "1px solid var(--line)",
-                    borderRadius: 5,
-                    fontFamily: "var(--font-ui)",
-                    fontSize: 13,
-                    color: "var(--ink)",
-                  }}
-                />
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  style={{
-                    padding: "10px",
-                    background: "var(--yellow)",
-                    color: "var(--yellow-text)",
-                    border: "none",
-                    borderRadius: 5,
-                    fontFamily: "var(--font-ui)",
-                    fontSize: 13,
-                    fontWeight: 600,
-                    cursor: "pointer",
-                  }}
-                >
-                  {submitting ? "Subscribing…" : "Subscribe — it's free"}
-                </button>
-              </form>
-            )}
+            <NewsletterForm />
           </div>
         </div>
 

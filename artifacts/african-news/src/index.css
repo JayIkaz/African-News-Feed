@@ -786,3 +786,216 @@ h1, h2, h3, h4, h5, h6 {
     display: flex;
   }
 }
+
+/* ── NEWSLETTER FORM (shared by the sidebar and the footer) ── */
+.an-nl-title {
+  font-family: var(--font-headline);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0 0 8px;
+}
+
+.an-nl-blurb {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-muted);
+  margin: 0 0 14px;
+}
+
+.an-nl-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.an-nl-label {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.an-nl-input {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--paper);
+  border: 1px solid var(--line-strong);
+  border-radius: 5px;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.an-nl-input::placeholder {
+  color: var(--ink-faint);
+}
+
+.an-nl-button {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--accent);
+  color: var(--paper);
+  border: none;
+  border-radius: 5px;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.an-nl-button:disabled {
+  cursor: progress;
+  opacity: 0.7;
+}
+
+.an-nl-error {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--live);
+  margin: 0;
+}
+
+.an-nl-status {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 500;
+  color: var(--ink);
+  margin: 0;
+}
+
+.an-nl-note {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ink-faint);
+  margin: 10px 0 0;
+}
+
+.an-nl-note a {
+  color: var(--ink-muted);
+  text-decoration: underline;
+}
+
+/* ── STATIC PAGES (About, Sources, Privacy, Terms, Unsubscribe) ── */
+.an-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 48px 24px 64px;
+}
+
+.an-page h1 {
+  font-family: var(--font-display);
+  font-size: clamp(30px, 4vw, 40px);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin: 0 0 12px;
+}
+
+.an-page h2 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 36px 0 8px;
+}
+
+.an-page p,
+.an-page li {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--ink);
+}
+
+.an-page p {
+  margin: 0 0 16px;
+}
+
+.an-page a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.an-page-meta {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: 0 0 24px;
+}
+
+.an-page-button {
+  padding: 11px 24px;
+  background: var(--accent);
+  color: var(--paper);
+  border: none;
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.an-page-button:disabled {
+  cursor: progress;
+  opacity: 0.7;
+}
+
+.an-page-error {
+  color: var(--live);
+}
+
+.an-inline-skeleton {
+  display: inline-block;
+  width: 2.2ch;
+  height: 1em;
+  vertical-align: -0.15em;
+  border-radius: 3px;
+}
+
+/* Sources page */
+.an-src-group {
+  margin: 0 0 8px;
+}
+
+.an-src-group h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 32px 0 6px;
+  font-size: 18px;
+}
+
+.an-src-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+}
+
+.an-src-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.an-src-meta {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--ink-faint);
+}
+
+.an-page-button + .an-page-error {
+  margin-top: 16px;
+}

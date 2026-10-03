@@ -11,6 +11,7 @@ import Country from "@/pages/Country";
 import Search from "@/pages/Search";
 import Countries from "@/pages/Countries";
 import Advertise from "@/pages/Advertise";
+import Unsubscribe from "@/pages/Unsubscribe";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient({
@@ -33,6 +34,7 @@ function Router() {
       <Route path="/search" component={Search} />
       <Route path="/countries" component={Countries} />
       <Route path="/advertise" component={Advertise} />
+      <Route path="/unsubscribe" component={Unsubscribe} />
       <Route component={NotFound} />
     </Switch>
   );
