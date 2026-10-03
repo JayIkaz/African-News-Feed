@@ -8,7 +8,13 @@ const GENERIC_ERROR = "We could not subscribe you. Check your connection and try
 // One sign-up form for the sidebar and the footer. It says what we do with the
 // address, links to the privacy page, shows the outcome of the request, and
 // keeps the typed address after a failure so the reader can retry.
-export function NewsletterForm() {
+interface NewsletterFormProps {
+  // The sidebar sits under an h2 section, the footer is a top-level section,
+  // so each caller says which level keeps the heading outline in order.
+  headingLevel?: "h2" | "h3";
+}
+
+export function NewsletterForm({ headingLevel: Heading = "h3" }: NewsletterFormProps = {}) {
   const inputId = useId();
   const messageId = useId();
   const [email, setEmail] = useState("");
@@ -54,7 +60,7 @@ export function NewsletterForm() {
 
   return (
     <div>
-      <h3 className="an-nl-title">Newsletter</h3>
+      <Heading className="an-nl-title">Newsletter</Heading>
       <p className="an-nl-blurb">
         Join the mailing list. We store your email address to contact you about AfricaNews, and every email has an unsubscribe link.
       </p>

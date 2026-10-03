@@ -11,6 +11,10 @@ import Country from "@/pages/Country";
 import Search from "@/pages/Search";
 import Countries from "@/pages/Countries";
 import Advertise from "@/pages/Advertise";
+import About from "@/pages/About";
+import Sources from "@/pages/Sources";
+import Privacy from "@/pages/Privacy";
+import Terms from "@/pages/Terms";
 import Unsubscribe from "@/pages/Unsubscribe";
 import NotFound from "@/pages/not-found";
 
@@ -34,6 +38,10 @@ function Router() {
       <Route path="/search" component={Search} />
       <Route path="/countries" component={Countries} />
       <Route path="/advertise" component={Advertise} />
+      <Route path="/about" component={About} />
+      <Route path="/sources" component={Sources} />
+      <Route path="/privacy" component={Privacy} />
+      <Route path="/terms" component={Terms} />
       <Route path="/unsubscribe" component={Unsubscribe} />
       <Route component={NotFound} />
     </Switch>

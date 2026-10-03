@@ -35,6 +35,10 @@ router.get("/", async (_req, res) => {
     entries.push(urlEntry(`${SITE_URL}/`, today, "hourly", "1.0"));
     entries.push(urlEntry(`${SITE_URL}/countries`, today, "weekly", "0.5"));
     entries.push(urlEntry(`${SITE_URL}/advertise`, today, "monthly", "0.3"));
+    entries.push(urlEntry(`${SITE_URL}/about`, today, "monthly", "0.3"));
+    entries.push(urlEntry(`${SITE_URL}/sources`, today, "daily", "0.4"));
+    entries.push(urlEntry(`${SITE_URL}/privacy`, today, "yearly", "0.2"));
+    entries.push(urlEntry(`${SITE_URL}/terms`, today, "yearly", "0.2"));
 
     // Categories — same query pattern as routes/categories.ts
     const categoryRows = await db
