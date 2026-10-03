@@ -38,7 +38,7 @@ export default function Category() {
       {/* ── Category Hero ── */}
       <div style={{ background: "var(--paper-2)", color: "var(--ink)", padding: "36px 0", marginBottom: 0 }}>
         <div className="an-container">
-          <div style={{ fontFamily: "var(--font-ui)", fontSize: 10, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--accent)", marginBottom: 8 }}>
+          <div style={{ fontFamily: "var(--font-ui)", fontSize: 12, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--accent)", marginBottom: 8 }}>
             Section
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 12 }}>

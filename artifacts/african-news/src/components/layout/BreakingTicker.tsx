@@ -56,7 +56,7 @@ export function BreakingTicker() {
         />
         <span className="an-breaking-label-text">Breaking</span>
       </div>
-      <div style={{ flex: 1, overflow: "hidden", padding: "0 12px" }}>
+      <div className="an-ticker-viewport" style={{ flex: 1, overflow: "hidden", padding: "0 12px" }}>
         <div
           className="ticker-track"
           style={{ display: "flex", gap: 60, whiteSpace: "nowrap" }}
@@ -65,6 +65,7 @@ export function BreakingTicker() {
             <span
               key={i}
               className="an-ticker-item"
+              aria-hidden={i >= headlines.length ? true : undefined}
               style={{
                 fontFamily: "var(--font-ui)",
                 fontWeight: 400,

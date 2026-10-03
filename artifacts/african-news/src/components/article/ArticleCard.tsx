@@ -23,7 +23,7 @@ export function TranslateChip({ t, light = false }: { t: ReturnType<typeof useTr
       title={t.showEnglish ? `Show ${t.languageLabel} original` : `Translate from ${t.languageLabel}`}
       style={{
         fontFamily: "var(--font-ui)",
-        fontSize: 9.5,
+        fontSize: 12,
         fontWeight: 600,
         letterSpacing: "0.06em",
         textTransform: "uppercase",
@@ -67,7 +67,7 @@ export function catTag(category?: string | null) {
 }
 
 // Category tag pill, shared across cards and pages.
-export function CatTag({ category, size = 11 }: { category?: string | null; size?: number }) {
+export function CatTag({ category, size = 12 }: { category?: string | null; size?: number }) {
   const { bg, fg } = catTag(category);
   return (
     <span
@@ -141,15 +141,15 @@ export function ArticleCard({ article, featured = false, compact = false, side =
       >
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 3 }}>
-            <span style={{ fontFamily: "var(--font-ui)", fontSize: 10, fontWeight: 600, color: tag.fg, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+            <span style={{ fontFamily: "var(--font-ui)", fontSize: 12, fontWeight: 600, color: tag.fg, textTransform: "uppercase", letterSpacing: "0.06em" }}>
               {article.category}
             </span>
             <TranslateChip t={t} />
           </div>
-          <div style={{ fontFamily: "var(--font-headline)", fontSize: 13.5, fontWeight: 600, lineHeight: 1.3, color: isRead ? "var(--ink-4)" : "var(--ink)", opacity: isRead ? 0.7 : 1 }}>
+          <div lang={t.lang} dir="auto" style={{ fontFamily: "var(--font-headline)", fontSize: 13.5, fontWeight: 600, lineHeight: 1.3, color: isRead ? "var(--ink-4)" : "var(--ink)", opacity: isRead ? 0.7 : 1 }}>
             {t.title}
           </div>
-          <div style={{ fontFamily: "var(--font-ui)", fontSize: 11, color: "var(--ink-4)", marginTop: 4, display: "flex", gap: 4, alignItems: "center" }}>
+          <div style={{ fontFamily: "var(--font-ui)", fontSize: 12, color: "var(--ink-4)", marginTop: 4, display: "flex", gap: 4, alignItems: "center" }}>
             <CountryFlag country={article.country ?? ""} size={13} />
             <span>{article.country}</span>
             <span>·</span>
@@ -211,7 +211,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
           <div
             style={{
               fontFamily: "var(--font-mono)",
-              fontSize: 10,
+              fontSize: 12,
               letterSpacing: "0.08em",
               textTransform: "uppercase",
               color: "var(--accent)",
@@ -226,6 +226,8 @@ export function ArticleCard({ article, featured = false, compact = false, side =
           </div>
           <h2
             className="an-top-story-headline"
+            lang={t.lang}
+            dir="auto"
             style={{
               margin: "0 0 12px",
               color: "var(--ink)",
@@ -239,6 +241,8 @@ export function ArticleCard({ article, featured = false, compact = false, side =
           {t.summary && (
             <p
               className="line-clamp-3"
+              lang={t.lang}
+              dir="auto"
               style={{
                 fontFamily: "var(--font-body)",
                 fontSize: 14,
@@ -254,7 +258,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
           <p
             style={{
               fontFamily: "var(--font-mono)",
-              fontSize: 11,
+              fontSize: 12,
               letterSpacing: "0.03em",
               textTransform: "uppercase",
               color: "var(--ink-faint)",
@@ -310,7 +314,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
           <span
             style={{
               fontFamily: "var(--font-mono)",
-              fontSize: 9,
+              fontSize: 12,
               letterSpacing: "0.06em",
               textTransform: "uppercase",
               color: "var(--accent)",
@@ -321,7 +325,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
           <span
             style={{
               fontFamily: "var(--font-mono)",
-              fontSize: 9,
+              fontSize: 12,
               letterSpacing: "0.06em",
               textTransform: "uppercase",
               color: "var(--ink-faint)",
@@ -339,7 +343,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
         {/* Spec §6: truncate on the last full word before 90 chars rather
             than trusting the clamp to cut cleanly; the clamp is the safety
             net for the two-line box, not the cut point. */}
-        <h3 className="an-story-row-headline line-clamp-2">
+        <h3 className="an-story-row-headline line-clamp-2" lang={t.lang} dir="auto">
           {truncateToWord(t.title, 90)}
           {isRead && (
             <span
@@ -352,7 +356,7 @@ export function ArticleCard({ article, featured = false, compact = false, side =
         <p
           style={{
             fontFamily: "var(--font-mono)",
-            fontSize: 10,
+            fontSize: 12,
             color: "var(--ink-faint)",
             margin: 0,
           }}

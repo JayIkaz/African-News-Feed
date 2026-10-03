@@ -86,7 +86,7 @@ export function Sidebar() {
                     top: 14,
                     left: 18,
                     fontFamily: "var(--font-ui)",
-                    fontSize: 10,
+                    fontSize: 12,
                     fontWeight: 600,
                     color: "var(--accent)",
                     textTransform: "uppercase",
@@ -163,6 +163,7 @@ export function Sidebar() {
             <input
               type="email"
               placeholder="your@email.com"
+              aria-label="Email address"
               value={email}
               onChange={e => setEmail(e.target.value)}
               required
@@ -175,7 +176,6 @@ export function Sidebar() {
                 fontFamily: "var(--font-ui)",
                 fontSize: 13,
                 color: "var(--ink)",
-                outline: "none",
               }}
             />
             <button

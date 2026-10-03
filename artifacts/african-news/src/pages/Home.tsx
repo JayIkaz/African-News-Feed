@@ -48,6 +48,10 @@ export default function Home() {
 
   return (
     <AppLayout>
+      {/* The page had no h1. Screen-reader and search users get one; sighted
+          users already have the masthead. */}
+      <h1 className="sr-only">AfricaNews: headlines from African news publishers</h1>
+
       {/* ── Dark Stats Strip ── */}
       <div style={{ background: "var(--paper-2)", color: "var(--ink)", overflow: "hidden" }}>
         <div className="an-stats-strip-inner" style={{ fontFamily: "var(--font-ui)", fontSize: 12 }}>
@@ -68,7 +72,7 @@ export default function Home() {
             <span style={{ fontWeight: 600, fontSize: 13 }}>{totalArticles > 0 ? totalArticles.toLocaleString() : "1,000"}+</span>
             <span style={{ color: "var(--ink-3)" }}>articles indexed</span>
           </div>
-          <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 6, fontSize: 11.5, color: "var(--ink-3)", flexShrink: 0 }}>
+          <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "var(--ink-3)", flexShrink: 0 }}>
             <span style={{ width: 6, height: 6, background: "var(--live)", borderRadius: "50%", animation: "pulse-dot 2s ease-in-out infinite", display: "inline-block" }} />
             Updated every hour
           </div>

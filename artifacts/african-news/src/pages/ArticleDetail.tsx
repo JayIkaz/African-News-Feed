@@ -103,13 +103,13 @@ export default function ArticleDetail() {
           </div>
 
           {/* Title */}
-          <h1 style={{ fontFamily: "var(--font-headline)", fontSize: "clamp(28px, 4vw, 40px)", fontWeight: 700, color: "var(--ink)", lineHeight: 1.2, letterSpacing: "-0.025em", marginBottom: 16 }}>
+          <h1 lang={t.lang} dir="auto" style={{ fontFamily: "var(--font-headline)", fontSize: "clamp(28px, 4vw, 40px)", fontWeight: 700, color: "var(--ink)", lineHeight: 1.2, letterSpacing: "-0.025em", marginBottom: 16 }}>
             {t.title}
           </h1>
 
           {/* Deck / Summary */}
           {t.summary && (
-            <p style={{ fontFamily: "var(--font-body)", fontSize: 16, fontWeight: 300, fontStyle: "italic", color: "var(--ink-2)", lineHeight: 1.7, marginBottom: 24 }}>
+            <p lang={t.lang} dir="auto" style={{ fontFamily: "var(--font-body)", fontSize: 16, fontWeight: 300, fontStyle: "italic", color: "var(--ink-2)", lineHeight: 1.7, marginBottom: 24 }}>
               {t.summary}
             </p>
           )}
@@ -121,18 +121,21 @@ export default function ArticleDetail() {
                 {article.sourceName?.charAt(0) ?? "N"}
               </div>
               <div>
-                <div style={{ fontFamily: "var(--font-ui)", fontSize: 10.5, fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--ink-2)", marginBottom: 2 }}>
+                <div style={{ fontFamily: "var(--font-ui)", fontSize: 12, fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--ink-2)", marginBottom: 2 }}>
                   {article.sourceName}
                 </div>
-                <div style={{ fontFamily: "var(--font-ui)", fontSize: 11, color: "var(--ink-4)", display: "flex", alignItems: "center", gap: 6 }}>
+                <div style={{ fontFamily: "var(--font-ui)", fontSize: 12, color: "var(--ink-4)", display: "flex", alignItems: "center", gap: 6 }}>
                   {article.author && <><span>By {article.author}</span><span>·</span></>}
                   <span>{format(new Date(article.publishedDate), 'MMMM d, yyyy')}</span>
                 </div>
               </div>
             </div>
             <div style={{ display: "flex", gap: 8 }}>
-              {[<Share2 size={15} />, <BookmarkPlus size={15} />].map((icon, i) => (
-                <button key={i} className="an-icon-btn" style={{ width: 34, height: 34, borderRadius: "50%", border: "1px solid var(--paper-3)", background: "var(--surface-1)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--ink-3)", transition: "border-color 0.2s" }}
+              {[
+                { icon: <Share2 size={15} />, label: "Share this article" },
+                { icon: <BookmarkPlus size={15} />, label: "Save this article" },
+              ].map(({ icon, label }) => (
+                <button key={label} type="button" aria-label={label} className="an-icon-btn" style={{ width: 34, height: 34, borderRadius: "50%", border: "1px solid var(--paper-3)", background: "var(--surface-1)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--ink-3)", transition: "border-color 0.2s" }}
                   onMouseEnter={e => (e.currentTarget.style.borderColor = "var(--ink-3)")}
                   onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--paper-3)")}
                 >
@@ -148,7 +151,7 @@ export default function ArticleDetail() {
           <div style={{ aspectRatio: "21/9", borderRadius: 12, overflow: "hidden", background: "var(--paper-2)", boxShadow: "0 4px 24px rgba(0,0,0,0.35)" }}>
             <img src={imageUrl} alt={article.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </div>
-          <p style={{ fontFamily: "var(--font-ui)", fontSize: 11, color: "var(--ink-4)", textAlign: "right", marginTop: 6, fontStyle: "italic" }}>
+          <p style={{ fontFamily: "var(--font-ui)", fontSize: 12, color: "var(--ink-4)", textAlign: "right", marginTop: 6, fontStyle: "italic" }}>
             Image representation for {article.category}
           </p>
         </div>
@@ -157,7 +160,7 @@ export default function ArticleDetail() {
         <div className="an-article-body">
 
           {/* Drop-cap paragraph */}
-          <div style={{ fontFamily: "var(--font-body)", fontSize: 17, fontWeight: 400, lineHeight: 1.75, color: "var(--ink-2)", marginBottom: 24, position: "relative" }}>
+          <div lang={t.lang} dir="auto" style={{ fontFamily: "var(--font-body)", fontSize: 17, fontWeight: 400, lineHeight: 1.75, color: "var(--ink-2)", marginBottom: 24, position: "relative" }}>
             <span className="an-drop-cap" style={{ fontFamily: "var(--font-headline)", fontSize: 68, fontWeight: 700, color: "var(--ink)", float: "left", lineHeight: 0.8, marginRight: 8, marginTop: 8 }}>
               {t.summary?.charAt(0) ?? "T"}
             </span>

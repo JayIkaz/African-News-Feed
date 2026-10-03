@@ -50,6 +50,10 @@ export function useTranslate(article: Article | undefined) {
     isTranslating: mutation.isPending,
     translateFailed: mutation.isError,
     showEnglish,
+    // Language of the text currently on screen. Set as lang on headlines and
+    // summaries so screen readers pronounce them correctly (dir="auto" on the
+    // same elements handles right-to-left text such as Arabic).
+    lang: showEnglish && translation ? "en" : (article?.language ?? "en"),
     title: showEnglish && translation ? translation.titleEn : (article?.title ?? ""),
     summary: showEnglish && translation ? translation.summaryEn : (article?.summary ?? ""),
     toggle,

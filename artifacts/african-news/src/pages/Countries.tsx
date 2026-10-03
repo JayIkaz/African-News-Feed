@@ -47,7 +47,7 @@ export default function Countries() {
             <span
               style={{
                 fontFamily: "var(--font-mono)",
-                fontSize: 10,
+                fontSize: 12,
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
                 color: "var(--accent)",
