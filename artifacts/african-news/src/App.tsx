@@ -11,7 +11,6 @@ import Country from "@/pages/Country";
 import Search from "@/pages/Search";
 import Countries from "@/pages/Countries";
 import Advertise from "@/pages/Advertise";
-import ApiAccess from "@/pages/ApiAccess";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient({
@@ -34,10 +33,6 @@ function Router() {
       <Route path="/search" component={Search} />
       <Route path="/countries" component={Countries} />
       <Route path="/advertise" component={Advertise} />
-      <Route path="/api-access" component={ApiAccess} />
-      {/* Fallbacks for static sidebar links */}
-      <Route path="/trending" component={Home} />
-      <Route path="/sources" component={Home} />
       <Route component={NotFound} />
     </Switch>
   );

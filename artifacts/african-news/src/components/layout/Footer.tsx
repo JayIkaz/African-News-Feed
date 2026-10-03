@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { useTriggerIngestion } from "@workspace/api-client-react";
-import { useToast } from "@/hooks/use-toast";
 
 // These were hardcoded whites tuned for the old teal footer. On --paper they
 // landed at 4.49:1 — just under AA — as a separate near-miss nobody would
@@ -13,17 +11,9 @@ const FOOT_DIM = "var(--ink-faint)";
 const FOOT_RULE = "var(--line)";
 
 export function Footer() {
-  const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-
-  const triggerIngestion = useTriggerIngestion({
-    mutation: {
-      onSuccess: () => toast({ title: "Update triggered", description: "Fetching latest articles from sources." }),
-      onError: () => toast({ title: "Update failed", description: "Could not reach the ingestion service.", variant: "destructive" }),
-    }
-  });
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,16 +55,6 @@ export function Footer() {
             <p style={{ fontFamily: "var(--font-ui)", fontSize: 13, lineHeight: 1.6, color: FOOT_LINK, marginBottom: 16 }}>
               Aggregating the continent's most important stories from 65+ trusted local and international sources.
             </p>
-            <div style={{ display: "flex", gap: 10 }}>
-              {["𝕏", "f", "in"].map((s, i) => (
-                <a key={i} href="#" style={{ width: 32, height: 32, borderRadius: "50%", background: "var(--paper-raised)", border: "1px solid var(--line)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--ink)", fontFamily: "var(--font-ui)", fontSize: 12, textDecoration: "none", transition: "border-color 0.2s" }}
-                  onMouseEnter={e => (e.currentTarget.style.borderColor = "var(--line-strong)")}
-                  onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--line)")}
-                >
-                  {s}
-                </a>
-              ))}
-            </div>
           </div>
 
           {/* Sections */}
@@ -111,10 +91,6 @@ export function Footer() {
                 onMouseEnter={e => (e.currentTarget.style.color = "var(--mint)")}
                 onMouseLeave={e => (e.currentTarget.style.color = FOOT_LINK)}
               >Advertise With Us</Link>
-              <Link href="/api-access" style={{ display: "block", fontFamily: "var(--font-ui)", fontSize: 13, color: FOOT_LINK, padding: "4px 0", textDecoration: "none" }}
-                onMouseEnter={e => (e.currentTarget.style.color = "var(--mint)")}
-                onMouseLeave={e => (e.currentTarget.style.color = FOOT_LINK)}
-              >API Access</Link>
             </div>
           </div>
 
@@ -197,14 +173,6 @@ export function Footer() {
                 {item}
               </Link>
             ))}
-            <button
-              onClick={() => triggerIngestion.mutate()}
-              disabled={triggerIngestion.isPending}
-              style={{ fontFamily: "var(--font-ui)", fontSize: 12, color: FOOT_DIM, background: "none", border: "none", cursor: "pointer" }}
-              title="Admin: Force Update"
-            >
-              {triggerIngestion.isPending ? "Updating…" : "Force Update"}
-            </button>
           </div>
         </div>
       </div>

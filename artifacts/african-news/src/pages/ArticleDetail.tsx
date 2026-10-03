@@ -1,7 +1,7 @@
 import { useParams, Link } from "wouter";
 import { useEffect } from "react";
 import { format } from "date-fns";
-import { Share2, BookmarkPlus, ArrowLeft, ExternalLink, Inbox } from "lucide-react";
+import { Share2, ArrowLeft, ExternalLink, Inbox } from "lucide-react";
 import {
   useGetArticle,
   useListArticles,
@@ -13,6 +13,8 @@ import { getArticleImage } from "@/lib/unsplash";
 import { ArticleCard, CatTag } from "@/components/article/ArticleCard";
 import { useReadHistory } from "@/lib/useReadHistory";
 import { useTranslate } from "@/lib/useTranslate";
+import { SITE_ORIGIN } from "@/lib/site";
+import { useToast } from "@/hooks/use-toast";
 import { TranslateChip } from "@/components/article/ArticleCard";
 
 export default function ArticleDetail() {
@@ -41,6 +43,29 @@ export default function ArticleDetail() {
     },
   });
   const t = useTranslate(article);
+  const { toast } = useToast();
+
+  // Native share sheet where the browser has one (most phones), otherwise
+  // copy the link. Cancelling the sheet is not an error and gets no toast.
+  const shareArticle = async () => {
+    if (!article) return;
+    const url = `${SITE_ORIGIN}/article/${article.id}`;
+    if (typeof navigator.share === "function") {
+      try {
+        await navigator.share({ title: article.title, url });
+      } catch (err) {
+        if (err instanceof DOMException && err.name === "AbortError") return;
+        toast({ title: "Could not open the share sheet", description: url, variant: "destructive" });
+      }
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      toast({ title: "Link copied", description: url });
+    } catch {
+      toast({ title: "Could not copy the link", description: url, variant: "destructive" });
+    }
+  };
 
   if (isLoading) {
     return (
@@ -130,19 +155,14 @@ export default function ArticleDetail() {
                 </div>
               </div>
             </div>
-            <div style={{ display: "flex", gap: 8 }}>
-              {[
-                { icon: <Share2 size={15} />, label: "Share this article" },
-                { icon: <BookmarkPlus size={15} />, label: "Save this article" },
-              ].map(({ icon, label }) => (
-                <button key={label} type="button" aria-label={label} className="an-icon-btn" style={{ width: 34, height: 34, borderRadius: "50%", border: "1px solid var(--paper-3)", background: "var(--surface-1)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--ink-3)", transition: "border-color 0.2s" }}
-                  onMouseEnter={e => (e.currentTarget.style.borderColor = "var(--ink-3)")}
-                  onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--paper-3)")}
-                >
-                  {icon}
-                </button>
-              ))}
-            </div>
+            <button
+              type="button"
+              onClick={shareArticle}
+              className="an-icon-btn"
+              style={{ display: "inline-flex", alignItems: "center", gap: 8, height: 34, padding: "0 14px", borderRadius: 100, border: "1px solid var(--line-strong)", background: "transparent", cursor: "pointer", fontFamily: "var(--font-ui)", fontSize: 13, color: "var(--ink)" }}
+            >
+              <Share2 size={15} aria-hidden="true" /> Share
+            </button>
           </div>
         </header>
 
