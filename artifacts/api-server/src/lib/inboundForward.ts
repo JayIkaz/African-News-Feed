@@ -9,13 +9,15 @@ const OWN_DOMAIN = "africannewsfeed.news";
 // Sent from the verified notifications subdomain, the same one the welcome
 // email uses. The visitor's own address goes in Reply-To, never in From:
 // sending as someone else's address fails their SPF and DMARC checks.
-const DEFAULT_FROM = "AfricaNews inbound <inbound@notifications.africannewsfeed.news>";
+const SENDING_DOMAIN = `notifications.${OWN_DOMAIN}`;
 
 export interface InboundConfig {
   apiKey: string;
   webhookSecret: string;
   forwardTo: string[];
-  from: string;
+  // Optional fixed sender (INBOUND_FORWARD_FROM). Without it the sender is
+  // built from the mailbox the message was sent to, see senderFor.
+  from?: string;
 }
 
 export type InboundConfigResult =
@@ -63,7 +65,7 @@ export function inboundConfig(env: NodeJS.ProcessEnv = process.env): InboundConf
       apiKey: apiKey!,
       webhookSecret: webhookSecret!,
       forwardTo,
-      from: env.INBOUND_FORWARD_FROM || DEFAULT_FROM,
+      from: env.INBOUND_FORWARD_FROM || undefined,
     },
   };
 }
@@ -90,10 +92,21 @@ function escapeHtml(value: string): string {
     .replace(/"/g, "&quot;");
 }
 
-// The mailbox the message was sent to, for the subject tag: "enquiries".
-function mailboxOf(recipients: string[]): string {
+// The mailbox the message was sent to: "enquiries". It names the sender of the
+// copy, so the subject can stay exactly as the visitor wrote it and a reply
+// reads "Re: <their subject>". The name is cut down to plain address
+// characters and a "+tag" is dropped, because it ends up in a From header.
+export function mailboxOf(recipients: string[]): string {
   const own = recipients.map(addressOf).find(isOwnAddress);
-  return own ? own.split("@")[0] : "inbound";
+  const local = (own?.split("@")[0] ?? "").split("+")[0].replace(/[^a-z0-9._-]/g, "");
+  return local.slice(0, 32) || "inbound";
+}
+
+// "AfricaNews enquiries <enquiries@notifications.africannewsfeed.news>". Any
+// local part works on a verified domain, and it gives a mail filter something
+// to match on.
+export function senderFor(mailbox: string): string {
+  return `AfricaNews ${mailbox} <${mailbox}@${SENDING_DOMAIN}>`;
 }
 
 function describeFailure(error: { message?: string; statusCode?: number | null } | null): string {
@@ -176,10 +189,10 @@ export async function forwardReceivedEmail(
   });
 
   const message = {
-    from: config.from,
+    from: config.from ?? senderFor(mailboxOf([...email.to, ...(email.cc ?? [])])),
     to: config.forwardTo,
     replyTo: email.reply_to && email.reply_to.length > 0 ? email.reply_to : email.from,
-    subject: `[${mailboxOf([...email.to, ...(email.cc ?? [])])}] ${subject}`.slice(0, 250),
+    subject: subject.slice(0, 250),
   };
 
   const key = `inbound-forward-${emailId}`;

@@ -10,18 +10,26 @@ personal inbox.
 2. The route checks the Svix signature over the raw request body. A bad
    signature gets 401 and nothing is forwarded.
 3. It fetches the full message from Resend (the event carries no body) and sends
-   a copy from `inbound@notifications.africannewsfeed.news` to
-   `INBOUND_FORWARD_TO`.
-4. The copy has the subject `[enquiries] original subject`, a header block with
-   the original sender, recipients and date, and the sender in `Reply-To`.
+   a copy to `INBOUND_FORWARD_TO`. The copy comes from the mailbox it was sent
+   to, on the verified sending subdomain: a message to `enquiries@` arrives from
+   `AfricaNews enquiries <enquiries@notifications.africannewsfeed.news>`, one to
+   `advertise@` from `advertise@notifications...`. The mailbox name is reduced
+   to plain address characters, a `+tag` is dropped, and `inbound` is used when
+   none of the recipients is on our domain.
+4. The copy keeps the subject exactly as the sender wrote it (`(no subject)` if
+   it had none), so a reply reads `Re: original subject`. It has a header block
+   with the original sender, recipients and date, and the sender in `Reply-To`.
    Attachments are sent as attachments. If Resend refuses the attachments, the
    copy goes without them and names them.
 5. If anything fails the route answers 5xx and Resend delivers the event again.
    A repeat does not send a second copy: each send carries an idempotency key
    built from the received email's id (Resend honours it for 24 hours).
 
-Replying to the copy answers the sender from the reader's own address, not from
-`enquiries@`. To answer as `enquiries@`, reply from the Resend inbox.
+Replying to the copy answers the sender, using `Reply-To`. Which address the
+reply is sent from is chosen in Gmail's From line; once "Send mail as" is set up
+for `enquiries@`, pick it there. Because the mailbox is in the sender address and
+not the subject, a Gmail filter on `from:enquiries@notifications.africannewsfeed.news`
+can label each mailbox.
 
 ## Settings (Vercel, API project)
 
@@ -31,7 +39,7 @@ Replying to the copy answers the sender from the reader's own address, not from
 | `RESEND_API_KEY` | Fallback when `RESEND_INBOUND_API_KEY` is not set, so one full-access key can serve both. A send-only key here fails at the read step. |
 | `RESEND_WEBHOOK_SECRET` | Signing secret of the webhook, from the Resend dashboard (starts `whsec_`). |
 | `INBOUND_FORWARD_TO` | Where copies go. One address or several, comma-separated. An address on africannewsfeed.news is refused, because the copy would be received and forwarded again. |
-| `INBOUND_FORWARD_FROM` | Optional. Sender of the copy. Must be on a verified Resend domain. |
+| `INBOUND_FORWARD_FROM` | Optional. A fixed sender for every copy, which replaces the per-mailbox sender. Must be on a verified Resend domain. |
 
 Until a key, the signing secret and `INBOUND_FORWARD_TO` are all set the route answers 503 and forwards
 nothing. Resend retries, so mail received in that time is still forwarded once

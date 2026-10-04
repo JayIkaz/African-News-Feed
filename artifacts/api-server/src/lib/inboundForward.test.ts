@@ -6,6 +6,8 @@ import {
   forwardReceivedEmail,
   inboundConfig,
   isOwnAddress,
+  mailboxOf,
+  senderFor,
   type InboundConfig,
   type MailClient,
 } from "./inboundForward";
@@ -14,7 +16,6 @@ const config: InboundConfig = {
   apiKey: "re_test",
   webhookSecret: "whsec_dGVzdA==",
   forwardTo: ["owner@gmail.com"],
-  from: "AfricaNews inbound <inbound@notifications.africannewsfeed.news>",
 };
 
 const event = (over: Partial<EmailReceivedEvent["data"]> = {}): EmailReceivedEvent => ({
@@ -100,14 +101,47 @@ describe("addressOf and isOwnAddress", () => {
   });
 });
 
+describe("mailboxOf and senderFor", () => {
+  it("names the first of our own addresses among the recipients", () => {
+    assert.equal(mailboxOf(["Ada <ada@example.com>", "Advertise@africannewsfeed.news"]), "advertise");
+    assert.equal(mailboxOf(["enquiries@africannewsfeed.news"]), "enquiries");
+  });
+
+  it("drops a +tag and anything that is not plain address characters", () => {
+    assert.equal(mailboxOf(["enquiries+spam@africannewsfeed.news"]), "enquiries");
+    assert.equal(mailboxOf(['"x"y@africannewsfeed.news']), "xy");
+    assert.equal(mailboxOf(["a b<c@africannewsfeed.news"]), "abc");
+    assert.equal(mailboxOf(["+only@africannewsfeed.news"]), "inbound");
+  });
+
+  it("falls back to inbound when no recipient is ours, and caps the length", () => {
+    assert.equal(mailboxOf(["ada@example.com"]), "inbound");
+    assert.equal(mailboxOf([]), "inbound");
+    assert.equal(mailboxOf([`${"a".repeat(80)}@africannewsfeed.news`]).length, 32);
+  });
+
+  it("builds a sender on the verified sending subdomain", () => {
+    assert.equal(senderFor("enquiries"), "AfricaNews enquiries <enquiries@notifications.africannewsfeed.news>");
+  });
+});
+
 describe("inboundConfig", () => {
   const full: NodeJS.ProcessEnv = { RESEND_API_KEY: "re_1", RESEND_WEBHOOK_SECRET: "whsec_x", INBOUND_FORWARD_TO: "owner@gmail.com" };
 
-  it("is on when all three values are set, with the default sender", () => {
+  it("is on when all three values are set, with no fixed sender", () => {
     const r = inboundConfig(full);
     assert.ok(r.ok);
     assert.deepEqual(r.config.forwardTo, ["owner@gmail.com"]);
-    assert.match(r.config.from, /notifications\.africannewsfeed\.news/);
+    assert.equal(r.config.from, undefined);
+  });
+
+  it("takes a fixed sender from INBOUND_FORWARD_FROM, and ignores an empty one", () => {
+    const set = inboundConfig({ ...full, INBOUND_FORWARD_FROM: "Desk <desk@notifications.africannewsfeed.news>" });
+    assert.ok(set.ok);
+    assert.equal(set.config.from, "Desk <desk@notifications.africannewsfeed.news>");
+    const empty = inboundConfig({ ...full, INBOUND_FORWARD_FROM: "" });
+    assert.ok(empty.ok);
+    assert.equal(empty.config.from, undefined);
   });
 
   it("prefers the dedicated key and falls back to the general one", () => {
@@ -153,10 +187,10 @@ describe("forwardReceivedEmail", () => {
     assert.deepEqual(out, { status: "forwarded", id: "out_1", attachments: "none" });
     assert.equal(sent.length, 1);
     const p = sent[0].payload;
-    assert.equal(p.from, config.from);
+    assert.equal(p.from, "AfricaNews enquiries <enquiries@notifications.africannewsfeed.news>");
     assert.deepEqual(p.to, ["owner@gmail.com"]);
     assert.equal(p.replyTo, "Ada <ada@example.com>");
-    assert.equal(p.subject, "[enquiries] Hello");
+    assert.equal(p.subject, "Hello");
     assert.match(String(p.text), /^From: Ada <ada@example.com>\nTo: enquiries@africannewsfeed\.news\n/);
     assert.match(String(p.text), /Plain body$/);
     assert.equal(p.html, undefined);
@@ -164,10 +198,32 @@ describe("forwardReceivedEmail", () => {
     assert.equal(sent[0].options?.idempotencyKey, "inbound-forward-em_1");
   });
 
-  it("tags the subject with the mailbox the message was sent to", async () => {
-    const { client, sent } = fakeClient({ received: { to: ["Advertise@africannewsfeed.news"], subject: "Rates" } });
+  it("names the mailbox in the sender and leaves the subject as the visitor wrote it", async () => {
+    const { client, sent } = fakeClient({ received: { to: ["Advertise@africannewsfeed.news"], subject: "  Rates " } });
     await forwardReceivedEmail(client, config, event());
-    assert.equal(sent[0].payload.subject, "[advertise] Rates");
+    assert.equal(sent[0].payload.from, "AfricaNews advertise <advertise@notifications.africannewsfeed.news>");
+    assert.equal(sent[0].payload.subject, "Rates");
+  });
+
+  it("uses the mailbox from Cc when the message was sent to someone else and copied to us", async () => {
+    const { client, sent } = fakeClient({
+      received: { to: ["ada@example.com"], cc: ["enquiries@africannewsfeed.news"] },
+    });
+    await forwardReceivedEmail(client, config, event());
+    assert.equal(sent[0].payload.from, "AfricaNews enquiries <enquiries@notifications.africannewsfeed.news>");
+  });
+
+  it("uses the fixed sender when one is configured", async () => {
+    const { client, sent } = fakeClient({});
+    const fixed = { ...config, from: "Desk <desk@notifications.africannewsfeed.news>" };
+    await forwardReceivedEmail(client, fixed, event());
+    assert.equal(sent[0].payload.from, "Desk <desk@notifications.africannewsfeed.news>");
+  });
+
+  it("cuts a very long subject to 250 characters", async () => {
+    const { client, sent } = fakeClient({ received: { subject: "x".repeat(400) } });
+    await forwardReceivedEmail(client, config, event());
+    assert.equal(String(sent[0].payload.subject).length, 250);
   });
 
   it("uses the message's own Reply-To when it has one", async () => {
@@ -179,7 +235,7 @@ describe("forwardReceivedEmail", () => {
   it("copes with a message that has no subject and no text part", async () => {
     const { client, sent } = fakeClient({ received: { subject: "", text: null } });
     await forwardReceivedEmail(client, config, event());
-    assert.equal(sent[0].payload.subject, "[enquiries] (no subject)");
+    assert.equal(sent[0].payload.subject, "(no subject)");
     assert.match(String(sent[0].payload.text), /no plain text version/);
   });
 
