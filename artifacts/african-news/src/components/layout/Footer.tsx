@@ -2,6 +2,7 @@ import { Link } from "wouter";
 import { NewsletterForm } from "@/components/common/NewsletterForm";
 import { COMPANY_LINE, CONTACT_EMAIL } from "@/lib/site";
 import { regionHref, type Region } from "@/lib/countries";
+import { SECTIONS, categoryHref } from "@/lib/slugs";
 
 // These were hardcoded whites tuned for the old teal footer. On --paper they
 // landed at 4.49:1 — just under AA — as a separate near-miss nobody would
@@ -16,7 +17,6 @@ const COLUMN_HEADING = { fontFamily: "var(--font-ui)", fontSize: 12, fontWeight:
 const COLUMN_LINK = { display: "block", fontFamily: "var(--font-ui)", fontSize: 13, color: FOOT_LINK, padding: "4px 0", textDecoration: "none", transition: "color 0.2s" } as const;
 
 // General is the fourth-largest section and has no other way in.
-const SECTIONS = ["Politics", "Business", "Technology", "Economy", "Society", "Environment", "International", "General"];
 const REGION_LINKS: Region[] = ["West Africa", "East Africa", "North Africa", "Southern Africa", "Central Africa"];
 const SITE_LINKS = [
   { label: "About", href: "/about" },
@@ -69,7 +69,7 @@ export function Footer() {
           <nav aria-label="Sections">
             <h2 style={COLUMN_HEADING}>Sections</h2>
             {SECTIONS.map(cat => (
-              <FootLink key={cat} href={`/category/${cat}`}>{cat}</FootLink>
+              <FootLink key={cat} href={categoryHref(cat)}>{cat}</FootLink>
             ))}
           </nav>
 

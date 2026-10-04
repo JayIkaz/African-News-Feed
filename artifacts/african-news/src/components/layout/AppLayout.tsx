@@ -14,7 +14,9 @@ interface AppLayoutProps {
 function useCanonicalLink() {
   const [location] = useLocation();
   useEffect(() => {
-    const path = window.location.pathname.replace(/\/+$/, "") || "/";
+    // Every address on the site is lower case, so /About and /about are one
+    // page; the lower-case form is the canonical one.
+    const path = (window.location.pathname.replace(/\/+$/, "") || "/").toLowerCase();
     let link = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
     if (!link) {
       link = document.createElement("link");

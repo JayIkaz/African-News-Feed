@@ -5,6 +5,7 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSiteCounts } from "@/lib/useSiteCounts";
 import { usePageMeta } from "@/lib/usePageMeta";
+import { countryHref } from "@/lib/slugs";
 import { CountryFlag } from "@/components/common/CountryFlag";
 import {
   COUNTRY_REGIONS,
@@ -159,7 +160,7 @@ export default function Countries() {
                 return (
                   <Link
                     key={item.country}
-                    href={`/country/${encodeURIComponent(item.country)}`}
+                    href={countryHref(item.country)}
                     className="group block bg-card border border-border rounded-xl p-6 hover:border-primary hover:shadow-md transition-all duration-200"
                   >
                     <div className="flex items-start justify-between mb-4">
