@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useParams } from "wouter";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { ArticleCard } from "@/components/article/ArticleCard";
 import { Sidebar } from "@/components/article/Sidebar";
@@ -20,9 +19,9 @@ const CATEGORY_META: Record<string, { description: string }> = {
 
 const LIMIT = 12;
 
-export default function Category() {
-  const { category } = useParams<{ category: string }>();
-  const decodedCategory = decodeURIComponent(category || "");
+// The route hands over the section's name ("Politics"), already matched to the
+// path, so the API gets the exact name it stores.
+export default function Category({ category: decodedCategory }: { category: string }) {
   const [page, setPage] = useState(1);
 
   const { data, isLoading, isFetching } = useListArticles({ category: decodedCategory, limit: LIMIT, page });
