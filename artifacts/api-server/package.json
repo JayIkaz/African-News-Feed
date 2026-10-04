@@ -8,7 +8,8 @@
     "build": "tsx ./build.ts",
     "start": "node --enable-source-maps ./dist/index.mjs",
     "ingest": "tsx ./src/ingest.ts",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "tsx --test \"src/**/*.test.ts\""
   },
   "dependencies": {
     "@workspace/api-zod": "workspace:*",
