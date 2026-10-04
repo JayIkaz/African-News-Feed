@@ -166,7 +166,7 @@ export function ArticleCard({ article, featured = false, isRead = false }: Artic
             {article.category}
             <TranslateChip t={t} light />
           </div>
-          <h2
+          <h3
             className="an-top-story-headline"
             lang={t.lang}
             dir="auto"
@@ -179,7 +179,7 @@ export function ArticleCard({ article, featured = false, isRead = false }: Artic
             }}
           >
             {t.title}
-          </h2>
+          </h3>
           {t.summary && (
             <p
               className="line-clamp-3"

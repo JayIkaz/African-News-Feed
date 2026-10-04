@@ -7,6 +7,7 @@ import { useListArticles, useListSources } from "@workspace/api-client-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Sidebar } from "@/components/article/Sidebar";
 import { Button } from "@/components/ui/button";
+import { usePageMeta } from "@/lib/usePageMeta";
 import { COUNTRY_FLAGS, COUNTRY_REGIONS, REGION_BADGE_COLORS } from "@/lib/countries";
 
 const LIMIT = 12;
@@ -27,6 +28,12 @@ export default function Country() {
 
   const totalPages = data ? Math.ceil(data.total / LIMIT) : 1;
   const flag = COUNTRY_FLAGS[decodedCountry] ?? "";
+
+  usePageMeta({
+    title: `${decodedCountry} news | AfricaNews`,
+    description: `Headlines from news publishers in ${decodedCountry}, collected by AfricaNews every hour, with a link to each publisher.`,
+    noindex: !!data && data.total === 0,
+  });
 
   return (
     <AppLayout>

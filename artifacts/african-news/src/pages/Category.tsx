@@ -4,6 +4,7 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { ArticleCard } from "@/components/article/ArticleCard";
 import { Sidebar } from "@/components/article/Sidebar";
 import { useListArticles } from "@workspace/api-client-react";
+import { usePageMeta } from "@/lib/usePageMeta";
 import { Inbox } from "lucide-react";
 
 const CATEGORY_META: Record<string, { description: string }> = {
@@ -30,6 +31,14 @@ export default function Category() {
   const meta = CATEGORY_META[decodedCategory] ?? {
     description: `Latest news and analysis on ${decodedCategory.toLowerCase()} from across Africa.`,
   };
+
+  // A section with nothing in it (a mistyped address, say) is served with
+  // status 200 like every other path, so it asks search engines to skip it.
+  usePageMeta({
+    title: `${decodedCategory} news from Africa | AfricaNews`,
+    description: meta.description,
+    noindex: !!data && data.total === 0,
+  });
 
   return (
     <AppLayout>
