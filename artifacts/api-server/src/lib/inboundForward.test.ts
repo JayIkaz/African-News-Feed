@@ -101,13 +101,28 @@ describe("addressOf and isOwnAddress", () => {
 });
 
 describe("inboundConfig", () => {
-  const full = { RESEND_API_KEY: "re_1", RESEND_WEBHOOK_SECRET: "whsec_x", INBOUND_FORWARD_TO: "owner@gmail.com" };
+  const full: NodeJS.ProcessEnv = { RESEND_API_KEY: "re_1", RESEND_WEBHOOK_SECRET: "whsec_x", INBOUND_FORWARD_TO: "owner@gmail.com" };
 
   it("is on when all three values are set, with the default sender", () => {
     const r = inboundConfig(full);
     assert.ok(r.ok);
     assert.deepEqual(r.config.forwardTo, ["owner@gmail.com"]);
     assert.match(r.config.from, /notifications\.africannewsfeed\.news/);
+  });
+
+  it("prefers the dedicated key and falls back to the general one", () => {
+    const both = inboundConfig({ ...full, RESEND_INBOUND_API_KEY: "re_full" });
+    assert.ok(both.ok);
+    assert.equal(both.config.apiKey, "re_full");
+    const only = inboundConfig(full);
+    assert.ok(only.ok);
+    assert.equal(only.config.apiKey, "re_1");
+  });
+
+  it("asks for the dedicated key when no key is set at all", () => {
+    const r = inboundConfig({ RESEND_WEBHOOK_SECRET: "whsec_x", INBOUND_FORWARD_TO: "owner@gmail.com" });
+    assert.ok(!r.ok);
+    assert.match(r.reason, /RESEND_INBOUND_API_KEY/);
   });
 
   it("names each missing value", () => {
@@ -230,6 +245,13 @@ describe("forwardReceivedEmail", () => {
     const { client, sent } = fakeClient({ getError: { message: "not found", statusCode: 404 } });
     await assert.rejects(forwardReceivedEmail(client, config, event()), /404: not found/);
     assert.equal(sent.length, 0);
+  });
+
+  it("points at the key's permissions when Resend refuses to let it read mail", async () => {
+    const { client } = fakeClient({
+      getError: { message: "This API key is restricted to only send emails", statusCode: 401 },
+    });
+    await assert.rejects(forwardReceivedEmail(client, config, event()), /401: .*restricted.*full-access key/);
   });
 
   it("throws when the send fails", async () => {

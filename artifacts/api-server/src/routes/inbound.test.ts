@@ -43,11 +43,12 @@ const received = JSON.stringify({
   },
 });
 
-const ENV_KEYS = ["RESEND_API_KEY", "RESEND_WEBHOOK_SECRET", "INBOUND_FORWARD_TO", "INBOUND_FORWARD_FROM"] as const;
+const ENV_KEYS = ["RESEND_INBOUND_API_KEY", "RESEND_API_KEY", "RESEND_WEBHOOK_SECRET", "INBOUND_FORWARD_TO", "INBOUND_FORWARD_FROM"] as const;
 let saved: Partial<Record<(typeof ENV_KEYS)[number], string | undefined>> = {};
 
 beforeEach(() => {
   saved = Object.fromEntries(ENV_KEYS.map((k) => [k, process.env[k]]));
+  delete process.env.RESEND_INBOUND_API_KEY;
   process.env.RESEND_API_KEY = "re_test";
   process.env.RESEND_WEBHOOK_SECRET = SECRET;
   process.env.INBOUND_FORWARD_TO = "owner@gmail.com";

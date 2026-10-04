@@ -27,12 +27,13 @@ Replying to the copy answers the sender from the reader's own address, not from
 
 | Name | Purpose |
 | --- | --- |
-| `RESEND_API_KEY` | Already set for the welcome email. Used to read received mail and to send the copy. |
+| `RESEND_INBOUND_API_KEY` | A **full-access** Resend key. Reading a received message needs it; a send-only key is refused with a 401. Kept separate from the welcome email's send-only key so the public newsletter path holds no more access than it needs. |
+| `RESEND_API_KEY` | Fallback when `RESEND_INBOUND_API_KEY` is not set, so one full-access key can serve both. A send-only key here fails at the read step. |
 | `RESEND_WEBHOOK_SECRET` | Signing secret of the webhook, from the Resend dashboard (starts `whsec_`). |
 | `INBOUND_FORWARD_TO` | Where copies go. One address or several, comma-separated. An address on africannewsfeed.news is refused, because the copy would be received and forwarded again. |
 | `INBOUND_FORWARD_FROM` | Optional. Sender of the copy. Must be on a verified Resend domain. |
 
-Until all three required values are set the route answers 503 and forwards
+Until a key, the signing secret and `INBOUND_FORWARD_TO` are all set the route answers 503 and forwards
 nothing. Resend retries, so mail received in that time is still forwarded once
 the settings are complete, within the retry window.
 

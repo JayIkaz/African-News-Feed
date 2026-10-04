@@ -32,10 +32,15 @@ export function isOwnAddress(value: string): boolean {
   return domain === OWN_DOMAIN || domain.endsWith(`.${OWN_DOMAIN}`);
 }
 
+// Reading a received message needs a full-access Resend key; the send-only key
+// used for the welcome email is refused with a 401. RESEND_INBOUND_API_KEY lets
+// the two be different keys, and RESEND_API_KEY is the fallback for a setup that
+// uses one full-access key for both.
+//
 // All three values must be set. A forward target on our own domain is refused:
 // the copy would arrive at Resend again and be forwarded again, for ever.
 export function inboundConfig(env: NodeJS.ProcessEnv = process.env): InboundConfigResult {
-  const apiKey = env.RESEND_API_KEY;
+  const apiKey = env.RESEND_INBOUND_API_KEY || env.RESEND_API_KEY;
   const webhookSecret = env.RESEND_WEBHOOK_SECRET;
   const forwardTo = (env.INBOUND_FORWARD_TO ?? "")
     .split(",")
@@ -43,7 +48,7 @@ export function inboundConfig(env: NodeJS.ProcessEnv = process.env): InboundConf
     .filter(Boolean);
 
   const missing = [
-    !apiKey && "RESEND_API_KEY",
+    !apiKey && "RESEND_INBOUND_API_KEY",
     !webhookSecret && "RESEND_WEBHOOK_SECRET",
     forwardTo.length === 0 && "INBOUND_FORWARD_TO",
   ].filter(Boolean);
@@ -92,7 +97,12 @@ function mailboxOf(recipients: string[]): string {
 }
 
 function describeFailure(error: { message?: string; statusCode?: number | null } | null): string {
-  return `${error?.statusCode ?? "no status"}: ${error?.message ?? "unknown error"}`;
+  const status = error?.statusCode ?? "no status";
+  const hint =
+    status === 401 || status === 403
+      ? " - check the key's permissions: reading received mail needs a full-access key (RESEND_INBOUND_API_KEY)"
+      : "";
+  return `${status}: ${error?.message ?? "unknown error"}${hint}`;
 }
 
 // A 4xx other than 429 means Resend refused the message itself (an attachment
