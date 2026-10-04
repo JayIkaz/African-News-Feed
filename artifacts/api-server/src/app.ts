@@ -1,6 +1,7 @@
 import express, { type Express } from "express";
 import cors from "cors";
 import router from "./routes";
+import inboundRouter from "./routes/inbound";
 
 const app: Express = express();
 
@@ -38,6 +39,11 @@ app.use(
     },
   }),
 );
+// Webhooks verify a signature over the exact bytes that were sent, so they read
+// the raw body themselves. They are mounted ahead of the JSON parser, which
+// would consume the body first.
+app.use("/api/inbound", inboundRouter);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
