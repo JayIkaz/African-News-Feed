@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useParams } from "wouter";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { ArticleCard } from "@/components/article/ArticleCard";
 import { Sidebar } from "@/components/article/Sidebar";
 import { useListArticles } from "@workspace/api-client-react";
+import { usePageMeta } from "@/lib/usePageMeta";
 import { Inbox } from "lucide-react";
 
 const CATEGORY_META: Record<string, { description: string }> = {
@@ -19,9 +19,9 @@ const CATEGORY_META: Record<string, { description: string }> = {
 
 const LIMIT = 12;
 
-export default function Category() {
-  const { category } = useParams<{ category: string }>();
-  const decodedCategory = decodeURIComponent(category || "");
+// The route hands over the section's name ("Politics"), already matched to the
+// path, so the API gets the exact name it stores.
+export default function Category({ category: decodedCategory }: { category: string }) {
   const [page, setPage] = useState(1);
 
   const { data, isLoading, isFetching } = useListArticles({ category: decodedCategory, limit: LIMIT, page });
@@ -30,6 +30,14 @@ export default function Category() {
   const meta = CATEGORY_META[decodedCategory] ?? {
     description: `Latest news and analysis on ${decodedCategory.toLowerCase()} from across Africa.`,
   };
+
+  // A section with nothing in it (a mistyped address, say) is served with
+  // status 200 like every other path, so it asks search engines to skip it.
+  usePageMeta({
+    title: `${decodedCategory} news from Africa | AfricaNews`,
+    description: meta.description,
+    noindex: !!data && data.total === 0,
+  });
 
   return (
     <AppLayout>

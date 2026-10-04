@@ -176,6 +176,19 @@ export const REGIONS: Region[] = [
   "Central Africa",
 ];
 
+// Reads a region out of a URL value. "West Africa", "west africa" and
+// "west-africa" all match; anything else, or nothing, is "All".
+export function parseRegion(value: string | null | undefined): Region {
+  const wanted = (value ?? "").trim().toLowerCase().replace(/[-_]+/g, " ");
+  return REGIONS.find((r) => r.toLowerCase() === wanted) ?? "All";
+}
+
+// The countries page address for a region: the region goes in the query string
+// so the filtered view can be linked to, bookmarked and reached with Back.
+export function regionHref(region: Region): string {
+  return region === "All" ? "/countries" : `/countries?region=${encodeURIComponent(region)}`;
+}
+
 // Solid backgrounds for the active/selected region pill. Uses the
 // --region-* CSS tokens already defined in index.css (and already used by
 // Sidebar.tsx's "Browse by Region" widget) instead of hardcoded Tailwind

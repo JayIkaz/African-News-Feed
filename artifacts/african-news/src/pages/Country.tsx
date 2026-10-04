@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams, Link } from "wouter";
+import { Link } from "wouter";
 import { MapPin, ChevronLeft, ChevronRight } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { ArticleCard } from "@/components/article/ArticleCard";
@@ -7,13 +7,14 @@ import { useListArticles, useListSources } from "@workspace/api-client-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Sidebar } from "@/components/article/Sidebar";
 import { Button } from "@/components/ui/button";
+import { usePageMeta } from "@/lib/usePageMeta";
 import { COUNTRY_FLAGS, COUNTRY_REGIONS, REGION_BADGE_COLORS } from "@/lib/countries";
 
 const LIMIT = 12;
 
-export default function Country() {
-  const { country } = useParams<{ country: string }>();
-  const decodedCountry = decodeURIComponent(country || "");
+// The route hands over the country's name ("South Africa"), already matched to
+// the path, so the API gets the exact name it stores.
+export default function Country({ country: decodedCountry }: { country: string }) {
   const [page, setPage] = useState(1);
 
   const { data, isLoading, isFetching } = useListArticles({
@@ -27,6 +28,12 @@ export default function Country() {
 
   const totalPages = data ? Math.ceil(data.total / LIMIT) : 1;
   const flag = COUNTRY_FLAGS[decodedCountry] ?? "";
+
+  usePageMeta({
+    title: `${decodedCountry} news | AfricaNews`,
+    description: `Headlines from news publishers in ${decodedCountry}, collected by AfricaNews every hour, with a link to each publisher.`,
+    noindex: !!data && data.total === 0,
+  });
 
   return (
     <AppLayout>

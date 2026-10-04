@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useListCountries } from "@workspace/api-client-react";
 import { COUNTRY_REGIONS } from "@/lib/countries";
+import { categoryHref, countryHref } from "@/lib/slugs";
 import { CountryFlag } from "@/components/common/CountryFlag";
 import { BreakingTicker } from "./BreakingTicker";
 
@@ -53,7 +54,7 @@ export function Navbar() {
   }, {} as any);
 
   const isHome = location === "/";
-  const activeCategory = CATEGORIES.find(c => location === `/category/${c}`);
+  const activeCategory = CATEGORIES.find(c => location === categoryHref(c));
   const isCountries = location.startsWith("/countr");
 
   return (
@@ -222,7 +223,7 @@ export function Navbar() {
             <div style={{ display: "flex", alignItems: "center", flex: 1, overflowX: "auto", minWidth: 0 }}>
               <NavLink href="/" active={isHome}>Home</NavLink>
               {CATEGORIES.map(cat => (
-                <NavLink key={cat} href={`/category/${cat}`} active={activeCategory === cat}>
+                <NavLink key={cat} href={categoryHref(cat)} active={activeCategory === cat}>
                   {cat}
                 </NavLink>
               ))}
@@ -308,7 +309,7 @@ export function Navbar() {
                         {(grouped[region] ?? []).slice(0, 8).map(c => (
                           <Link
                             key={c.country}
-                            href={`/country/${encodeURIComponent(c.country)}`}
+                            href={countryHref(c.country)}
                             onClick={() => setCountriesOpen(false)}
                             style={{
                               display: "flex",
@@ -382,7 +383,7 @@ export function Navbar() {
             </form>
             <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
               {["Home", ...CATEGORIES, "Countries"].map(item => {
-                const href = item === "Home" ? "/" : item === "Countries" ? "/countries" : `/category/${item}`;
+                const href = item === "Home" ? "/" : item === "Countries" ? "/countries" : categoryHref(item);
                 return (
                   <Link
                     key={item}

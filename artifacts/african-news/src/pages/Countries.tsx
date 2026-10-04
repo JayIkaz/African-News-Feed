@@ -1,21 +1,38 @@
-import { useState } from "react";
-import { Link } from "wouter";
+import { Link, useSearch } from "wouter";
 import { Globe2, ArrowRight, Newspaper } from "lucide-react";
 import { useListCountries } from "@workspace/api-client-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSiteCounts } from "@/lib/useSiteCounts";
+import { usePageMeta } from "@/lib/usePageMeta";
+import { countryHref } from "@/lib/slugs";
 import { CountryFlag } from "@/components/common/CountryFlag";
 import {
   COUNTRY_REGIONS,
   REGIONS,
   REGION_COLORS,
   REGION_BADGE_COLORS,
+  parseRegion,
+  regionHref,
   type Region,
 } from "@/lib/countries";
 
 export default function Countries() {
-  const [activeRegion, setActiveRegion] = useState<Region>("All");
+  // The region lives in the address (/countries?region=West%20Africa), so a
+  // region link opens filtered, the filter can be shared, and Back undoes it.
+  const activeRegion = parseRegion(new URLSearchParams(useSearch()).get("region"));
+
+  usePageMeta(
+    activeRegion === "All"
+      ? {
+          title: "Browse African news by country | AfricaNews",
+          description: "Pick an African country to see its latest headlines. Countries are grouped into five regions.",
+        }
+      : {
+          title: `Browse ${activeRegion} news by country | AfricaNews`,
+          description: `The countries in ${activeRegion} with recent headlines on AfricaNews. Pick one to see its latest stories.`,
+        },
+  );
 
   const { data: countries } = useListCountries();
   // Sources are counted the way every other page counts them: active, with a
@@ -97,9 +114,10 @@ export default function Countries() {
                   ? countries.length
                   : countries.filter((c) => COUNTRY_REGIONS[c.country] === region).length;
               return (
-                <button
+                <Link
                   key={region}
-                  onClick={() => setActiveRegion(region)}
+                  href={regionHref(region)}
+                  aria-current={isActive ? "true" : undefined}
                   className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all border ${
                     isActive
                       ? `${REGION_COLORS[region]} border-transparent shadow-sm`
@@ -114,7 +132,7 @@ export default function Countries() {
                       {count}
                     </span>
                   )}
-                </button>
+                </Link>
               );
             })}
           </div>
@@ -142,7 +160,7 @@ export default function Countries() {
                 return (
                   <Link
                     key={item.country}
-                    href={`/country/${encodeURIComponent(item.country)}`}
+                    href={countryHref(item.country)}
                     className="group block bg-card border border-border rounded-xl p-6 hover:border-primary hover:shadow-md transition-all duration-200"
                   >
                     <div className="flex items-start justify-between mb-4">

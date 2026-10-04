@@ -15,6 +15,9 @@ import { useReadHistory } from "@/lib/useReadHistory";
 import { useTranslate } from "@/lib/useTranslate";
 import { SITE_ORIGIN } from "@/lib/site";
 import { useToast } from "@/hooks/use-toast";
+import { usePageMeta } from "@/lib/usePageMeta";
+import { truncateToWord } from "@/lib/truncate";
+import { categoryHref, countryHref } from "@/lib/slugs";
 import { TranslateChip } from "@/components/article/ArticleCard";
 
 // The publisher's own image, shown only when it loads. No image, or one that
@@ -60,6 +63,14 @@ export default function ArticleDetail() {
   });
   const t = useTranslate(article);
   const { toast } = useToast();
+
+  // The title and description are the publisher's original text, whichever
+  // language the reader has switched the page to.
+  usePageMeta({
+    title: article ? `${article.title} | AfricaNews` : undefined,
+    description: article?.summary ? truncateToWord(article.summary.replace(/\s+/g, " ").trim(), 160) : undefined,
+    noindex: !isLoading && (!!error || !article),
+  });
 
   // Native share sheet where the browser has one (most phones), otherwise
   // copy the link. Cancelling the sheet is not an error and gets no toast.
@@ -130,10 +141,10 @@ export default function ArticleDetail() {
 
           {/* Category + Country */}
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
-            <Link href={`/category/${article.category}`} style={{ cursor: "pointer" }}>
+            <Link href={categoryHref(article.category)} style={{ cursor: "pointer" }}>
               <CatTag category={article.category} />
             </Link>
-            <Link href={`/country/${article.country}`} style={{ fontFamily: "var(--font-ui)", fontSize: 12, color: "var(--ink-3)", textDecoration: "none" }}
+            <Link href={countryHref(article.country)} style={{ fontFamily: "var(--font-ui)", fontSize: 12, color: "var(--ink-3)", textDecoration: "none" }}
               onMouseEnter={e => (e.currentTarget.style.color = "var(--ink)")}
               onMouseLeave={e => (e.currentTarget.style.color = "var(--ink-3)")}
             >

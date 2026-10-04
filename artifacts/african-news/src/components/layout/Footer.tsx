@@ -1,6 +1,8 @@
 import { Link } from "wouter";
 import { NewsletterForm } from "@/components/common/NewsletterForm";
-import { COMPANY_LINE } from "@/lib/site";
+import { COMPANY_LINE, CONTACT_EMAIL } from "@/lib/site";
+import { regionHref, type Region } from "@/lib/countries";
+import { SECTIONS, categoryHref } from "@/lib/slugs";
 
 // These were hardcoded whites tuned for the old teal footer. On --paper they
 // landed at 4.49:1 — just under AA — as a separate near-miss nobody would
@@ -10,6 +12,31 @@ import { COMPANY_LINE } from "@/lib/site";
 const FOOT_LINK = "var(--ink-muted)";
 const FOOT_DIM = "var(--ink-faint)";
 const FOOT_RULE = "var(--line)";
+
+const COLUMN_HEADING = { fontFamily: "var(--font-ui)", fontSize: 12, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: FOOT_DIM, marginBottom: 14 } as const;
+const COLUMN_LINK = { display: "block", fontFamily: "var(--font-ui)", fontSize: 13, color: FOOT_LINK, padding: "4px 0", textDecoration: "none", transition: "color 0.2s" } as const;
+
+// General is the fourth-largest section and has no other way in.
+const REGION_LINKS: Region[] = ["West Africa", "East Africa", "North Africa", "Southern Africa", "Central Africa"];
+const SITE_LINKS = [
+  { label: "About", href: "/about" },
+  { label: "Sources", href: "/sources" },
+  { label: "Advertise", href: "/advertise" },
+  { label: "Contact", href: `mailto:${CONTACT_EMAIL}` },
+  { label: "Privacy", href: "/privacy" },
+  { label: "Terms", href: "/terms" },
+];
+
+function FootLink({ href, children }: { href: string; children: React.ReactNode }) {
+  const hover = {
+    onMouseEnter: (e: React.MouseEvent<HTMLElement>) => { e.currentTarget.style.color = "var(--mint)"; },
+    onMouseLeave: (e: React.MouseEvent<HTMLElement>) => { e.currentTarget.style.color = FOOT_LINK; },
+  };
+  // A mailto: link is not a page of this app, so it is a plain anchor.
+  return href.startsWith("mailto:")
+    ? <a href={href} style={COLUMN_LINK} {...hover}>{children}</a>
+    : <Link href={href} style={COLUMN_LINK} {...hover}>{children}</Link>;
+}
 
 export function Footer() {
   // --anchor now resolves to --paper, so the footer no longer reads as a
@@ -39,44 +66,31 @@ export function Footer() {
           </div>
 
           {/* Sections */}
-          <div>
-            <h2 style={{ fontFamily: "var(--font-ui)", fontSize: 12, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: FOOT_DIM, marginBottom: 14 }}>
-              Sections
-            </h2>
-            {["Politics", "Business", "Technology", "Economy", "Society", "Environment", "International"].map(cat => (
-              <Link key={cat} href={`/category/${cat}`} style={{ display: "block", fontFamily: "var(--font-ui)", fontSize: 13, color: FOOT_LINK, padding: "4px 0", textDecoration: "none", transition: "color 0.2s" }}
-                onMouseEnter={e => (e.currentTarget.style.color = "var(--mint)")}
-                onMouseLeave={e => (e.currentTarget.style.color = FOOT_LINK)}
-              >
-                {cat}
-              </Link>
+          <nav aria-label="Sections">
+            <h2 style={COLUMN_HEADING}>Sections</h2>
+            {SECTIONS.map(cat => (
+              <FootLink key={cat} href={categoryHref(cat)}>{cat}</FootLink>
             ))}
-          </div>
+          </nav>
 
-          {/* Regions & Platform */}
-          <div>
-            <h2 style={{ fontFamily: "var(--font-ui)", fontSize: 12, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: FOOT_DIM, marginBottom: 14 }}>
-              Regions
-            </h2>
-            {["West Africa", "East Africa", "North Africa", "Southern Africa", "Central Africa"].map(r => (
-              <Link key={r} href={`/countries?region=${encodeURIComponent(r)}`} style={{ display: "block", fontFamily: "var(--font-ui)", fontSize: 13, color: FOOT_LINK, padding: "4px 0", textDecoration: "none", transition: "color 0.2s" }}
-                onMouseEnter={e => (e.currentTarget.style.color = "var(--mint)")}
-                onMouseLeave={e => (e.currentTarget.style.color = FOOT_LINK)}
-              >
-                {r}
-              </Link>
+          {/* Regions */}
+          <nav aria-label="Regions">
+            <h2 style={COLUMN_HEADING}>Regions</h2>
+            {REGION_LINKS.map(r => (
+              <FootLink key={r} href={regionHref(r)}>{r}</FootLink>
             ))}
-            <div style={{ marginTop: 16, paddingTop: 16, borderTop: `1px solid ${FOOT_RULE}` }}>
-              <h2 style={{ fontFamily: "var(--font-ui)", fontSize: 12, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: FOOT_DIM, marginBottom: 10 }}>Platform</h2>
-              <Link href="/advertise" style={{ display: "block", fontFamily: "var(--font-ui)", fontSize: 13, color: FOOT_LINK, padding: "4px 0", textDecoration: "none" }}
-                onMouseEnter={e => (e.currentTarget.style.color = "var(--mint)")}
-                onMouseLeave={e => (e.currentTarget.style.color = FOOT_LINK)}
-              >Advertise With Us</Link>
-            </div>
-          </div>
+          </nav>
+
+          {/* The site itself: what it is, who runs it, how to reach them */}
+          <nav aria-label="About the site">
+            <h2 style={COLUMN_HEADING}>AfricaNews</h2>
+            {SITE_LINKS.map(({ label, href }) => (
+              <FootLink key={label} href={href}>{label}</FootLink>
+            ))}
+          </nav>
 
           {/* Newsletter */}
-          <div id="footer-newsletter">
+          <div id="footer-newsletter" className="an-footer-newsletter">
             <NewsletterForm headingLevel="h2" />
           </div>
         </div>
@@ -97,16 +111,6 @@ export function Footer() {
               Powered by Aukizan
             </a>
           </p>
-          <div style={{ display: "flex", alignItems: "center", gap: 20, flexWrap: "wrap" }}>
-            {["About", "Sources", "Privacy", "Terms"].map(item => (
-              <Link key={item} href={`/${item.toLowerCase()}`} style={{ fontFamily: "var(--font-ui)", fontSize: 12, color: FOOT_DIM, textDecoration: "none", transition: "color 0.2s" }}
-                onMouseEnter={e => (e.currentTarget.style.color = "var(--ink)")}
-                onMouseLeave={e => (e.currentTarget.style.color = FOOT_DIM)}
-              >
-                {item}
-              </Link>
-            ))}
-          </div>
         </div>
         <p className="an-footer-company">{COMPANY_LINE}</p>
       </div>

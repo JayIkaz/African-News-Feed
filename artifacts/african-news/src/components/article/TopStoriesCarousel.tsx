@@ -126,9 +126,9 @@ function CarouselSlide({ article, active }: { article: Article; active: boolean 
             380px but leaves a dek sitting on bright image detail at 300px —
             it tested unreadable over busy photos. Dropping the least
             essential element beat weakening a scrim value the spec fixes. */}
-        <h2 className="an-carousel-title line-clamp-3">
+        <h3 className="an-carousel-title line-clamp-3">
           {truncateToWord(article.title, 110)}
-        </h2>
+        </h3>
         <div className="an-carousel-meta">
           <span>{flag} {article.country}</span>
           <span>·</span>

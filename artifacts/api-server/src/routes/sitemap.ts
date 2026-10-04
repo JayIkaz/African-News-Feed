@@ -3,6 +3,7 @@ import { db } from "@workspace/db";
 import { articlesTable, sourcesTable } from "@workspace/db/schema";
 import { desc, eq } from "drizzle-orm";
 import { articleSelection, buildArticleResponse } from "../lib/articleSelect";
+import { categoryPath, countryPath } from "../lib/slugs";
 
 const router: IRouter = Router();
 
@@ -49,7 +50,7 @@ router.get("/", async (_req, res) => {
     for (const row of categoryRows) {
       if (!row.category) continue;
       entries.push(
-        urlEntry(`${SITE_URL}/category/${encodeURIComponent(row.category)}`, today, "hourly", "0.8")
+        urlEntry(`${SITE_URL}${categoryPath(row.category)}`, today, "hourly", "0.8")
       );
     }
 
@@ -62,7 +63,7 @@ router.get("/", async (_req, res) => {
     for (const row of countryRows) {
       if (!row.country) continue;
       entries.push(
-        urlEntry(`${SITE_URL}/country/${encodeURIComponent(row.country)}`, today, "hourly", "0.8")
+        urlEntry(`${SITE_URL}${countryPath(row.country)}`, today, "hourly", "0.8")
       );
     }
 

@@ -1,5 +1,302 @@
 {
   "outputDirectory": "dist/public",
+  "redirects": [
+    {
+      "source": "/category/Politics",
+      "destination": "/politics",
+      "permanent": true
+    },
+    {
+      "source": "/category/Business",
+      "destination": "/business",
+      "permanent": true
+    },
+    {
+      "source": "/category/Technology",
+      "destination": "/technology",
+      "permanent": true
+    },
+    {
+      "source": "/category/Economy",
+      "destination": "/economy",
+      "permanent": true
+    },
+    {
+      "source": "/category/Society",
+      "destination": "/society",
+      "permanent": true
+    },
+    {
+      "source": "/category/Environment",
+      "destination": "/environment",
+      "permanent": true
+    },
+    {
+      "source": "/category/International",
+      "destination": "/international",
+      "permanent": true
+    },
+    {
+      "source": "/category/General",
+      "destination": "/general",
+      "permanent": true
+    },
+    {
+      "source": "/country/Algeria",
+      "destination": "/country/algeria",
+      "permanent": true
+    },
+    {
+      "source": "/country/Angola",
+      "destination": "/country/angola",
+      "permanent": true
+    },
+    {
+      "source": "/country/Benin",
+      "destination": "/country/benin",
+      "permanent": true
+    },
+    {
+      "source": "/country/Botswana",
+      "destination": "/country/botswana",
+      "permanent": true
+    },
+    {
+      "source": "/country/Burkina%20Faso",
+      "destination": "/country/burkina-faso",
+      "permanent": true
+    },
+    {
+      "source": "/country/Burundi",
+      "destination": "/country/burundi",
+      "permanent": true
+    },
+    {
+      "source": "/country/Cameroon",
+      "destination": "/country/cameroon",
+      "permanent": true
+    },
+    {
+      "source": "/country/Cape%20Verde",
+      "destination": "/country/cape-verde",
+      "permanent": true
+    },
+    {
+      "source": "/country/Central%20African%20Republic",
+      "destination": "/country/central-african-republic",
+      "permanent": true
+    },
+    {
+      "source": "/country/Chad",
+      "destination": "/country/chad",
+      "permanent": true
+    },
+    {
+      "source": "/country/Comoros",
+      "destination": "/country/comoros",
+      "permanent": true
+    },
+    {
+      "source": "/country/DR%20Congo",
+      "destination": "/country/dr-congo",
+      "permanent": true
+    },
+    {
+      "source": "/country/Djibouti",
+      "destination": "/country/djibouti",
+      "permanent": true
+    },
+    {
+      "source": "/country/Egypt",
+      "destination": "/country/egypt",
+      "permanent": true
+    },
+    {
+      "source": "/country/Equatorial%20Guinea",
+      "destination": "/country/equatorial-guinea",
+      "permanent": true
+    },
+    {
+      "source": "/country/Eritrea",
+      "destination": "/country/eritrea",
+      "permanent": true
+    },
+    {
+      "source": "/country/Eswatini",
+      "destination": "/country/eswatini",
+      "permanent": true
+    },
+    {
+      "source": "/country/Ethiopia",
+      "destination": "/country/ethiopia",
+      "permanent": true
+    },
+    {
+      "source": "/country/Gabon",
+      "destination": "/country/gabon",
+      "permanent": true
+    },
+    {
+      "source": "/country/Gambia",
+      "destination": "/country/gambia",
+      "permanent": true
+    },
+    {
+      "source": "/country/Ghana",
+      "destination": "/country/ghana",
+      "permanent": true
+    },
+    {
+      "source": "/country/Guinea",
+      "destination": "/country/guinea",
+      "permanent": true
+    },
+    {
+      "source": "/country/Guinea-Bissau",
+      "destination": "/country/guinea-bissau",
+      "permanent": true
+    },
+    {
+      "source": "/country/Ivory%20Coast",
+      "destination": "/country/ivory-coast",
+      "permanent": true
+    },
+    {
+      "source": "/country/Kenya",
+      "destination": "/country/kenya",
+      "permanent": true
+    },
+    {
+      "source": "/country/Lesotho",
+      "destination": "/country/lesotho",
+      "permanent": true
+    },
+    {
+      "source": "/country/Liberia",
+      "destination": "/country/liberia",
+      "permanent": true
+    },
+    {
+      "source": "/country/Libya",
+      "destination": "/country/libya",
+      "permanent": true
+    },
+    {
+      "source": "/country/Madagascar",
+      "destination": "/country/madagascar",
+      "permanent": true
+    },
+    {
+      "source": "/country/Malawi",
+      "destination": "/country/malawi",
+      "permanent": true
+    },
+    {
+      "source": "/country/Mali",
+      "destination": "/country/mali",
+      "permanent": true
+    },
+    {
+      "source": "/country/Mauritania",
+      "destination": "/country/mauritania",
+      "permanent": true
+    },
+    {
+      "source": "/country/Mauritius",
+      "destination": "/country/mauritius",
+      "permanent": true
+    },
+    {
+      "source": "/country/Morocco",
+      "destination": "/country/morocco",
+      "permanent": true
+    },
+    {
+      "source": "/country/Mozambique",
+      "destination": "/country/mozambique",
+      "permanent": true
+    },
+    {
+      "source": "/country/Namibia",
+      "destination": "/country/namibia",
+      "permanent": true
+    },
+    {
+      "source": "/country/Niger",
+      "destination": "/country/niger",
+      "permanent": true
+    },
+    {
+      "source": "/country/Nigeria",
+      "destination": "/country/nigeria",
+      "permanent": true
+    },
+    {
+      "source": "/country/Rwanda",
+      "destination": "/country/rwanda",
+      "permanent": true
+    },
+    {
+      "source": "/country/Senegal",
+      "destination": "/country/senegal",
+      "permanent": true
+    },
+    {
+      "source": "/country/Sierra%20Leone",
+      "destination": "/country/sierra-leone",
+      "permanent": true
+    },
+    {
+      "source": "/country/Somalia",
+      "destination": "/country/somalia",
+      "permanent": true
+    },
+    {
+      "source": "/country/South%20Africa",
+      "destination": "/country/south-africa",
+      "permanent": true
+    },
+    {
+      "source": "/country/South%20Sudan",
+      "destination": "/country/south-sudan",
+      "permanent": true
+    },
+    {
+      "source": "/country/Sudan",
+      "destination": "/country/sudan",
+      "permanent": true
+    },
+    {
+      "source": "/country/Tanzania",
+      "destination": "/country/tanzania",
+      "permanent": true
+    },
+    {
+      "source": "/country/Togo",
+      "destination": "/country/togo",
+      "permanent": true
+    },
+    {
+      "source": "/country/Tunisia",
+      "destination": "/country/tunisia",
+      "permanent": true
+    },
+    {
+      "source": "/country/Uganda",
+      "destination": "/country/uganda",
+      "permanent": true
+    },
+    {
+      "source": "/country/Zambia",
+      "destination": "/country/zambia",
+      "permanent": true
+    },
+    {
+      "source": "/country/Zimbabwe",
+      "destination": "/country/zimbabwe",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/api/(.*)",

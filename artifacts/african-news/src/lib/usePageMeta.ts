@@ -1,7 +1,9 @@
 import { useEffect } from "react";
 
 interface PageMeta {
-  title: string;
+  // Left undefined while the page's own title is not known yet (an article that
+  // is still loading), in which case the document keeps the title it has.
+  title?: string;
   description?: string;
   noindex?: boolean;
 }
@@ -11,7 +13,7 @@ interface PageMeta {
 export function usePageMeta({ title, description, noindex }: PageMeta) {
   useEffect(() => {
     const previousTitle = document.title;
-    document.title = title;
+    if (title) document.title = title;
 
     const descriptionTag = document.head.querySelector<HTMLMetaElement>('meta[name="description"]');
     const previousDescription = descriptionTag?.getAttribute("content") ?? null;
