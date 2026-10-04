@@ -13,12 +13,13 @@ import Countries from "@/pages/Countries";
 import Advertise from "@/pages/Advertise";
 import About from "@/pages/About";
 import Sources from "@/pages/Sources";
+import Source from "@/pages/Source";
 import Privacy from "@/pages/Privacy";
 import Terms from "@/pages/Terms";
 import Unsubscribe from "@/pages/Unsubscribe";
 import NotFound from "@/pages/not-found";
 import { categoryFromSlug, categoryHref, countryFromSlug, slugify } from "@/lib/slugs";
-import { listingHref, parseListingQuery } from "@/lib/listing";
+import { listingHref, parseListingQuery, sourceHref } from "@/lib/listing";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -77,6 +78,16 @@ function CountryRoute() {
   return <Country key={name} country={name} page={page} />;
 }
 
+// A publisher lives at /source/12. The number is the publisher's id; anything
+// else after /source/ is not a page.
+function SourceRoute() {
+  const { id } = useParams<{ id: string }>();
+  const { page, needsRedirect } = parseListingQuery(useSearch(), false);
+  if (!/^[1-9][0-9]{0,8}$/.test(id)) return <NotFound />;
+  if (needsRedirect) return <Redirect to={sourceHref(Number(id), page)} replace />;
+  return <Source key={id} id={Number(id)} page={page} />;
+}
+
 function Router() {
   return (
     <Switch>
@@ -89,6 +100,7 @@ function Router() {
       <Route path="/advertise" component={Advertise} />
       <Route path="/about" component={About} />
       <Route path="/sources" component={Sources} />
+      <Route path="/source/:id" component={SourceRoute} />
       <Route path="/privacy" component={Privacy} />
       <Route path="/terms" component={Terms} />
       <Route path="/unsubscribe" component={Unsubscribe} />

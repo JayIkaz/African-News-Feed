@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { categoryPath, countryPath, slugify } from "./slugs";
+import { categoryPath, countryPath, slugify, sourcePath } from "./slugs";
 
 describe("slugify", () => {
   it("lower-cases and joins words with hyphens", () => {
@@ -40,5 +40,10 @@ describe("paths", () => {
     assert.equal(countryPath("South Africa"), "/country/south-africa");
     assert.equal(countryPath("Ghana"), "/country/ghana");
     assert.equal(countryPath("Ivory Coast"), "/country/ivory-coast");
+  });
+
+  it("builds the publisher path from the id", () => {
+    assert.equal(sourcePath(12), "/source/12");
+    assert.equal(sourcePath(1), "/source/1");
   });
 });

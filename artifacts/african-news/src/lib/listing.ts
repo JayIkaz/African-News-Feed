@@ -5,6 +5,7 @@ import { categoryFromSlug, categoryHref, countryFromSlug, countryHref, slugify }
 //   /                          every story
 //   /politics                  one section
 //   /country/ghana             one country
+//   /source/12                 one publisher
 //   /politics?country=ghana    a section and a country together
 //   <any of these>?page=2      the second page of that list
 //
@@ -25,6 +26,10 @@ export function listingHref({ category, country, page = 1 }: Listing): string {
   if (page > 1) query.set("page", String(page));
   const text = query.toString();
   return text ? `${path}?${text}` : path;
+}
+
+export function sourceHref(id: number, page = 1): string {
+  return page > 1 ? `/source/${id}?page=${page}` : `/source/${id}`;
 }
 
 // "?page=2" is a list's second page. Anything else is page 1, so a made-up
@@ -62,12 +67,13 @@ export function parseListingQuery(search: string, allowCountry: boolean): Listin
 
 // Which kind of list a path is, or null for a path that is not a list. Only
 // lists have a page or country in the query worth keeping in a canonical link.
-export type ListingKind = "home" | "section" | "country";
+export type ListingKind = "home" | "section" | "country" | "source";
 
 export function listingKind(pathname: string): ListingKind | null {
   const path = pathname.replace(/\/+$/, "").toLowerCase() || "/";
   if (path === "/") return "home";
   if (/^\/country\/[^/]+$/.test(path)) return "country";
+  if (/^\/source\/[1-9][0-9]*$/.test(path)) return "source";
   const match = /^\/([^/]+)$/.exec(path);
   return match && categoryFromSlug(match[1]) ? "section" : null;
 }

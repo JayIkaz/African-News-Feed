@@ -1,3 +1,4 @@
+import { Link } from "wouter";
 import { formatDistanceToNow } from "date-fns";
 import { useGetIngestionStatus } from "@workspace/api-client-react";
 import { AppLayout } from "@/components/layout/AppLayout";
@@ -5,6 +6,7 @@ import { CountryFlag } from "@/components/common/CountryFlag";
 import { usePageMeta } from "@/lib/usePageMeta";
 import { useSiteCounts } from "@/lib/useSiteCounts";
 import { CONTACT_EMAIL } from "@/lib/site";
+import { sourceHref } from "@/lib/listing";
 
 // Safe to put in an href: only http(s) homepages become links.
 function safeHref(url: string): string | null {
@@ -34,7 +36,7 @@ export default function Sources() {
       <div className="an-page">
         <h1>Sources</h1>
         <p>
-          AfricaNews reads the public news feeds of the publishers below every hour. Select a name to visit the publisher.{" "}
+          AfricaNews reads the public news feeds of the publishers below every hour. Select a name to visit the publisher, or the story count to read its stories here.{" "}
           {ready ? (
             waiting > 0
               ? <>{sourceCount} of them have delivered stories so far. The other {waiting === 1 ? "one is" : `${waiting} are`} switched on and marked "no stories yet".</>
@@ -67,6 +69,11 @@ export default function Sources() {
                 return (
                   <li className="an-src-item" key={source.id}>
                     {href ? <a href={href} target="_blank" rel="noopener noreferrer">{source.name}</a> : <span>{source.name}</span>}
+                    {source.articleCount > 0 && (
+                      <Link href={sourceHref(source.id)} className="an-src-stories">
+                        {source.articleCount.toLocaleString()} {source.articleCount === 1 ? "story" : "stories"}
+                      </Link>
+                    )}
                     {meta && <span className="an-src-meta">{meta}</span>}
                   </li>
                 );

@@ -817,6 +817,66 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--ink-4);
 }
 
+/* The block above a publisher's stories: who it is, where, and a way out to
+   its own site. */
+.an-listing-hero {
+  padding: 36px 0;
+  background: var(--paper-2);
+  color: var(--ink);
+}
+.an-listing-hero-eyebrow {
+  margin-bottom: 8px;
+  color: var(--accent);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.an-listing-hero h1 {
+  margin: 0 0 12px;
+  font-family: var(--font-headline);
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+.an-listing-hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 20px;
+  margin: 0;
+  color: var(--ink-3);
+  font-family: var(--font-ui);
+  font-size: 14px;
+}
+.an-listing-hero-meta a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  color: var(--ink-2);
+  text-decoration: none;
+}
+.an-listing-hero-meta a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+.an-listing-body {
+  padding-top: 32px;
+  padding-bottom: 48px;
+}
+
+/* A publisher's name where it is also a link to the publisher's page. */
+.an-source-link {
+  color: inherit;
+  text-decoration: none;
+}
+.an-source-link:hover {
+  text-decoration: underline;
+}
+
 .an-listing-clear {
   margin-left: auto;
   font-family: var(--font-ui);
@@ -1248,6 +1308,14 @@ h1, h2, h3, h4, h5, h6 {
   gap: 4px 16px;
   padding: 10px 0;
   border-bottom: 1px solid var(--line);
+}
+
+/* The count of a publisher's stories, a link to its page here. */
+.an-src-stories {
+  margin-left: auto;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--accent);
 }
 
 .an-src-meta {
