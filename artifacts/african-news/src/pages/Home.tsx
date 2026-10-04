@@ -1,38 +1,38 @@
 import { Fragment, useEffect, useState, useRef } from "react";
-import { useListArticles, useGetTopStories, useListCountries } from "@workspace/api-client-react";
+import { useSearch } from "wouter";
+import { useGetTopStories, useListCountries } from "@workspace/api-client-react";
 import { useMediaQuery } from "@/lib/useMediaQuery";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { ArticleCard } from "@/components/article/ArticleCard";
 import { TopStoriesCarousel } from "@/components/article/TopStoriesCarousel";
 import { Sidebar } from "@/components/article/Sidebar";
+import { ListingFilters, NewerLink, PastTheEnd, ShowMore } from "@/components/article/ListingParts";
 import { PulseDivider } from "@/components/common/PulseDivider";
 import { AdBanner } from "@/components/ads/AdBanner";
 import { Inbox } from "lucide-react";
 import { useReadHistory } from "@/lib/useReadHistory";
 import { useSiteCounts } from "@/lib/useSiteCounts";
+import { listingHref, parseListingQuery } from "@/lib/listing";
+import { useListing } from "@/lib/useListing";
+import { usePageMeta } from "@/lib/usePageMeta";
 
-const CATEGORY_PILLS = [
-  { label: "All", value: null },
-  { label: "Politics", value: "Politics" },
-  { label: "Business", value: "Business" },
-  { label: "Technology", value: "Technology" },
-  { label: "Economy", value: "Economy" },
-  { label: "Society", value: "Society" },
-  { label: "Environment", value: "Environment" },
-  { label: "International", value: "International" },
-];
+const LIMIT = 10;
 
 export default function Home() {
-  const [activeCat, setActiveCat] = useState<string | null>(null);
-  const [page, setPage] = useState(1);
-  const [fadeKey, setFadeKey] = useState(0);
+  const { page } = parseListingQuery(useSearch(), false);
   const isMobile = useMediaQuery("(max-width: 640px)");
-  const limit = 10;
-  const pillRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
   const { isRead, markAllRead, clearHistory, readIds } = useReadHistory();
+  const hrefFor = (p: number) => listingHref({ page: p });
 
   const { data: topStories, isLoading: topLoading } = useGetTopStories({ limit: 3 });
-  const { data: latestNews, isLoading: latestLoading, isFetching } = useListArticles({ page, limit, category: activeCat ?? undefined });
+  const list = useListing({}, page, LIMIT);
+  const pastTheEnd = !list.isLoading && !list.failed && page > 1 && list.articles.length === 0;
+  // The first page keeps the title of index.html; later pages say which page
+  // they are, so no two share one.
+  usePageMeta({
+    title: page > 1 ? `Latest African news, page ${page} | AfricaNews` : undefined,
+    noindex: pastTheEnd,
+  });
   const { data: countries } = useListCountries();
   const { sourceCount, countryCount, loading: statsLoading, ready: statsReady } = useSiteCounts();
   const totalArticles = (countries ?? []).reduce((sum, c) => sum + c.articleCount, 0);
@@ -56,17 +56,6 @@ export default function Home() {
     observer.observe(el);
     return () => observer.disconnect();
   }, [statsLoading, statsReady]);
-
-  const handlePill = (value: string | null, btnEl?: HTMLButtonElement | null) => {
-    setActiveCat(value);
-    setPage(1);
-    setFadeKey(k => k + 1);
-    if (btnEl) {
-      btnEl.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
-    }
-  };
-
-  const totalPages = latestNews ? Math.ceil((latestNews.total ?? 0) / limit) : 1;
 
   return (
     <AppLayout>
@@ -167,68 +156,14 @@ export default function Home() {
             boundary between the top story and everything below it. */}
         <PulseDivider />
 
-        {/* ── Category Pills ── no ad sits above them or above the first headline ── */}
-        <div className="an-pill-bar">
-          {CATEGORY_PILLS.map(({ label, value }) => {
-            const isActive = activeCat === value;
-            const pillKey = value ?? "__all__";
-            return (
-              <button
-                key={label}
-                ref={el => {
-                  if (el) pillRefs.current.set(pillKey, el);
-                  else pillRefs.current.delete(pillKey);
-                }}
-                onClick={e => handlePill(value, e.currentTarget)}
-                className={`an-pill${isActive ? " an-pill--active" : ""}`}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 6,
-                  padding: "8px 16px",
-                  borderRadius: 100,
-                  border: `1.5px solid ${isActive ? "var(--accent)" : "var(--paper-3)"}`,
-                  fontFamily: "var(--font-ui)",
-                  fontSize: 13,
-                  fontWeight: 500,
-                  color: isActive ? "var(--paper)" : "var(--ink-3)",
-                  background: isActive ? "var(--accent)" : "var(--surface-1)",
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                  flexShrink: 0,
-                }}
-                onMouseEnter={e => { if (!isActive) { e.currentTarget.style.borderColor = "var(--ink-3)"; e.currentTarget.style.color = "var(--ink)"; } }}
-                onMouseLeave={e => { if (!isActive) { e.currentTarget.style.borderColor = "var(--paper-3)"; e.currentTarget.style.color = "var(--ink-3)"; } }}
-              >
-                {label}
-              </button>
-            );
-          })}
-
+        {/* ── Section links ── no ad sits above them or above the first headline ── */}
+        <ListingFilters showCountry>
           {/* Mark all as read / Clear history */}
           <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-            {latestNews?.articles && latestNews.articles.length > 0 && (
+            {list.articles.length > 0 && (
               <button
-                onClick={() => markAllRead((latestNews.articles ?? []).map(a => a.id))}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 5,
-                  padding: "8px 14px",
-                  borderRadius: 100,
-                  border: "1.5px solid var(--paper-3)",
-                  fontFamily: "var(--font-ui)",
-                  fontSize: 12,
-                  fontWeight: 500,
-                  color: "var(--ink-3)",
-                  background: "var(--surface-1)",
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                  flexShrink: 0,
-                  whiteSpace: "nowrap",
-                }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--ink-3)"; e.currentTarget.style.color = "var(--ink)"; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--paper-3)"; e.currentTarget.style.color = "var(--ink-3)"; }}
+                onClick={() => markAllRead(list.articles.map(a => a.id))}
+                className="an-pill an-pill--small"
                 title="Mark all visible articles as read"
               >
                 ✓ Mark all read
@@ -237,32 +172,14 @@ export default function Home() {
             {readIds.size > 0 && (
               <button
                 onClick={clearHistory}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 5,
-                  padding: "8px 14px",
-                  borderRadius: 100,
-                  border: "1.5px solid var(--paper-3)",
-                  fontFamily: "var(--font-ui)",
-                  fontSize: 12,
-                  fontWeight: 500,
-                  color: "var(--ink-4)",
-                  background: "var(--surface-1)",
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                  flexShrink: 0,
-                  whiteSpace: "nowrap",
-                }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--ink-3)"; e.currentTarget.style.color = "var(--ink)"; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--paper-3)"; e.currentTarget.style.color = "var(--ink-4)"; }}
+                className="an-pill an-pill--small an-pill--quiet"
                 title={`Clear read history (${readIds.size} articles)`}
               >
                 Clear history
               </button>
             )}
           </div>
-        </div>
+        </ListingFilters>
 
         </div>{/* /an-lede-column */}
 
@@ -274,72 +191,70 @@ export default function Home() {
             <div>
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
                 <h2 style={{ fontFamily: "var(--font-headline)", fontSize: 15, fontWeight: 600, margin: 0, paddingLeft: 10, borderLeft: "3px solid var(--yellow)" }}>
-                  {activeCat ? `${activeCat} news` : "Latest news"}
+                  Latest news
                 </h2>
-                {latestNews && (
+                {list.total !== undefined && (
                   <span style={{ marginLeft: "auto", fontFamily: "var(--font-ui)", fontSize: 12, color: "var(--ink-4)" }}>
-                    {latestNews.total?.toLocaleString()} articles
+                    {list.total.toLocaleString()} articles
                   </span>
                 )}
               </div>
 
-              <div key={fadeKey} className="an-story-list an-articles-fade">
-                {latestLoading || isFetching ? (
+              <NewerLink startPage={page} hrefFor={hrefFor} />
+
+              <div className="an-story-list an-articles-fade">
+                {list.isLoading ? (
                   /* Row-shaped, matching what loads in — the old 16/9 card
                      skeleton described a layout the feed no longer uses and
                      made the page jump when articles arrived. */
                   Array(6).fill(0).map((_, i) => (
                     <div key={i} className="an-skeleton an-skeleton-row" />
                   ))
-                ) : latestNews?.articles && latestNews.articles.length > 0 ? (
-                  latestNews.articles.map((article) => (
+                ) : list.articles.length > 0 ? (
+                  list.articles.slice(0, LIMIT).map((article) => (
                     <ArticleCard key={article.id} article={article} isRead={isRead(article.id)} />
                   ))
+                ) : pastTheEnd ? (
+                  <PastTheEnd firstHref={hrefFor(1)} />
                 ) : (
                   <div style={{ gridColumn: "1/3", textAlign: "center", padding: "60px 24px", color: "var(--ink-4)" }}>
                     <Inbox size={40} strokeWidth={1.5} aria-hidden="true" style={{ marginBottom: 16 }} />
                     <h3 style={{ fontFamily: "var(--font-headline)", fontSize: 20, color: "var(--ink-3)", marginBottom: 8 }}>No articles found</h3>
-                    <p style={{ fontFamily: "var(--font-ui)", fontSize: 14 }}>Try a different category or check back soon.</p>
+                    <p style={{ fontFamily: "var(--font-ui)", fontSize: 14 }}>Check back soon.</p>
                   </div>
                 )}
               </div>
 
               {/* One ad row after the tenth story, only once a full page of ten
-                  has loaded, so it never sits among skeletons and then jumps. */}
-              {!latestLoading && !isFetching && (latestNews?.articles?.length ?? 0) >= limit && <AdBanner slot="inline" />}
+                  has loaded, so it never sits among skeletons and then jumps.
+                  Stories added with "Show more" go under it. */}
+              {!list.isLoading && list.articles.length >= LIMIT && <AdBanner slot="inline" />}
 
-              {/* Pagination */}
-              {latestNews && latestNews.total > limit && (
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 32, paddingTop: 24, borderTop: "1px solid var(--paper-3)" }}>
-                  <PagBtn
-                    onClick={() => { setPage(p => Math.max(1, p - 1)); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-                    disabled={page === 1 || isFetching}
-                  >
-                    ← Previous
-                  </PagBtn>
-                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                    let p = i + 1;
-                    if (totalPages > 5 && page > 3) p = page - 2 + i;
-                    if (p > totalPages) return null;
-                    return (
-                      <PagBtn
-                        key={p}
-                        onClick={() => { setPage(p); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-                        disabled={isFetching}
-                        active={p === page}
-                      >
-                        {p}
-                      </PagBtn>
-                    );
-                  })}
-                  <PagBtn
-                    onClick={() => { setPage(p => p + 1); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-                    disabled={!latestNews.hasMore || isFetching}
-                  >
-                    Next →
-                  </PagBtn>
+              {list.articles.length > LIMIT && (
+                <div className="an-story-list">
+                  {list.articles.slice(LIMIT).map((article) => (
+                    <ArticleCard key={article.id} article={article} isRead={isRead(article.id)} />
+                  ))}
                 </div>
               )}
+              {list.isLoadingMore && (
+                <div className="an-story-list">
+                  {Array(3).fill(0).map((_, i) => (
+                    <div key={i} className="an-skeleton an-skeleton-row" />
+                  ))}
+                </div>
+              )}
+
+              <ShowMore
+                nextPage={list.nextPage}
+                hrefFor={hrefFor}
+                loading={list.isLoadingMore}
+                failed={list.moreFailed}
+                shown={list.articles.length}
+                total={list.total}
+                onMore={list.loadMore}
+                onRetry={list.retry}
+              />
             </div>
 
             {/* Sidebar */}
@@ -350,32 +265,5 @@ export default function Home() {
         </section>
       </div>
     </AppLayout>
-  );
-}
-
-function PagBtn({ children, onClick, disabled, active }: { children: React.ReactNode; onClick: () => void; disabled?: boolean; active?: boolean }) {
-  return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      className="an-pag-btn"
-      style={{
-        minWidth: 36,
-        height: 36,
-        padding: "0 12px",
-        borderRadius: 6,
-        border: `1px solid ${active ? "var(--accent)" : "var(--paper-3)"}`,
-        background: active ? "var(--accent)" : "var(--surface-1)",
-        color: active ? "var(--paper)" : disabled ? "var(--ink-4)" : "var(--ink-2)",
-        fontFamily: "var(--font-ui)",
-        fontSize: 13,
-        fontWeight: 500,
-        cursor: disabled ? "default" : "pointer",
-        opacity: disabled ? 0.4 : 1,
-        transition: "all 0.2s",
-      }}
-    >
-      {children}
-    </button>
   );
 }

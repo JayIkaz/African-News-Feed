@@ -1,5 +1,6 @@
 import { ReactNode, useEffect } from "react";
-import { useLocation } from "wouter";
+import { useLocation, useSearch } from "wouter";
+import { canonicalQuery } from "@/lib/listing";
 import { SITE_ORIGIN } from "@/lib/site";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
@@ -13,9 +14,11 @@ interface AppLayoutProps {
 // the home page. It is set here instead, from the path being shown.
 function useCanonicalLink() {
   const [location] = useLocation();
+  const search = useSearch();
   useEffect(() => {
     // Every address on the site is lower case, so /About and /about are one
-    // page; the lower-case form is the canonical one.
+    // page; the lower-case form is the canonical one. A list keeps its page
+    // and, for a section, its country; no other query belongs to the address.
     const path = (window.location.pathname.replace(/\/+$/, "") || "/").toLowerCase();
     let link = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
     if (!link) {
@@ -23,8 +26,8 @@ function useCanonicalLink() {
       link.rel = "canonical";
       document.head.appendChild(link);
     }
-    link.href = SITE_ORIGIN + path;
-  }, [location]);
+    link.href = SITE_ORIGIN + path + canonicalQuery(path, search);
+  }, [location, search]);
 }
 
 export function AppLayout({ children }: AppLayoutProps) {
