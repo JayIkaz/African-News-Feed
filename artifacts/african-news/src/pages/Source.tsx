@@ -45,7 +45,7 @@ export default function Source({ id, page }: { id: number; page: number }) {
         ? `${name} news${page > 1 ? `, page ${page}` : ""} | AfricaNews`
         : undefined,
     description: name
-      ? `Headlines from ${name}${country ? ` in ${country}` : ""}, collected by AfricaNews every hour, with a link to each story at the publisher.`
+      ? `Headlines from ${name}${country ? ` in ${country}` : ""}, collected by AfricaNews several times a day, with a link to each story at the publisher.`
       : undefined,
     noindex: missing || thin || pastTheEnd || list.total === 0,
   });

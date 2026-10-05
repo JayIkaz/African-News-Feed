@@ -24,7 +24,7 @@ export default function About() {
 
         <h2>How it works</h2>
         <p>
-          Every hour, a script reads each publisher's public news feed and stores the headline, a short summary, the time of publication and the link. The stream shows them in the order they were published. Nobody chooses which stories appear.
+          Several times a day, a script reads each publisher's public news feed and stores the headline, a short summary, the time of publication and the link. The stream shows them in the order they were published. Nobody chooses which stories appear.
         </p>
 
         <h2>Languages</h2>

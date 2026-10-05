@@ -88,7 +88,7 @@ export default function Home() {
           )}
           <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "var(--ink-3)", flexShrink: 0 }}>
             <span style={{ width: 6, height: 6, background: "var(--ink-faint)", borderRadius: "50%", display: "inline-block" }} />
-            Updated every hour
+            Updated several times a day
           </div>
         </div>
       </div>

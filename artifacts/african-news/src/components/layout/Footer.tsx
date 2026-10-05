@@ -61,7 +61,7 @@ export function Footer() {
             </Link>
             <div style={{ fontFamily: "var(--font-ui)", fontSize: 12, fontWeight: 500, letterSpacing: "0.18em", textTransform: "uppercase", color: FOOT_DIM, marginBottom: 14 }}>The Continent's Pulse</div>
             <p style={{ fontFamily: "var(--font-ui)", fontSize: 13, lineHeight: 1.6, color: FOOT_LINK, marginBottom: 16 }}>
-              Headlines from African news publishers in one place, updated every hour.
+              Headlines from African news publishers in one place, updated several times a day.
             </p>
           </div>
 
