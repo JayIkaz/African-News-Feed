@@ -98,6 +98,10 @@
      working. --font-body is not restated here — :root defines it under the
      spec's own name. */
   --font-headline: var(--font-display);
+  /* Tailwind's font-serif utility. It was never defined, so every heading that
+     used it (Country, Search, Countries, not-found) fell back to the browser's
+     default serif. It is the headline face, Fraunces. */
+  --font-serif: var(--font-headline);
   --font-ui: var(--font-body);
   --font-data: var(--font-mono);
 
