@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { Link } from "wouter";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { ArticleCard } from "@/components/article/ArticleCard";
 import { Sidebar } from "@/components/article/Sidebar";
-import { useListArticles } from "@workspace/api-client-react";
+import { ListingFilters, NewerLink, PastTheEnd, ShowMore } from "@/components/article/ListingParts";
+import { listingHref } from "@/lib/listing";
+import { useListing } from "@/lib/useListing";
 import { usePageMeta } from "@/lib/usePageMeta";
 import { Inbox } from "lucide-react";
 
@@ -19,24 +21,27 @@ const CATEGORY_META: Record<string, { description: string }> = {
 
 const LIMIT = 12;
 
-// The route hands over the section's name ("Politics"), already matched to the
-// path, so the API gets the exact name it stores.
-export default function Category({ category: decodedCategory }: { category: string }) {
-  const [page, setPage] = useState(1);
+// The route hands over the section's name ("Politics") and, for a combination,
+// the country's, both already matched to the address, so the API gets the exact
+// names it stores. `page` is the page the address starts the list on.
+export default function Category({ category, country, page }: { category: string; country?: string; page: number }) {
+  const list = useListing({ category, country }, page, LIMIT);
+  const hrefFor = (p: number) => listingHref({ category, country, page: p });
 
-  const { data, isLoading, isFetching } = useListArticles({ category: decodedCategory, limit: LIMIT, page });
-
-  const totalPages = data ? Math.ceil(data.total / LIMIT) : 1;
-  const meta = CATEGORY_META[decodedCategory] ?? {
-    description: `Latest news and analysis on ${decodedCategory.toLowerCase()} from across Africa.`,
+  const meta = CATEGORY_META[category] ?? {
+    description: `Latest news and analysis on ${category.toLowerCase()} from across Africa.`,
   };
 
-  // A section with nothing in it (a mistyped address, say) is served with
-  // status 200 like every other path, so it asks search engines to skip it.
+  // A page past the end of the list, like a section with nothing in it, is
+  // served with status 200 as every other path is, so it asks search engines
+  // to skip it. So does a section and country together: those stories are
+  // already on the section's page and the country's.
+  const pastTheEnd = !list.isLoading && !list.failed && page > 1 && list.articles.length === 0;
+  const empty = list.total === 0;
   usePageMeta({
-    title: `${decodedCategory} news from Africa | AfricaNews`,
-    description: meta.description,
-    noindex: !!data && data.total === 0,
+    title: `${country ? `${category} news from ${country}` : `${category} news from Africa`}${page > 1 ? `, page ${page}` : ""} | AfricaNews`,
+    description: country ? `${category} headlines from ${country}, collected from news publishers every hour, with a link to each publisher.` : meta.description,
+    noindex: !!country || pastTheEnd || empty,
   });
 
   return (
@@ -49,7 +54,7 @@ export default function Category({ category: decodedCategory }: { category: stri
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 12 }}>
             <h1 style={{ fontFamily: "var(--font-headline)", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 900, letterSpacing: "-0.03em", color: "var(--ink)" }}>
-              {decodedCategory}
+              {category}
             </h1>
           </div>
           <p style={{ fontFamily: "var(--font-body)", fontSize: 16, color: "var(--ink-3)", maxWidth: 560, fontStyle: "italic" }}>
@@ -63,58 +68,54 @@ export default function Category({ category: decodedCategory }: { category: stri
         <div className="an-content-with-sidebar">
 
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 24, paddingBottom: 16, borderBottom: "1px solid var(--paper-3)" }}>
+            <ListingFilters category={category} country={country} showCountry />
+
+            <div style={{ display: "flex", alignItems: "center", gap: 10, margin: "20px 0 24px", paddingBottom: 16, borderBottom: "1px solid var(--paper-3)" }}>
               <div style={{ width: 4, height: 22, background: "var(--accent)", borderRadius: 2 }} />
               <h2 style={{ fontFamily: "var(--font-headline)", fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em" }}>
-                {data ? `${data.total.toLocaleString()} Articles` : "Loading…"}
+                {list.total !== undefined ? `${list.total.toLocaleString()} Articles${country ? ` from ${country}` : ""}` : "Loading…"}
               </h2>
-              {data && totalPages > 1 && (
-                <span style={{ marginLeft: "auto", fontFamily: "var(--font-ui)", fontSize: 12, color: "var(--ink-4)" }}>
-                  Page {page} of {totalPages}
-                </span>
+              {country && (
+                <Link href={listingHref({ category })} className="an-listing-clear">Show all countries</Link>
               )}
             </div>
 
-            <div className="an-story-list" style={{ marginBottom: 32 }}>
-              {isLoading || isFetching ? (
+            <NewerLink startPage={page} hrefFor={hrefFor} />
+
+            <div className="an-story-list" style={{ marginBottom: 8 }}>
+              {list.isLoading ? (
                 /* Row-shaped, matching the feed rows that load in */
                 Array(6).fill(0).map((_, i) => (
                   <div key={i} className="an-skeleton an-skeleton-row" />
                 ))
-              ) : data?.articles && data.articles.length > 0 ? (
-                data.articles.map(article => <ArticleCard key={article.id} article={article} />)
+              ) : list.articles.length > 0 ? (
+                list.articles.map(article => <ArticleCard key={article.id} article={article} />)
+              ) : pastTheEnd ? (
+                <PastTheEnd firstHref={hrefFor(1)} />
               ) : (
                 <div style={{ gridColumn: "1/4", textAlign: "center", padding: "60px 24px", color: "var(--ink-4)" }}>
                   <Inbox size={40} strokeWidth={1.5} aria-hidden="true" style={{ marginBottom: 16 }} />
                   <h3 style={{ fontFamily: "var(--font-headline)", fontSize: 20, color: "var(--ink-3)", marginBottom: 8 }}>No articles yet</h3>
-                  <p style={{ fontFamily: "var(--font-ui)", fontSize: 14 }}>Check back soon for {decodedCategory.toLowerCase()} updates.</p>
+                  <p style={{ fontFamily: "var(--font-ui)", fontSize: 14 }}>
+                    {country ? `No ${category.toLowerCase()} stories from ${country} yet.` : `Check back soon for ${category.toLowerCase()} updates.`}
+                  </p>
                 </div>
               )}
+              {list.isLoadingMore && Array(3).fill(0).map((_, i) => (
+                <div key={`more-${i}`} className="an-skeleton an-skeleton-row" />
+              ))}
             </div>
 
-            {/* Pagination */}
-            {data && data.total > LIMIT && (
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: 24, borderTop: "1px solid var(--paper-3)" }}>
-                <PagBtn onClick={() => { setPage(p => Math.max(1, p - 1)); window.scrollTo({ top: 0, behavior: "smooth" }); }} disabled={page === 1 || isFetching}>
-                  ← Previous
-                </PagBtn>
-                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                    let p = i + 1;
-                    if (totalPages > 5 && page > 3) p = page - 2 + i;
-                    if (p > totalPages) return null;
-                    return (
-                      <PagBtn key={p} onClick={() => { setPage(p); window.scrollTo({ top: 0, behavior: "smooth" }); }} disabled={isFetching} active={p === page}>
-                        {p}
-                      </PagBtn>
-                    );
-                  })}
-                </div>
-                <PagBtn onClick={() => { setPage(p => p + 1); window.scrollTo({ top: 0, behavior: "smooth" }); }} disabled={!data.hasMore || isFetching}>
-                  Next →
-                </PagBtn>
-              </div>
-            )}
+            <ShowMore
+              nextPage={list.nextPage}
+              hrefFor={hrefFor}
+              loading={list.isLoadingMore}
+              failed={list.moreFailed}
+              shown={list.articles.length}
+              total={list.total}
+              onMore={list.loadMore}
+              onRetry={list.retry}
+            />
           </div>
 
           <div className="an-sidebar-col">
@@ -123,32 +124,5 @@ export default function Category({ category: decodedCategory }: { category: stri
         </div>
       </div>
     </AppLayout>
-  );
-}
-
-function PagBtn({ children, onClick, disabled, active }: { children: React.ReactNode; onClick: () => void; disabled?: boolean; active?: boolean }) {
-  return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      className="an-pag-btn"
-      style={{
-        minWidth: 36,
-        height: 36,
-        padding: "0 12px",
-        borderRadius: 6,
-        border: `1px solid ${active ? "var(--accent)" : "var(--paper-3)"}`,
-        background: active ? "var(--accent)" : "var(--surface-1)",
-        color: active ? "var(--paper)" : disabled ? "var(--ink-4)" : "var(--ink-2)",
-        fontFamily: "var(--font-ui)",
-        fontSize: 13,
-        fontWeight: 500,
-        cursor: disabled ? "default" : "pointer",
-        opacity: disabled ? 0.4 : 1,
-        transition: "all 0.2s",
-      }}
-    >
-      {children}
-    </button>
   );
 }

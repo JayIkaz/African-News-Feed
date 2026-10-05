@@ -1,4 +1,4 @@
-import { Switch, Route, Redirect, Router as WouterRouter, useParams } from "wouter";
+import { Switch, Route, Redirect, Router as WouterRouter, useParams, useSearch } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -17,7 +17,8 @@ import Privacy from "@/pages/Privacy";
 import Terms from "@/pages/Terms";
 import Unsubscribe from "@/pages/Unsubscribe";
 import NotFound from "@/pages/not-found";
-import { categoryFromSlug, categoryHref, countryFromSlug, countryHref, slugify } from "@/lib/slugs";
+import { categoryFromSlug, categoryHref, countryFromSlug, slugify } from "@/lib/slugs";
+import { listingHref, parseListingQuery } from "@/lib/listing";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -29,14 +30,27 @@ const queryClient = new QueryClient({
   },
 });
 
-// A section lives at /politics. Any other spelling of the same name goes to
-// that address; a word that is not a section is not a page.
+// The home page lists every story. Its query is only ?page=; anything else
+// that was put there is dropped by a redirect to the address it means.
+function HomeRoute() {
+  const { page, needsRedirect } = parseListingQuery(useSearch(), false);
+  if (needsRedirect) return <Redirect to={listingHref({ page })} replace />;
+  return <Home />;
+}
+
+// A section lives at /politics, and a section with one country at
+// /politics?country=ghana. Any other spelling of the same name or query goes
+// to that address; a word that is not a section is not a page.
 function SectionRoute() {
   const { slug } = useParams<{ slug: string }>();
+  const search = useSearch();
   const name = categoryFromSlug(slug);
   if (!name) return <NotFound />;
-  if (slug !== slugify(name)) return <Redirect to={categoryHref(name)} replace />;
-  return <Category key={name} category={name} />;
+  const { page, country, needsRedirect } = parseListingQuery(search, true);
+  if (slug !== slugify(name) || needsRedirect) {
+    return <Redirect to={listingHref({ category: name, country, page })} replace />;
+  }
+  return <Category key={name} category={name} country={country} page={page} />;
 }
 
 // The old address of a section, /category/Politics.
@@ -47,19 +61,26 @@ function LegacySectionRoute() {
 }
 
 // A country lives at /country/south-africa; /country/South%20Africa and the
-// like are redirected there.
+// like are redirected there. A country with a section is the section's page,
+// so /country/ghana?category=politics goes to /politics?country=ghana.
 function CountryRoute() {
   const { country } = useParams<{ country: string }>();
+  const search = useSearch();
   const name = countryFromSlug(country);
   if (!name) return <NotFound />;
-  if (country !== slugify(name)) return <Redirect to={countryHref(name)} replace />;
-  return <Country key={name} country={name} />;
+  const { page, needsRedirect } = parseListingQuery(search, false);
+  const category = categoryFromSlug(new URLSearchParams(search).get("category") ?? undefined);
+  if (category) return <Redirect to={listingHref({ category, country: name, page })} replace />;
+  if (country !== slugify(name) || needsRedirect) {
+    return <Redirect to={listingHref({ country: name, page })} replace />;
+  }
+  return <Country key={name} country={name} page={page} />;
 }
 
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={Home} />
+      <Route path="/" component={HomeRoute} />
       <Route path="/article/:id" component={ArticleDetail} />
       <Route path="/category/:category" component={LegacySectionRoute} />
       <Route path="/country/:country" component={CountryRoute} />

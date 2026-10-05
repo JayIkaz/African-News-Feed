@@ -1,38 +1,35 @@
-import { useState } from "react";
 import { Link } from "wouter";
-import { MapPin, ChevronLeft, ChevronRight } from "lucide-react";
+import { MapPin, ChevronLeft } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { ArticleCard } from "@/components/article/ArticleCard";
-import { useListArticles, useListSources } from "@workspace/api-client-react";
+import { useListSources } from "@workspace/api-client-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Sidebar } from "@/components/article/Sidebar";
-import { Button } from "@/components/ui/button";
+import { ListingFilters, NewerLink, PastTheEnd, ShowMore } from "@/components/article/ListingParts";
+import { listingHref } from "@/lib/listing";
+import { useListing } from "@/lib/useListing";
 import { usePageMeta } from "@/lib/usePageMeta";
 import { COUNTRY_FLAGS, COUNTRY_REGIONS, REGION_BADGE_COLORS } from "@/lib/countries";
 
 const LIMIT = 12;
 
 // The route hands over the country's name ("South Africa"), already matched to
-// the path, so the API gets the exact name it stores.
-export default function Country({ country: decodedCountry }: { country: string }) {
-  const [page, setPage] = useState(1);
-
-  const { data, isLoading, isFetching } = useListArticles({
-    country: decodedCountry,
-    limit: LIMIT,
-    page,
-  });
+// the path, so the API gets the exact name it stores. `page` is the page the
+// address starts the list on.
+export default function Country({ country: decodedCountry, page }: { country: string; page: number }) {
+  const list = useListing({ country: decodedCountry }, page, LIMIT);
+  const hrefFor = (p: number) => listingHref({ country: decodedCountry, page: p });
 
   const { data: sources } = useListSources();
   const countrySources = sources?.filter((s) => s.country === decodedCountry) ?? [];
 
-  const totalPages = data ? Math.ceil(data.total / LIMIT) : 1;
   const flag = COUNTRY_FLAGS[decodedCountry] ?? "";
 
+  const pastTheEnd = !list.isLoading && !list.failed && page > 1 && list.articles.length === 0;
   usePageMeta({
-    title: `${decodedCountry} news | AfricaNews`,
+    title: `${decodedCountry} news${page > 1 ? `, page ${page}` : ""} | AfricaNews`,
     description: `Headlines from news publishers in ${decodedCountry}, collected by AfricaNews every hour, with a link to each publisher.`,
-    noindex: !!data && data.total === 0,
+    noindex: pastTheEnd || list.total === 0,
   });
 
   return (
@@ -79,18 +76,19 @@ export default function Country({ country: decodedCountry }: { country: string }
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
 
             <div className="lg:col-span-8">
+              <ListingFilters country={decodedCountry} />
+
               {/* Results header */}
-              <div className="flex items-center justify-between mb-6 pb-4 border-b border-border">
+              <div className="flex items-center justify-between mt-5 mb-6 pb-4 border-b border-border">
                 <h2 className="font-serif text-2xl font-bold">
-                  {data ? `${data.total.toLocaleString()} Articles` : "Latest News"}
+                  {list.total !== undefined ? `${list.total.toLocaleString()} Articles` : "Latest News"}
                 </h2>
-                {data && totalPages > 1 && (
-                  <span className="text-sm text-muted-foreground">Page {page} of {totalPages}</span>
-                )}
               </div>
 
+              <NewerLink startPage={page} hrefFor={hrefFor} />
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                {isLoading || isFetching ? (
+                {list.isLoading ? (
                   Array(6).fill(0).map((_, i) => (
                     <div key={i} className="flex flex-col h-[380px]">
                       <Skeleton className="w-full h-44 rounded-t-xl rounded-b-none" />
@@ -102,10 +100,12 @@ export default function Country({ country: decodedCountry }: { country: string }
                       </div>
                     </div>
                   ))
-                ) : data?.articles && data.articles.length > 0 ? (
-                  data.articles.map((article) => (
+                ) : list.articles.length > 0 ? (
+                  list.articles.map((article) => (
                     <ArticleCard key={article.id} article={article} />
                   ))
+                ) : pastTheEnd ? (
+                  <div className="col-span-2"><PastTheEnd firstHref={hrefFor(1)} /></div>
                 ) : (
                   <div className="col-span-2 text-center py-20 bg-secondary/30 rounded-xl border border-dashed border-border">
                     <span className="text-5xl mb-4 block">{flag}</span>
@@ -113,49 +113,21 @@ export default function Country({ country: decodedCountry }: { country: string }
                     <p className="text-muted-foreground">We're collecting articles from {decodedCountry}. Check back shortly.</p>
                   </div>
                 )}
+                {list.isLoadingMore && Array(2).fill(0).map((_, i) => (
+                  <div key={`more-${i}`} className="an-skeleton an-skeleton-row" />
+                ))}
               </div>
 
-              {/* Pagination */}
-              {data && data.total > LIMIT && (
-                <div className="flex items-center justify-between pt-6 border-t border-border">
-                  <Button
-                    variant="outline"
-                    onClick={() => { setPage((p) => Math.max(1, p - 1)); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-                    disabled={page === 1 || isFetching}
-                    className="gap-1"
-                  >
-                    <ChevronLeft className="w-4 h-4" /> Previous
-                  </Button>
-                  <div className="flex items-center gap-2">
-                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                      let p = i + 1;
-                      if (totalPages > 5 && page > 3) p = page - 2 + i;
-                      if (p > totalPages) return null;
-                      return (
-                        <button
-                          key={p}
-                          onClick={() => { setPage(p); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-                          className={`w-9 h-9 rounded-md text-sm font-medium transition-colors ${
-                            p === page
-                              ? "bg-primary text-primary-foreground"
-                              : "border border-border hover:bg-secondary"
-                          }`}
-                        >
-                          {p}
-                        </button>
-                      );
-                    })}
-                  </div>
-                  <Button
-                    variant="outline"
-                    onClick={() => { setPage((p) => p + 1); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-                    disabled={!data.hasMore || isFetching}
-                    className="gap-1"
-                  >
-                    Next <ChevronRight className="w-4 h-4" />
-                  </Button>
-                </div>
-              )}
+              <ShowMore
+                nextPage={list.nextPage}
+                hrefFor={hrefFor}
+                loading={list.isLoadingMore}
+                failed={list.moreFailed}
+                shown={list.articles.length}
+                total={list.total}
+                onMore={list.loadMore}
+                onRetry={list.retry}
+              />
             </div>
 
             <div className="lg:col-span-4 an-sidebar-col">
