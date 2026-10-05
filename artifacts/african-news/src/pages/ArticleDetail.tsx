@@ -14,6 +14,7 @@ import { ArticleCard, CatTag } from "@/components/article/ArticleCard";
 import { useReadHistory } from "@/lib/useReadHistory";
 import { useTranslate } from "@/lib/useTranslate";
 import { SITE_ORIGIN } from "@/lib/site";
+import { sourceHref } from "@/lib/listing";
 import { useToast } from "@/hooks/use-toast";
 import { usePageMeta } from "@/lib/usePageMeta";
 import { truncateToWord } from "@/lib/truncate";
@@ -173,7 +174,7 @@ export default function ArticleDetail() {
               </div>
               <div>
                 <div style={{ fontFamily: "var(--font-ui)", fontSize: 12, fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--ink-2)", marginBottom: 2 }}>
-                  {article.sourceName}
+                  <Link href={sourceHref(article.sourceId)} className="an-source-link">{article.sourceName}</Link>
                 </div>
                 <div style={{ fontFamily: "var(--font-ui)", fontSize: 12, color: "var(--ink-4)", display: "flex", alignItems: "center", gap: 6 }}>
                   {article.author && <><span>By {article.author}</span><span>·</span></>}

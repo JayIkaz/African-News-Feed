@@ -2,6 +2,7 @@
 //
 //   /politics              one section
 //   /country/south-africa  one country
+//   /source/12             one publisher, by its id
 //
 // The web app builds the same paths (artifacts/african-news/src/lib/slugs.ts).
 // The two must agree, so the examples in slugs.test.ts are the ones the web
@@ -22,4 +23,8 @@ export function categoryPath(name: string): string {
 
 export function countryPath(name: string): string {
   return `/country/${slugify(name)}`;
+}
+
+export function sourcePath(id: number): string {
+  return `/source/${id}`;
 }

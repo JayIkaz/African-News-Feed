@@ -1,9 +1,9 @@
 import { Router, type IRouter } from "express";
 import { db } from "@workspace/db";
 import { articlesTable, sourcesTable } from "@workspace/db/schema";
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq, isNotNull } from "drizzle-orm";
 import { articleSelection, buildArticleResponse } from "../lib/articleSelect";
-import { categoryPath, countryPath } from "../lib/slugs";
+import { categoryPath, countryPath, sourcePath } from "../lib/slugs";
 
 const router: IRouter = Router();
 
@@ -65,6 +65,21 @@ router.get("/", async (_req, res) => {
       entries.push(
         urlEntry(`${SITE_URL}${countryPath(row.country)}`, today, "hourly", "0.8")
       );
+    }
+
+    // Publishers — the ones that are switched on, have a feed and have at least
+    // one story, which is the set the Sources page and the site's counts use.
+    // A page for any other publisher asks search engines to skip it.
+    const sourceRows = await db
+      .select({ id: sourcesTable.id })
+      .from(sourcesTable)
+      .innerJoin(articlesTable, eq(articlesTable.sourceId, sourcesTable.id))
+      .where(and(eq(sourcesTable.isActive, true), isNotNull(sourcesTable.rssUrl)))
+      .groupBy(sourcesTable.id)
+      .orderBy(sourcesTable.id);
+
+    for (const row of sourceRows) {
+      entries.push(urlEntry(`${SITE_URL}${sourcePath(row.id)}`, today, "daily", "0.5"));
     }
 
     // Articles — paginated the same way routes/articles.ts does it

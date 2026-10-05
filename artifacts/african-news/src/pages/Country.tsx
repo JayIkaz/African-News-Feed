@@ -6,7 +6,7 @@ import { useListSources } from "@workspace/api-client-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Sidebar } from "@/components/article/Sidebar";
 import { ListingFilters, NewerLink, PastTheEnd, ShowMore } from "@/components/article/ListingParts";
-import { listingHref } from "@/lib/listing";
+import { listingHref, sourceHref } from "@/lib/listing";
 import { useListing } from "@/lib/useListing";
 import { usePageMeta } from "@/lib/usePageMeta";
 import { COUNTRY_FLAGS, COUNTRY_REGIONS, REGION_BADGE_COLORS } from "@/lib/countries";
@@ -61,11 +61,17 @@ export default function Country({ country: decodedCountry, page }: { country: st
           {/* Source pills */}
           {countrySources.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-6">
-              {countrySources.map((s) => (
-                <span key={s.id} className="text-xs bg-background border border-border rounded-full px-3 py-1 font-medium text-muted-foreground">
-                  {s.name}
-                </span>
-              ))}
+              {countrySources.map((s) => {
+                const pill = "text-xs bg-background border border-border rounded-full px-3 py-1 font-medium text-muted-foreground";
+                // A publisher with no story here has no page worth opening.
+                return s.articleCount > 0 ? (
+                  <Link key={s.id} href={sourceHref(s.id)} className={`${pill} hover:text-foreground hover:border-foreground transition-colors`}>
+                    {s.name}
+                  </Link>
+                ) : (
+                  <span key={s.id} className={pill}>{s.name}</span>
+                );
+              })}
             </div>
           )}
         </div>
