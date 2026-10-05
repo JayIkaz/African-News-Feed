@@ -6,6 +6,9 @@ interface CountryFlagProps {
   size?: number;
   style?: React.CSSProperties;
   className?: string;
+  // The country's name is written beside the flag, so the flag adds nothing
+  // for a screen reader: it gets an empty alt text and is hidden from them.
+  decorative?: boolean;
 }
 
 // Renders a real flag image instead of an emoji glyph. Emoji flags rely on
@@ -14,7 +17,7 @@ interface CountryFlagProps {
 // two-letter code as plain text instead (e.g. "ZA"). Images render
 // identically everywhere. They are SVGs served from this site (public/flags),
 // so a reader's browser makes no request to a third party for them.
-export function CountryFlag({ country, size = 20, style, className }: CountryFlagProps) {
+export function CountryFlag({ country, size = 20, style, className, decorative = false }: CountryFlagProps) {
   const code = COUNTRY_CODES[country];
   const base = import.meta.env.BASE_URL?.replace(/\/$/, "") || "";
   const width = size;
@@ -23,8 +26,9 @@ export function CountryFlag({ country, size = 20, style, className }: CountryFla
   if (!code) {
     return (
       <span
-        role="img"
-        aria-label={country}
+        role={decorative ? undefined : "img"}
+        aria-label={decorative ? undefined : country}
+        aria-hidden={decorative ? true : undefined}
         style={{ lineHeight: 1, display: "inline-flex", color: "var(--ink-faint)", ...style }}
         className={className}
       >
@@ -36,7 +40,7 @@ export function CountryFlag({ country, size = 20, style, className }: CountryFla
   return (
     <img
       src={`${base}/flags/${code}.svg`}
-      alt={country}
+      alt={decorative ? "" : country}
       width={width}
       height={height}
       loading="lazy"

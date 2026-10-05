@@ -8,7 +8,7 @@
     "typecheck:libs": "tsc --build",
     "typecheck": "pnpm run typecheck:libs && pnpm -r --filter \"./artifacts/**\" --filter \"./scripts\" --if-present run typecheck",
     "check:inline-styles": "node scripts/check-inline-styles.mjs",
-    "test:scripts": "node --test scripts/check-inline-styles.test.mjs"
+    "test:scripts": "node --test scripts/check-inline-styles.test.mjs scripts/time-groups.test.mjs"
   },
   "private": true,
   "devDependencies": {

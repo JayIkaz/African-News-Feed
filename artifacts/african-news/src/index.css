@@ -115,7 +115,6 @@
   /* Height of the rounded controls in a row: section pills, the country menu
      and the reading tools. Taller on touch screens (see the 1024px query). */
   --an-control-h: 36px;
-  --an-title-h: 20px;
 
   /* ══════════════════════════════════════════════════════════════════
      Light editorial palette — spec §1 (revised 3 Oct 2026).
@@ -313,12 +312,8 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0;
 }
 
-/* The label takes the same height as a section heading, so on the home page the
-   advert's top edge meets the top of the first story's card. */
 .an-ad--rail .an-ad-label {
-  height: var(--an-title-h);
-  line-height: var(--an-title-h);
-  margin: 0 0 12px;
+  margin: 0 0 8px;
 }
 
 .an-ad--rail .an-ad-frame {
@@ -379,12 +374,6 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 14px;
   font-weight: 600;
   color: var(--accent);
-}
-@media (min-width: 1025px) {
-  /* No label above the panel, so it is pushed down by the height one takes. */
-  .an-home-grid .an-ad--available {
-    padding-top: calc(var(--an-title-h) + 12px);
-  }
 }
 
 /* ── ANIMATION ── */
@@ -672,78 +661,204 @@ html {
   padding: 0 24px;
 }
 
-/* Spec §6/§7: the feed is a single-column borderless stream. The hairline
-   under each row is the separator, so there is no gap — a gap would break
-   the stream. (Renamed from .an-grid-3: it had already stopped being a
-   3-column grid two redesigns ago and the name was actively misleading.) */
+/* A list of stories is one column. The hairline under each row is the
+   separator, so there is no gap. (Renamed from .an-grid-3: it had already
+   stopped being a 3-column grid two redesigns ago and the name was actively
+   misleading.) */
 .an-story-list {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 0;
 }
 
-/* ── Spec §6: borderless feed row ────────────────────────────────────
-   No background, border, radius or shadow. Thumbnail left, content right,
-   18px gap, 1px hairline under every row. */
+/* ── A story row ─────────────────────────────────────────────────────
+   Headline, one line of facts, and a thumbnail on the right when there is a
+   picture. No background, border, radius on the row or shadow: the hairline
+   under it is the structure.
+
+   The thumbnail floats right and comes first in the markup, so the headline and
+   the facts line wrap beside it. The text always starts at the row's left edge,
+   so that edge is the same on every row, with a picture or without. The row
+   contains its float, so a short headline never lets the picture hang out of
+   the row. */
 .an-story-row {
-  display: flex;
-  gap: 18px;
-  padding: 18px 0;
+  position: relative;
+  display: flow-root;
+  padding: 16px 0;
   border-bottom: 1px solid var(--line);
-  cursor: pointer;
-  text-decoration: none;
-  color: inherit;
   transition: border-color 0.15s;
 }
 
-.an-story-thumb {
-  width: 104px;
-  height: 78px;
-  flex-shrink: 0;
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.an-story-row-headline {
-  font-family: var(--font-display);
-  font-size: 17px;
+.an-story-headline {
+  margin: 0;
+  font-family: var(--font-headline);
+  font-size: 18px;
   font-weight: 600;
-  line-height: 1.35;
-  margin: 0 0 6px;
+  line-height: 1.3;
   color: var(--ink);
   transition: color 0.15s;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+/* The headline's link covers the whole row. The facts line and the translate
+   button sit above it (z-index) so they take their own clicks. */
+.an-story-link {
+  color: inherit;
+  text-decoration: none;
+}
+.an-story-link::after {
+  content: "";
+  position: absolute;
+  inset: 0 -8px;
+}
+/* The ring is drawn on the stretched area, since the link's own box is only
+   the headline text. */
+.an-story-link:focus-visible {
+  outline: none;
+}
+.an-story-link:focus-visible::after {
+  outline: 2px solid var(--accent);
+  outline-offset: 0;
 }
 
 /* Read articles dim. Declared BEFORE the hover rules: both selectors have
    equal specificity, so source order decides, and hover must win. */
-.an-story-row--read .an-story-row-headline { color: var(--ink-faint); }
+.an-story-row--read .an-story-headline { color: var(--ink-faint); }
+.an-read-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-left: 6px;
+  border-radius: 50%;
+  background: var(--ink-faint);
+  vertical-align: middle;
+}
 
-/* Spec §6: on hover the divider brightens and the headline shifts to accent. */
+/* On hover the divider darkens and the headline turns to the accent colour. */
 .an-story-row:hover { border-color: var(--line-strong); }
-.an-story-row:hover .an-story-row-headline { color: var(--accent); }
+.an-story-row:hover .an-story-headline { color: var(--accent); }
 
-/* Loading placeholder shaped like a feed row, so the skeleton and the
-   loaded content occupy the same height and the feed doesn't jump. Matches
-   .an-story-row: 78px of content between 18px paddings. (Replaces
-   .an-news-card / .an-news-card-media, which described the 16/9 card the
-   rows no longer are.) */
+/* Source, country, section, time and the translate button on one line. A line
+   that does not fit wraps; each item ends in a dot except the last. Every
+   link and the button is at least 24px tall (more on a touch screen) without
+   making the line taller. */
+.an-story-meta {
+  margin: 6px 0 0;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--ink-muted);
+}
+.an-story-meta > * {
+  position: relative;
+  z-index: 1;
+}
+.an-story-meta > a,
+.an-story-meta > button {
+  display: inline-block;
+  padding: 4px 0;
+  margin: -4px 0;
+}
+/* A time, country or button never splits across two lines; a long source name
+   still can. */
+.an-story-meta > :not(.an-story-source) {
+  white-space: nowrap;
+}
+.an-story-meta > :not(:last-child)::after {
+  content: "·";
+  content: "·" / "";
+  margin-left: 5px;
+  color: var(--ink-faint);
+}
+.an-story-meta a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.an-story-source {
+  font-weight: 600;
+  color: var(--ink);
+}
+.an-story-flag {
+  margin: -2px 5px 0 0;
+}
+
+/* The text button that asks for the English version of a story. */
+.an-translate {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.an-translate:disabled {
+  cursor: wait;
+  text-decoration: none;
+  color: var(--ink-muted);
+}
+
+/* The picture: 96 x 64, on the right, beside the headline and the facts. It is
+   invisible until the image has loaded. */
+.an-story-thumb {
+  float: right;
+  width: 96px;
+  height: 64px;
+  margin: 0 0 0 16px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.an-story-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--crop-focus);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.an-story-thumb img.is-loaded {
+  opacity: 1;
+}
+
+/* Loading placeholder shaped like a row, so the skeleton and the loaded
+   content occupy about the same height and the stream does not jump: the 64px
+   picture between 16px paddings and the 1px hairline. */
 .an-skeleton-row {
-  height: 78px;          /* desktop: the 78px thumbnail sets the row height */
-  margin: 18px 0 19px;   /* 18px padding each side + the 1px row hairline */
+  height: 64px;
+  margin: 16px 0 17px;
   border-radius: 3px;
 }
 
-/* Spec §4: top story — fixed height, image cropped top-centre so faces and
-   headlines survive the crop. Spec §7 steps both down on mobile. */
-.an-top-story { height: 380px; }
-.an-top-story-headline { font-size: 32px; }
-
-/* Spec §5: pulse divider — a thin SVG waveform echoing the logo's
-   pulse-through-Africa mark. It replaces a plain hairline at this ONE
-   structural boundary (top story → feed); deliberately not repeated
-   elsewhere, so it stays a signature rather than becoming decoration. */
-.an-pulse-divider { padding: 6px 24px; }
-.an-pulse-divider svg { display: block; width: 100%; height: 16px; }
+/* ── Time headings in the home stream ─────────────────────────────────
+   "Last hour", "Earlier today", "Yesterday", then dates. Each heading sticks
+   under the header while its own group scrolls past and is pushed off by the
+   next one. Sticky headings need no ancestor between them and the page that
+   clips or scrolls its overflow. */
+.an-time-heading {
+  position: sticky;
+  top: 56px;
+  z-index: 2;
+  margin: 0;
+  padding: 10px 0 8px;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-headline);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 20px;
+  color: var(--ink-muted);
+}
+.an-time-group + .an-time-group {
+  margin-top: 8px;
+}
 
 .an-content-with-sidebar {
   display: grid;
@@ -758,58 +873,16 @@ html {
 }
 
 /* The home page is one grid, so the stories and the right-hand column start at
-   the same line. The lede and the feed share the left cell, which keeps one
-   content measure down the whole page (spec §7). */
+   the same line. */
 .an-home-grid {
   padding: 16px 0 48px;
 }
 .an-home-feed {
-  margin-top: 28px;
+  margin-top: 16px;
 }
-
-/* A heading with a yellow bar, and the row that puts a count beside it. */
-.an-section-title {
-  margin: 0 0 12px;
-  padding-left: 10px;
-  border-left: 3px solid var(--yellow);
-  font-family: var(--font-headline);
-  font-size: 15px;
-  font-weight: 600;
-  line-height: var(--an-title-h);
-}
-.an-section-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
-}
-.an-section-head .an-section-title {
-  margin: 0;
-}
-.an-section-count {
-  margin-left: auto;
-  font-family: var(--font-ui);
-  font-size: 12px;
-  color: var(--ink-4);
-}
-
-.an-hero-grid {
-  display: grid;
-  grid-template-columns: 1fr 340px;
-  grid-template-rows: 1fr 1fr;
-  gap: 2px;
-  background: var(--paper-3);
-  border-radius: 10px;
-  overflow: hidden;
-  min-height: 480px;
-}
-
-.an-featured-card {
-  min-height: 480px;
-}
-
-.an-hero-side-cards {
-  display: contents;
+/* The advert space is level with the first section pill, not the bar's padding. */
+.an-home-grid .an-pill-bar {
+  padding-top: 0;
 }
 
 /* ── ARTICLE PAGE ──
@@ -1051,142 +1124,6 @@ html {
 }
 .an-related-head a:hover {
   color: var(--ink);
-}
-
-/* ── TOP STORIES CAROUSEL (mobile only) ── */
-.an-carousel-root {
-  position: relative;
-  overflow: hidden;
-  display: none;
-}
-
-.an-carousel-track-wrapper {
-  overflow: hidden;
-  width: 100%;
-}
-
-.an-carousel-track {
-  display: flex;
-  width: 100%;
-  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: transform;
-}
-
-/* Spec §7: mobile top-story height is 300px — same as the §4 card, which
-   this replaces below 640px. */
-.an-carousel-slide {
-  position: relative;
-  flex: 0 0 100%;
-  width: 100%;
-  height: 300px;
-  display: block;
-  overflow: hidden;
-  background: var(--image-empty);
-  text-decoration: none;
-}
-
-.an-carousel-img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: var(--crop-focus);
-}
-
-/* Spec §4 scrim — same gradient as the desktop top story */
-.an-carousel-overlay {
-  position: absolute;
-  inset: 0;
-  background: var(--scrim);
-}
-
-.an-carousel-content {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 20px 18px 44px;
-  color: var(--on-image);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-/* Spec §4: eyebrow is mono/uppercase coloured text, not a filled chip —
-   the colour is the signal, the chip was decoration. */
-.an-carousel-eyebrow {
-  color: var(--on-image-muted);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  align-self: flex-start;
-}
-
-/* Spec §4/§7: display serif, 24px at mobile width */
-.an-carousel-title {
-  font-family: var(--font-display);
-  font-size: 24px;
-  font-weight: 600;
-  line-height: 1.15;
-  color: var(--on-image);
-  margin: 0;
-}
-
-.an-carousel-meta {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  color: var(--on-image-faint);
-  display: flex;
-  gap: 6px;
-  align-items: center;
-}
-
-.an-carousel-dots {
-  position: absolute;
-  bottom: 16px;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  z-index: 10;
-}
-
-.an-carousel-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  transition: background 0.2s, transform 0.2s;
-}
-
-/* The carousel sits on a photograph and its dark scrim, so the global rust
-   focus ring would be low contrast there. The slide also fills its clipping
-   parents (an outside ring is cut off) and its image paints over its own
-   outline, so the ring is a pseudo-element drawn on top, inset, in two tones
-   (paper inside, ink outside) to read on both light and dark photographs. */
-.an-carousel-slide:focus-visible {
-  outline: none;
-}
-
-.an-carousel-slide:focus-visible::after {
-  content: "";
-  position: absolute;
-  inset: 4px;
-  z-index: 5;
-  border: 2px solid var(--on-image);
-  outline: 2px solid var(--ink);
-  pointer-events: none;
-}
-
-.an-carousel-dot:focus-visible {
-  outline-color: var(--on-image);
 }
 
 /* ── CATEGORY PILL BAR ── */
@@ -1510,6 +1447,13 @@ html {
     grid-template-columns: 1fr;
   }
 
+  /* Touch: the links and the button on a story's facts line are 36px tall. */
+  .an-story-meta > a,
+  .an-story-meta > button {
+    padding: 9px 0;
+    margin: -9px 0;
+  }
+
   .an-footer-grid {
     grid-template-columns: 1fr 1fr;
     gap: 32px;
@@ -1583,23 +1527,16 @@ html {
     scroll-snap-align: start;
   }
 
-  /* Spec §6/§7: thumbnails go square and headlines step down on mobile. */
-  .an-story-thumb { width: 72px; height: 72px; }
-  .an-story-row-headline { font-size: 15px; }
-
-  /* Mobile: the thumbnail shrinks to 72px but headlines wrap to two lines,
-     so the text column becomes the taller side at ~84px. */
-  .an-skeleton-row { height: 84px; }
-  .an-top-story { height: 300px; }
-  .an-top-story-headline { font-size: 24px; }
-
-  .an-hero-grid {
-    display: none;
+  /* On a phone the facts line runs the full width under the thumbnail, and the
+     headline may take a third line: with the 96px picture beside it the text
+     column is only about 230px wide. */
+  .an-story-headline {
+    font-size: 17px;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
   }
-
-  .an-carousel-root {
-    display: block;
-  }
+  .an-story-meta { clear: right; }
+  .an-skeleton-row { height: 90px; }
 
   .an-footer-grid {
     grid-template-columns: 1fr;
