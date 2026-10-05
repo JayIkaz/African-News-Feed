@@ -1341,3 +1341,29 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1.6;
   color: var(--ink-faint);
 }
+
+/* Region rows in the sidebar. Hover and keyboard focus darken the label and
+   underline it. They do not fade the row: a fade took the count to 3.38:1. */
+.an-region-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--paper-2);
+  text-decoration: none;
+}
+.an-region-row-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--ink-2);
+  text-underline-offset: 3px;
+  transition: color 0.2s;
+}
+.an-region-row:hover .an-region-row-label,
+.an-region-row:focus-visible .an-region-row-label {
+  color: var(--ink);
+  text-decoration: underline;
+}
