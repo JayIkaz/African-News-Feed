@@ -2,7 +2,7 @@ import { useListCountries, useListSources } from "@workspace/api-client-react";
 
 // Counts shown in copy come from the API, never typed into a component.
 // - activeSources: sources that are switched on and have a feed, which is what
-//   the hourly job reads. The Sources page lists all of them. (The countries
+//   the ingestion job reads. The Sources page lists all of them. (The countries
 //   endpoint also counts switched-off sources, so it overstates.)
 // - deliveredSources: the active ones that have delivered at least one story.
 //   A publisher with no story on the site is not one the site "has", so this

@@ -73,7 +73,7 @@ export function buildWelcomeEmail(email: string, secret: string) {
   const text = [
     "Thanks for signing up to AfricaNews.",
     "",
-    "AfricaNews collects headlines from African news publishers in one place and updates every hour. Every story links to the publisher that wrote it.",
+    "AfricaNews collects headlines from African news publishers in one place and updates several times a day. Every story links to the publisher that wrote it.",
     "",
     "This is the only email we send at present. We do not send a daily digest yet. If that changes, we will update our privacy page before the first one goes out.",
     "",
@@ -105,7 +105,7 @@ export function buildWelcomeEmail(email: string, secret: string) {
 Thanks for signing up.
 </td></tr>
 <tr><td style="padding:16px 0 0;font-family:${font};font-size:16px;line-height:1.65;color:#1A1916;">
-AfricaNews collects headlines from African news publishers in one place and updates every hour. Every story links to the publisher that wrote it.
+AfricaNews collects headlines from African news publishers in one place and updates several times a day. Every story links to the publisher that wrote it.
 </td></tr>
 <tr><td style="padding:16px 0 0;font-family:${font};font-size:16px;line-height:1.65;color:#1A1916;">
 This is the only email we send at present. We do not send a daily digest yet. If that changes, we will update our <a href="${SITE_ORIGIN}/privacy" style="color:#9A3412;">privacy page</a> before the first one goes out.

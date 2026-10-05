@@ -16,7 +16,7 @@ function safeHref(url: string): string | null {
 export default function Sources() {
   usePageMeta({
     title: "Sources | AfricaNews",
-    description: "The news publishers AfricaNews reads every hour, by country, with the time of each last fetch.",
+    description: "The news publishers AfricaNews reads several times a day, by country, with the time of each last fetch.",
   });
   const { activeSources, sourceCount, loading, ready } = useSiteCounts();
   const waiting = activeSources.length - sourceCount;
@@ -36,7 +36,7 @@ export default function Sources() {
       <div className="an-page">
         <h1>Sources</h1>
         <p>
-          AfricaNews reads the public news feeds of the publishers below every hour. Select a name to visit the publisher, or the story count to read its stories here.{" "}
+          AfricaNews reads the public news feeds of the publishers below several times a day. Select a name to visit the publisher, or the story count to read its stories here.{" "}
           {ready ? (
             waiting > 0
               ? <>{sourceCount} of them have delivered stories so far. The other {waiting === 1 ? "one is" : `${waiting} are`} switched on and marked "no stories yet".</>
