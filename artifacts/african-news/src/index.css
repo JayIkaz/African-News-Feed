@@ -556,22 +556,245 @@ h1, h2, h3, h4, h5, h6 {
   display: contents;
 }
 
+/* ── ARTICLE PAGE ──
+   One story as a card: category and country, the headline, the publisher, the
+   way to the publisher's page, then the summary. */
+.an-article {
+  background: var(--paper);
+  padding-bottom: 48px;
+}
+
 .an-article-header {
   max-width: 800px;
   margin: 0 auto;
-  padding: 36px 24px 28px;
+  padding: 36px 24px 8px;
 }
 
-.an-article-body {
-  max-width: 680px;
-  margin: 0 auto;
+.an-article-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 20px;
+  padding: 0 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--ink-3);
+  transition: color 0.2s;
+}
+.an-article-back-btn:hover {
+  color: var(--ink);
+}
+
+.an-article-tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.an-article-country {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: var(--ink-3);
+  text-decoration: none;
+}
+.an-article-country:hover {
+  color: var(--ink);
+}
+
+.an-article-title,
+.an-article-summary,
+.an-article-source-name,
+.an-article-read {
+  /* A long unbroken string, such as a web address, wraps instead of being
+     cut off at the edge of the page. */
+  overflow-wrap: anywhere;
+}
+
+.an-article-title {
+  margin: 0 0 16px;
+  font-family: var(--font-headline);
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+}
+
+/* The publisher at the size of a heading, with the date and author beside it. */
+.an-article-source {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  margin: 0 0 20px;
+}
+.an-article-source-name {
+  font-family: var(--font-headline);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.an-article-meta {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--ink-4);
+}
+
+.an-article-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+.an-article-read,
+.an-article-share {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  border-radius: 100px;
+  font-family: var(--font-ui);
+  font-size: 15px;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+}
+.an-article-read {
   padding: 0 24px;
+  background: var(--accent);
+  color: var(--paper);
+  font-weight: 500;
+  transition: filter 0.2s;
+}
+.an-article-read:hover {
+  filter: brightness(0.92);
+}
+.an-article-share {
+  padding: 0 20px;
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  color: var(--ink);
+  font-size: 14px;
+}
+
+.an-article-summary {
+  max-width: 680px;
+  margin: 0 0 8px;
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--ink-2);
 }
 
 .an-article-hero-img {
   max-width: 1000px;
-  margin: 0 auto 40px;
+  margin: 24px auto 0;
   padding: 0 24px;
+}
+.an-article-hero-frame {
+  aspect-ratio: 21 / 9;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--paper-2);
+}
+.an-article-hero-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Loading and not-found states of the article page. */
+.an-article-header--loading {
+  padding-top: 48px;
+  padding-bottom: 48px;
+}
+.an-article-skeleton {
+  height: 16px;
+  margin-bottom: 16px;
+  border-radius: 6px;
+}
+.an-article-skeleton--tags { width: 40%; }
+.an-article-skeleton--title { height: 36px; }
+.an-article-skeleton--title-short { height: 36px; width: 70%; }
+.an-article-skeleton--button { height: 48px; width: 240px; border-radius: 100px; }
+.an-article-skeleton--short { width: 60%; }
+
+.an-article-missing {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 96px 24px;
+  text-align: center;
+}
+.an-article-missing svg {
+  margin-bottom: 16px;
+  color: var(--ink-faint);
+}
+.an-article-missing h1 {
+  margin-bottom: 12px;
+  font-family: var(--font-headline);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.an-article-missing p {
+  margin-bottom: 24px;
+  font-family: var(--font-ui);
+  font-size: 15px;
+  color: var(--ink-3);
+}
+.an-article-missing-link {
+  display: inline-block;
+  padding: 12px 24px;
+  border-radius: 6px;
+  background: var(--paper-2);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+/* Stories from the same country and the same section, under the article. */
+.an-related {
+  padding: 48px 0 40px;
+  background: var(--paper-2);
+  border-top: 1px solid var(--paper-3);
+}
+.an-related-block + .an-related-block {
+  margin-top: 40px;
+}
+.an-related-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin-bottom: 20px;
+}
+.an-related-head h2 {
+  padding-left: 12px;
+  border-left: 4px solid var(--accent);
+  font-family: var(--font-headline);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.an-related-head a {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--ink-2);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.an-related-head a:hover {
+  color: var(--ink);
 }
 
 /* ── TOP STORIES CAROUSEL (mobile only) ── */
@@ -946,29 +1169,23 @@ h1, h2, h3, h4, h5, h6 {
   }
 
   .an-article-header {
-    padding: 24px 16px 20px;
-  }
-
-  .an-article-body {
-    padding: 0 16px;
+    padding: 24px 16px 8px;
   }
 
   .an-article-hero-img {
     padding: 0 16px;
-    margin-bottom: 24px;
   }
 
-  .an-article-hero-img > div {
-    aspect-ratio: 16/9;
+  .an-article-hero-frame {
+    aspect-ratio: 16 / 9;
+  }
+
+  .an-article-read {
+    flex: 1 1 100%;
   }
 
   .an-pag-btn {
     min-height: 44px !important;
-    height: 44px !important;
-  }
-
-  .an-icon-btn {
-    width: 44px !important;
     height: 44px !important;
   }
 
@@ -978,26 +1195,10 @@ h1, h2, h3, h4, h5, h6 {
     margin-left: -8px !important;
   }
 
-  .an-drop-cap {
-    float: none !important;
-    font-size: 1em !important;
-    line-height: inherit !important;
-    margin: 0 !important;
-    font-weight: 600;
-  }
-
   .an-article-header,
-  .an-article-body,
   .an-article-hero-img {
     overflow-x: hidden;
     max-width: 100%;
-  }
-
-  .an-article-body a[target="_blank"] {
-    white-space: normal;
-    text-align: center;
-    max-width: 100%;
-    box-sizing: border-box;
   }
 
   .an-mobile-link {
