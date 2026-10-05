@@ -158,7 +158,7 @@
 
   /* ── Compatibility aliases ────────────────────────────────────────
      The spec defines nine colours; the repo referenced twenty. Rather
-     than leave the Footer, Sidebar, ticker, pills and country dropdown
+     than leave the Footer, Sidebar, pills and country dropdown
      pointing at undefined variables, the orphans are re-pointed at spec
      values here. Nothing below introduces a new colour — each is an
      alias onto a token defined above. Prefer the spec names in new code;
@@ -265,20 +265,6 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0;
 }
 
-/* ── TICKER ── */
-.an-breaking-ticker {
-  height: 36px;
-}
-
-.an-breaking-label {
-  padding: 0 16px;
-  font-size: 12px;
-}
-
-.an-ticker-item {
-  font-size: 12.5px;
-}
-
 /* ── FOOTER GRID ── */
 .an-footer-grid {
   display: grid;
@@ -332,25 +318,15 @@ h1, h2, h3, h4, h5, h6 {
   aspect-ratio: 728 / 90;
 }
 
-/* ── TICKER ANIMATION ── */
-@keyframes ticker {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
+/* ── ANIMATION ── */
 @keyframes shimmer {
   0% { background-position: -400px 0; }
   100% { background-position: 400px 0; }
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-.ticker-track {
-  animation: ticker 40s linear infinite;
-}
-.ticker-track:hover { animation-play-state: paused; }
-
-/* Reduced motion: stop everything that moves on its own. The ticker becomes
-   a row the reader scrolls by hand. The pulsing dots are set as inline
-   styles in the components, hence !important. */
+/* Reduced motion: stop everything that moves on its own. The pulsing dots
+   are set as inline styles in the components, hence !important. */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 
@@ -361,8 +337,6 @@ h1, h2, h3, h4, h5, h6 {
     scroll-behavior: auto !important;
   }
 
-  .ticker-track { animation: none !important; }
-  .an-ticker-viewport { overflow-x: auto !important; }
   .an-skeleton { animation: none !important; }
 }
 
@@ -386,10 +360,232 @@ h1, h2, h3, h4, h5, h6 {
   overflow: hidden;
 }
 
+/* ── HEADER ──
+   One bar, 56px tall including its bottom line: the logo, a search field, and
+   Countries and Newsletter as links. On a phone the field and the links move
+   into a menu. */
+html {
+  scroll-padding-top: 72px;
+}
+
+.an-header {
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  box-sizing: border-box;
+  height: 56px;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+
+.an-header-inner {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  height: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.an-brand {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 10px;
+  text-decoration: none;
+}
+.an-brand-mark {
+  flex-shrink: 0;
+  border-radius: 6px;
+}
+.an-brand-name {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.an-nav-search-form {
+  position: relative;
+  flex: 1;
+  max-width: 420px;
+  margin-left: auto;
+}
+.an-nav-search {
+  box-sizing: border-box;
+  width: 100%;
+  height: 36px;
+  padding: 0 68px 0 14px;
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  color: var(--ink);
+  transition: border-color 0.15s;
+}
+.an-nav-search:focus {
+  border-color: var(--accent);
+}
 /* Search input sits on --paper-raised in the header — placeholder needs its
    own rule to pick up the faint ink level */
 .an-nav-search::placeholder {
   color: var(--ink-faint);
+}
+.an-nav-search-btn {
+  position: absolute;
+  top: 50%;
+  right: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--ink-faint);
+}
+.an-nav-search-btn:hover {
+  color: var(--ink);
+}
+/* The "/" hint goes away once the field has focus or text. */
+.an-nav-kbd {
+  position: absolute;
+  top: 50%;
+  right: 38px;
+  transform: translateY(-50%);
+  padding: 3px 6px;
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1;
+  color: var(--ink-faint);
+  pointer-events: none;
+}
+.an-nav-search:focus ~ .an-nav-kbd,
+.an-nav-search:not(:placeholder-shown) ~ .an-nav-kbd {
+  display: none;
+}
+
+.an-header-links {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  height: 100%;
+}
+.an-nav-link {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 100%;
+  padding: 0 12px;
+  border-bottom: 1px solid transparent;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  color: var(--ink-muted);
+  transition: color 0.15s, border-color 0.15s;
+}
+.an-nav-link:hover {
+  color: var(--ink);
+}
+.an-nav-link[data-active] {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.an-menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin: 0 -10px 0 auto;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--ink);
+}
+
+.an-mobile-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  box-sizing: border-box;
+  max-height: calc(100vh - 56px);
+  max-height: calc(100dvh - 56px);
+  overflow-y: auto;
+  padding: 16px;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+.an-mobile-menu .an-nav-search-form {
+  max-width: none;
+  margin: 0 0 12px;
+}
+.an-mobile-menu .an-nav-search {
+  height: 44px;
+  font-size: 16px;
+}
+.an-mobile-menu .an-nav-search-btn {
+  right: 0;
+  width: 44px;
+  height: 44px;
+}
+.an-mobile-menu-links {
+  display: flex;
+  flex-direction: column;
+}
+.an-mobile-link {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink-muted);
+}
+
+@media (max-width: 767px) {
+  .an-header-inner {
+    padding: 0 16px;
+  }
+  .an-nav-search-form--bar,
+  .an-header-links {
+    display: none;
+  }
+  .an-menu-btn {
+    display: inline-flex;
+  }
+}
+@media (min-width: 768px) {
+  .an-mobile-menu {
+    display: none;
+  }
+}
+
+/* One line above the stream, such as "27 countries, 55 sources, updated 14
+   minutes ago". Its height is held while the figures load. */
+.an-site-status {
+  min-height: 20px;
+  margin: 0;
+  padding-top: 14px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--ink-3);
 }
 
 .an-skeleton {
@@ -503,42 +699,6 @@ h1, h2, h3, h4, h5, h6 {
   .an-lede-column {
     max-width: calc(100% - 340px);   /* 300px sidebar + 40px grid gap */
   }
-}
-
-.an-stats-strip-inner {
-  display: flex;
-  align-items: center;
-  gap: 32px;
-  height: 44px;
-  max-width: 1320px;
-  margin: 0 auto;
-  /* Same 24px gutter as .an-container. It had none, so below 1320px the
-     first stat sat on the viewport edge and the last one was clipped. */
-  padding: 0 24px;
-}
-
-/* Figures in the stats strip on the home page. */
-.an-stat {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-}
-
-.an-stat-value {
-  font-weight: 600;
-  font-size: 13px;
-}
-
-.an-stat-label {
-  color: var(--ink-3);
-}
-
-.an-stat-divider {
-  width: 1px;
-  height: 16px;
-  background: var(--paper-3);
-  flex-shrink: 0;
 }
 
 .an-hero-grid {
@@ -1205,12 +1365,6 @@ h1, h2, h3, h4, h5, h6 {
     max-width: 100%;
   }
 
-  .an-mobile-link {
-    min-height: 44px !important;
-    display: flex !important;
-    align-items: center;
-  }
-
   .an-pill-bar {
     flex-wrap: nowrap;
     overflow-x: auto;
@@ -1244,21 +1398,6 @@ h1, h2, h3, h4, h5, h6 {
   .an-top-story { height: 300px; }
   .an-top-story-headline { font-size: 24px; }
 
-  .an-stats-strip-inner {
-    gap: 20px;
-    padding: 0 16px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    height: auto;
-    min-height: 44px;
-    flex-wrap: nowrap;
-  }
-
-  .an-stats-strip-inner::-webkit-scrollbar {
-    display: none;
-  }
-
   .an-hero-grid {
     display: none;
   }
@@ -1270,23 +1409,6 @@ h1, h2, h3, h4, h5, h6 {
   .an-footer-grid {
     grid-template-columns: 1fr;
     gap: 28px;
-  }
-
-  .an-breaking-ticker {
-    height: 32px;
-  }
-
-  .an-breaking-label {
-    padding: 0 10px;
-    font-size: 12px;
-  }
-
-  .an-breaking-label-text {
-    display: none;
-  }
-
-  .an-ticker-item {
-    font-size: 12px;
   }
 
   .an-sidebar-col {

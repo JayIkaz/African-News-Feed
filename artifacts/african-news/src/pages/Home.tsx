@@ -1,6 +1,5 @@
-import { Fragment, useEffect, useState, useRef } from "react";
 import { useSearch } from "wouter";
-import { useGetTopStories, useListCountries } from "@workspace/api-client-react";
+import { useGetTopStories } from "@workspace/api-client-react";
 import { useMediaQuery } from "@/lib/useMediaQuery";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { ArticleCard } from "@/components/article/ArticleCard";
@@ -8,10 +7,10 @@ import { TopStoriesCarousel } from "@/components/article/TopStoriesCarousel";
 import { Sidebar } from "@/components/article/Sidebar";
 import { ListingFilters, NewerLink, PastTheEnd, ShowMore } from "@/components/article/ListingParts";
 import { PulseDivider } from "@/components/common/PulseDivider";
+import { SiteStatus } from "@/components/common/SiteStatus";
 import { AdBanner } from "@/components/ads/AdBanner";
 import { Inbox } from "lucide-react";
 import { useReadHistory } from "@/lib/useReadHistory";
-import { useSiteCounts } from "@/lib/useSiteCounts";
 import { listingHref, parseListingQuery } from "@/lib/listing";
 import { useListing } from "@/lib/useListing";
 import { usePageMeta } from "@/lib/usePageMeta";
@@ -33,67 +32,14 @@ export default function Home() {
     title: page > 1 ? `Latest African news, page ${page} | AfricaNews` : undefined,
     noindex: pastTheEnd,
   });
-  const { data: countries } = useListCountries();
-  const { sourceCount, countryCount, loading: statsLoading, ready: statsReady } = useSiteCounts();
-  const totalArticles = (countries ?? []).reduce((sum, c) => sum + c.articleCount, 0);
-  const stats = [
-    { value: countryCount, label: "African countries", wide: false },
-    { value: sourceCount, label: "news sources", wide: false },
-    { value: totalArticles, label: "articles indexed", wide: true },
-  ];
-
-  // On a phone the strip scrolls sideways. A scrolling region has to be
-  // reachable by keyboard, but where it fits it is not a control, so it gets a
-  // tab stop only while it overflows.
-  const stripRef = useRef<HTMLDivElement>(null);
-  const [stripScrolls, setStripScrolls] = useState(false);
-  useEffect(() => {
-    const el = stripRef.current;
-    if (!el) return;
-    const update = () => setStripScrolls(el.scrollWidth > el.clientWidth);
-    update();
-    const observer = new ResizeObserver(update);
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [statsLoading, statsReady]);
-
   return (
     <AppLayout>
       {/* The page had no h1. Screen-reader and search users get one; sighted
           users already have the masthead. */}
       <h1 className="sr-only">AfricaNews: headlines from African news publishers</h1>
 
-      {/* ── Stats strip ── */}
-      <div style={{ background: "var(--paper-2)", color: "var(--ink)", overflow: "hidden" }}>
-        <div
-          ref={stripRef}
-          className="an-stats-strip-inner"
-          style={{ fontFamily: "var(--font-ui)", fontSize: 12 }}
-          {...(stripScrolls ? { tabIndex: 0, role: "region", "aria-label": "Site statistics" } : {})}
-        >
-          {/* Every figure comes from the API. While it loads a skeleton holds
-              the place; if it fails the figures are left out, not guessed. */}
-          {stats.map(({ value, label, wide }, i) =>
-            statsLoading || statsReady ? (
-              <Fragment key={label}>
-                {i > 0 && <div className="an-stat-divider" aria-hidden="true" />}
-                <div className="an-stat">
-                  <span className="an-stat-value">
-                    {statsReady ? value.toLocaleString() : <span className={`an-skeleton an-inline-skeleton${wide ? " an-inline-skeleton--wide" : ""}`} aria-hidden="true" />}
-                  </span>
-                  <span className="an-stat-label">{label}</span>
-                </div>
-              </Fragment>
-            ) : null,
-          )}
-          <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "var(--ink-3)", flexShrink: 0 }}>
-            <span style={{ width: 6, height: 6, background: "var(--ink-faint)", borderRadius: "50%", display: "inline-block" }} />
-            Updated several times a day
-          </div>
-        </div>
-      </div>
-
       <div className="an-container">
+        <SiteStatus />
 
         {/* Spec §7: the lede block — top stories, divider, ad and pills — is
             held to the same column as the latest-news feed below, so the page
@@ -101,7 +47,7 @@ export default function Home() {
         <div className="an-lede-column">
 
         {/* ── Hero / Top Stories ── */}
-        <section style={{ paddingTop: 36 }}>
+        <section style={{ paddingTop: 16 }}>
           <h2 style={{ fontFamily: "var(--font-headline)", fontSize: 15, fontWeight: 600, margin: "0 0 12px", paddingLeft: 10, borderLeft: "3px solid var(--yellow)" }}>Newest</h2>
 
           {isMobile ? (
