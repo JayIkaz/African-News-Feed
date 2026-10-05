@@ -93,7 +93,7 @@ Nigeria, South Africa, Kenya, Egypt, Ghana, Morocco, Ethiopia, Tanzania, Uganda,
 
 ## Key Features
 
-- **Auto ingestion**: RSS feeds polled on startup and every 60 minutes
+- **Auto ingestion**: RSS feeds polled by a scheduled GitHub Actions job (`.github/workflows/ingest.yml`, set to hourly; GitHub runs it several times a day in practice)
 - **Category classifier**: Weighted keyword matching → 8 categories
 - **Status line**: one line above the stream, "N countries, M sources, updated X ago", read from the API
 - **Hero grid**: Featured (large left) + 2 side cards (right column)

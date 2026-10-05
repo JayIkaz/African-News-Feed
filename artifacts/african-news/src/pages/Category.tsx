@@ -40,7 +40,7 @@ export default function Category({ category, country, page }: { category: string
   const empty = list.total === 0;
   usePageMeta({
     title: `${country ? `${category} news from ${country}` : `${category} news from Africa`}${page > 1 ? `, page ${page}` : ""} | AfricaNews`,
-    description: country ? `${category} headlines from ${country}, collected from news publishers every hour, with a link to each publisher.` : meta.description,
+    description: country ? `${category} headlines from ${country}, collected from news publishers several times a day, with a link to each publisher.` : meta.description,
     noindex: !!country || pastTheEnd || empty,
   });
 

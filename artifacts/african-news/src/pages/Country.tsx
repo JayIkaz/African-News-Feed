@@ -28,7 +28,7 @@ export default function Country({ country: decodedCountry, page }: { country: st
   const pastTheEnd = !list.isLoading && !list.failed && page > 1 && list.articles.length === 0;
   usePageMeta({
     title: `${decodedCountry} news${page > 1 ? `, page ${page}` : ""} | AfricaNews`,
-    description: `Headlines from news publishers in ${decodedCountry}, collected by AfricaNews every hour, with a link to each publisher.`,
+    description: `Headlines from news publishers in ${decodedCountry}, collected by AfricaNews several times a day, with a link to each publisher.`,
     noindex: pastTheEnd || list.total === 0,
   });
 
