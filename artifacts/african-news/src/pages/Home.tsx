@@ -9,7 +9,7 @@ import { ListingFilters, NewerLink, PastTheEnd, ShowMore } from "@/components/ar
 import { PulseDivider } from "@/components/common/PulseDivider";
 import { SiteStatus } from "@/components/common/SiteStatus";
 import { AdBanner } from "@/components/ads/AdBanner";
-import { Inbox } from "lucide-react";
+import { CheckCheck, Eraser, Inbox } from "lucide-react";
 import { useReadHistory } from "@/lib/useReadHistory";
 import { listingHref, parseListingQuery } from "@/lib/listing";
 import { useListing } from "@/lib/useListing";
@@ -41,106 +41,105 @@ export default function Home() {
       <div className="an-container">
         <SiteStatus />
 
-        {/* Spec §7: the lede block — top stories, divider, ad and pills — is
-            held to the same column as the latest-news feed below, so the page
-            reads at one measure instead of switching width mid-scroll. */}
-        <div className="an-lede-column">
+        {/* One grid for the whole page: the stories on the left, the right-hand
+            column on the right from the first headline down. The column's
+            top is the advert space, level with the "Newest" heading. */}
+        <div className="an-content-with-sidebar an-home-grid">
 
-        {/* ── Hero / Top Stories ── */}
-        <section style={{ paddingTop: 16 }}>
-          <h2 style={{ fontFamily: "var(--font-headline)", fontSize: 15, fontWeight: 600, margin: "0 0 12px", paddingLeft: 10, borderLeft: "3px solid var(--yellow)" }}>Newest</h2>
+          <div>
+            {/* The lede block is held to the same column as the feed below it,
+                so the page reads at one measure instead of switching width
+                mid-scroll. */}
 
-          {isMobile ? (
-            /* Mobile: swipeable carousel */
-            topLoading ? (
-              <div className="an-carousel-root">
-                {/* Matches the carousel slide's 300px (spec §7) */}
-                <div className="an-skeleton" style={{ height: 300 }} />
-              </div>
-            ) : topStories?.articles && topStories.articles.length > 0 ? (
-              <TopStoriesCarousel articles={topStories.articles} />
-            ) : (
-              <div style={{ padding: "40px 24px", textAlign: "center", color: "var(--ink-4)", fontFamily: "var(--font-ui)", fontSize: 14 }}>
-                No top stories available.
-              </div>
-            )
-          ) : (
-            /* Desktop: spec §4 top-story card full width, with the next two
-               stories as ordinary feed rows beneath it */
-            <>
-              {topLoading ? (
-                <>
-                  {/* Matches the top story's 380px so the feed doesn't jump on load */}
-                  <div className="an-skeleton an-top-story" style={{ borderRadius: 0, marginBottom: 12 }} />
-                  <div className="an-story-list">
-                    <div className="an-skeleton an-skeleton-row" />
-                    <div className="an-skeleton an-skeleton-row" />
+            {/* ── Hero / Top Stories ── */}
+            <section>
+              <h2 className="an-section-title">Newest</h2>
+
+              {isMobile ? (
+                /* Mobile: swipeable carousel */
+                topLoading ? (
+                  <div className="an-carousel-root">
+                    {/* Matches the carousel slide's 300px (spec §7) */}
+                    <div className="an-skeleton" style={{ height: 300 }} />
                   </div>
-                </>
-              ) : topStories?.articles && topStories.articles.length > 0 ? (
-                <>
-                  <div style={{ marginBottom: 12 }}>
-                    <ArticleCard article={topStories.articles[0]} featured />
+                ) : topStories?.articles && topStories.articles.length > 0 ? (
+                  <TopStoriesCarousel articles={topStories.articles} />
+                ) : (
+                  <div style={{ padding: "40px 24px", textAlign: "center", color: "var(--ink-4)", fontFamily: "var(--font-ui)", fontSize: 14 }}>
+                    No top stories available.
                   </div>
-                  {(topStories.articles[1] || topStories.articles[2]) && (
-                    <div className="an-story-list">
-                      {topStories.articles[1] && <ArticleCard article={topStories.articles[1]} />}
-                      {topStories.articles[2] && <ArticleCard article={topStories.articles[2]} />}
+                )
+              ) : (
+                /* Desktop: spec §4 top-story card full width, with the next two
+                   stories as ordinary feed rows beneath it */
+                <>
+                  {topLoading ? (
+                    <>
+                      {/* Matches the top story's 380px so the feed doesn't jump on load */}
+                      <div className="an-skeleton an-top-story" style={{ borderRadius: 0, marginBottom: 12 }} />
+                      <div className="an-story-list">
+                        <div className="an-skeleton an-skeleton-row" />
+                        <div className="an-skeleton an-skeleton-row" />
+                      </div>
+                    </>
+                  ) : topStories?.articles && topStories.articles.length > 0 ? (
+                    <>
+                      <div style={{ marginBottom: 12 }}>
+                        <ArticleCard article={topStories.articles[0]} featured />
+                      </div>
+                      {(topStories.articles[1] || topStories.articles[2]) && (
+                        <div className="an-story-list">
+                          {topStories.articles[1] && <ArticleCard article={topStories.articles[1]} />}
+                          {topStories.articles[2] && <ArticleCard article={topStories.articles[2]} />}
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: 40, color: "var(--ink-4)", fontFamily: "var(--font-ui)", fontSize: 14 }}>
+                      No top stories available.
                     </div>
                   )}
                 </>
-              ) : (
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: 40, color: "var(--ink-4)", fontFamily: "var(--font-ui)", fontSize: 14 }}>
-                  No top stories available.
+              )}
+            </section>
+
+            {/* Spec §5: the one place the pulse divider appears — the structural
+                boundary between the top story and everything below it. */}
+            <PulseDivider />
+
+            {/* ── Section links and tools ── no ad sits above them or above the first headline ── */}
+            <ListingFilters showCountry>
+              {/* Reading tools, opposite the country menu. */}
+              {(list.articles.length > 0 || readIds.size > 0) && (
+                <div className="an-btn-group" role="group" aria-label="Reading tools">
+                  {list.articles.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => markAllRead(list.articles.map(a => a.id))}
+                      title="Mark all visible articles as read"
+                    >
+                      <CheckCheck size={15} aria-hidden="true" /> Mark all read
+                    </button>
+                  )}
+                  {readIds.size > 0 && (
+                    <button
+                      type="button"
+                      onClick={clearHistory}
+                      title={`Clear read history (${readIds.size} articles)`}
+                    >
+                      <Eraser size={15} aria-hidden="true" /> Clear history
+                    </button>
+                  )}
                 </div>
               )}
-            </>
-          )}
-        </section>
+            </ListingFilters>
 
-        {/* Spec §5: the one place the pulse divider appears — the structural
-            boundary between the top story and everything below it. */}
-        <PulseDivider />
-
-        {/* ── Section links ── no ad sits above them or above the first headline ── */}
-        <ListingFilters showCountry>
-          {/* Mark all as read / Clear history */}
-          <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-            {list.articles.length > 0 && (
-              <button
-                onClick={() => markAllRead(list.articles.map(a => a.id))}
-                className="an-pill an-pill--small"
-                title="Mark all visible articles as read"
-              >
-                ✓ Mark all read
-              </button>
-            )}
-            {readIds.size > 0 && (
-              <button
-                onClick={clearHistory}
-                className="an-pill an-pill--small an-pill--quiet"
-                title={`Clear read history (${readIds.size} articles)`}
-              >
-                Clear history
-              </button>
-            )}
-          </div>
-        </ListingFilters>
-
-        </div>{/* /an-lede-column */}
-
-        {/* ── Articles + Sidebar ── */}
-        <section style={{ padding: "28px 0 48px" }}>
-          <div className="an-content-with-sidebar">
-
-            {/* Articles main */}
-            <div>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-                <h2 style={{ fontFamily: "var(--font-headline)", fontSize: 15, fontWeight: 600, margin: 0, paddingLeft: 10, borderLeft: "3px solid var(--yellow)" }}>
-                  Latest news
-                </h2>
+            {/* ── Latest news ── */}
+            <div className="an-home-feed">
+              <div className="an-section-head">
+                <h2 className="an-section-title">Latest news</h2>
                 {list.total !== undefined && (
-                  <span style={{ marginLeft: "auto", fontFamily: "var(--font-ui)", fontSize: 12, color: "var(--ink-4)" }}>
+                  <span className="an-section-count">
                     {list.total.toLocaleString()} articles
                   </span>
                 )}
@@ -202,13 +201,13 @@ export default function Home() {
                 onRetry={list.retry}
               />
             </div>
-
-            {/* Sidebar */}
-            <div className="an-sidebar-col">
-              <Sidebar />
-            </div>
           </div>
-        </section>
+
+          {/* Right-hand column */}
+          <div className="an-sidebar-col">
+            <Sidebar />
+          </div>
+        </div>
       </div>
     </AppLayout>
   );

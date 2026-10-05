@@ -40,6 +40,9 @@ export function Sidebar() {
 
   return (
     <aside style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+      {/* The top of the right-hand column: the one rail ad slot. */}
+      <AdBanner slot="rail" />
+
       {/* The Trending widget was removed: the API has no trending signal (its
           trending list is the same newest-first query as the main feed), so
           the label promised a ranking nothing computes. Restore it with a
@@ -81,9 +84,6 @@ export function Sidebar() {
       >
         <NewsletterForm />
       </div>
-
-      {/* The foot of the right-hand column: the one rail ad slot. */}
-      <AdBanner slot="rail" />
     </aside>
   );
 }
