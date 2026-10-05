@@ -37,7 +37,7 @@ export default function Advertise() {
         <h2>Where adverts appear</h2>
         <ul className="an-page-list">
           <li>
-            <strong>Right-hand column, 300 × 250.</strong> The foot of the right-hand column on the home, category and country pages. On a phone it comes after the list of stories.
+            <strong>Right-hand column, 300 × 250.</strong> The top of the right-hand column on the home, category, country and publisher pages, beside the stories. On a phone it comes after the list of stories.
           </li>
           <li>
             <strong>Between stories, full width.</strong> One row after the tenth story of the home page feed, 728 × 90 on a desktop screen and 320 × 100 on a phone.

@@ -1,10 +1,13 @@
 // Advertising on the site. Two slots exist:
-//   rail   300 x 250, the foot of the right-hand column on the home page
+//   rail   300 x 250, the top of the right-hand column, level with the first
+//          headline on the home page
 //   inline full width, one row after the tenth story of a home page feed
 //          (728 x 90 on desktop, 320 x 100 on phones)
 //
-// A slot with no creative renders nothing, so the page shows no empty box.
-// Add a creative here when an ad is sold. These are direct-sold images: they
+// The inline slot with no creative renders nothing. The rail slot with no
+// creative shows a 300 x 250 panel saying the space is available, linked to
+// the Advertise page, so the column is held open. Add a creative here when an
+// ad is sold; it replaces the panel at the same size. These are direct-sold images: they
 // set no cookies and load no third-party script. Before any ad network goes
 // in, the Privacy page needs an Advertising section and the site needs a
 // consent banner (see the note at the top of src/pages/Privacy.tsx).

@@ -112,6 +112,11 @@
 }
 
 :root {
+  /* Height of the rounded controls in a row: section pills, the country menu
+     and the reading tools. Taller on touch screens (see the 1024px query). */
+  --an-control-h: 36px;
+  --an-title-h: 20px;
+
   /* ══════════════════════════════════════════════════════════════════
      Light editorial palette — spec §1 (revised 3 Oct 2026).
      Warm paper, near-black ink, one rust accent. The previous dark indigo
@@ -308,6 +313,14 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0;
 }
 
+/* The label takes the same height as a section heading, so on the home page the
+   advert's top edge meets the top of the first story's card. */
+.an-ad--rail .an-ad-label {
+  height: var(--an-title-h);
+  line-height: var(--an-title-h);
+  margin: 0 0 12px;
+}
+
 .an-ad--rail .an-ad-frame {
   max-width: 300px;
   aspect-ratio: 300 / 250;
@@ -316,6 +329,62 @@ h1, h2, h3, h4, h5, h6 {
 .an-ad--inline .an-ad-frame {
   max-width: 728px;
   aspect-ratio: 728 / 90;
+}
+
+/* The rail slot before an advert is sold: same 300 x 250 box, a link to the
+   Advertise page. */
+.an-ad-available {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  box-sizing: border-box;
+  padding: 20px;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  text-decoration: none;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+.an-ad-available:hover {
+  border-color: var(--ink-3);
+  background: var(--paper-2);
+}
+.an-ad-available-kicker {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.an-ad-available-title {
+  margin-top: 12px;
+  font-family: var(--font-headline);
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--ink);
+}
+.an-ad-available-text {
+  margin-top: 8px;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--ink-3);
+}
+.an-ad-available-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
+}
+@media (min-width: 1025px) {
+  /* No label above the panel, so it is pushed down by the height one takes. */
+  .an-home-grid .an-ad--available {
+    padding-top: calc(var(--an-title-h) + 12px);
+  }
 }
 
 /* ── ANIMATION ── */
@@ -688,17 +757,40 @@ html {
   min-width: 0;
 }
 
-/* Spec §7: one content measure down the whole page.
-   The latest-news feed already sits at ~932px, because the sidebar grid
-   constrains it — but the top-of-page block spanned the full 1272px
-   container, so headlines changed measure mid-scroll (1150px wide up top
-   against 810px below). This puts the lede block on the identical column.
-   Derived from the sidebar rather than hardcoded to 932px, so the two stay
-   aligned at every viewport width instead of drifting apart. */
-@media (min-width: 1025px) {
-  .an-lede-column {
-    max-width: calc(100% - 340px);   /* 300px sidebar + 40px grid gap */
-  }
+/* The home page is one grid, so the stories and the right-hand column start at
+   the same line. The lede and the feed share the left cell, which keeps one
+   content measure down the whole page (spec §7). */
+.an-home-grid {
+  padding: 16px 0 48px;
+}
+.an-home-feed {
+  margin-top: 28px;
+}
+
+/* A heading with a yellow bar, and the row that puts a count beside it. */
+.an-section-title {
+  margin: 0 0 12px;
+  padding-left: 10px;
+  border-left: 3px solid var(--yellow);
+  font-family: var(--font-headline);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: var(--an-title-h);
+}
+.an-section-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.an-section-head .an-section-title {
+  margin: 0;
+}
+.an-section-count {
+  margin-left: auto;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: var(--ink-4);
 }
 
 .an-hero-grid {
@@ -1116,7 +1208,9 @@ html {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 16px;
+  box-sizing: border-box;
+  height: var(--an-control-h);
+  padding: 0 16px;
   border-radius: 100px;
   border: 1.5px solid var(--paper-3);
   background: var(--surface-1);
@@ -1130,13 +1224,6 @@ html {
   flex-shrink: 0;
   transition: border-color 0.2s, color 0.2s;
 }
-.an-pill--small {
-  padding: 8px 14px;
-  font-size: 12px;
-}
-.an-pill--quiet {
-  color: var(--ink-4);
-}
 .an-pill:hover {
   border-color: var(--ink-3);
   color: var(--ink);
@@ -1148,23 +1235,127 @@ html {
   color: var(--paper);
 }
 
-.an-listing-country {
+/* The row under the section pills: the country menu at the left edge, the
+   reading tools at the right edge, both the height of a pill. */
+.an-listing-tools {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 10px;
-  padding: 8px 0 4px;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 4px 0 0;
+}
+.an-listing-tools > :only-child {
+  margin-left: 0;
+}
+.an-listing-tools > .an-btn-group {
+  margin-left: auto;
+}
+
+.an-select {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-sizing: border-box;
+  max-width: 100%;
+  height: var(--an-control-h);
+  padding: 0 14px 0 16px;
+  border: 1.5px solid var(--paper-3);
+  border-radius: 100px;
+  background: var(--surface-1);
   font-family: var(--font-ui);
   font-size: 13px;
   color: var(--ink-3);
+  transition: border-color 0.2s;
 }
-.an-listing-country select {
-  min-height: 36px;
-  padding: 0 32px 0 12px;
-  border: 1.5px solid var(--paper-3);
-  border-radius: 6px;
-  background: var(--surface-1);
-  color: var(--ink-2);
+.an-select:hover {
+  border-color: var(--ink-3);
+}
+.an-select:focus-within {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.an-select-label {
+  white-space: nowrap;
+}
+.an-select select {
+  min-width: 0;
+  height: 100%;
+  padding: 0 22px 0 0;
+  border: 0;
+  background: transparent;
+  appearance: none;
+  -webkit-appearance: none;
   font: inherit;
+  font-weight: 500;
+  color: var(--ink);
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+.an-select select:focus {
+  outline: none;
+}
+.an-select-icon {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  color: var(--ink-3);
+  pointer-events: none;
+}
+
+/* Buttons that act on the list, joined into one rounded control with the same
+   border and height as the country menu. */
+.an-btn-group {
+  display: inline-flex;
+  align-items: stretch;
+  box-sizing: border-box;
+  height: var(--an-control-h);
+  border: 1.5px solid var(--paper-3);
+  border-radius: 100px;
+  background: var(--surface-1);
+  overflow: hidden;
+}
+.an-btn-group button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 14px;
+  border: 0;
+  background: transparent;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--ink-3);
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+}
+.an-btn-group button + button {
+  border-left: 1.5px solid var(--paper-3);
+}
+.an-btn-group button:hover {
+  background: var(--paper-2);
+  color: var(--ink);
+}
+.an-btn-group button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+/* On a phone each control takes a full row, so the two edges still line up. */
+@media (max-width: 640px) {
+  .an-listing-tools > * {
+    flex: 1 1 100%;
+  }
+  .an-select select {
+    flex: 1;
+  }
+  .an-btn-group button {
+    flex: 1;
+  }
 }
 
 /* "Show more": a link to the next page, with a line saying how far along. */
@@ -1309,6 +1500,10 @@ html {
 
 /* ── TABLET (≤1024px) ── */
 @media (max-width: 1024px) {
+  :root {
+    --an-control-h: 44px;
+  }
+
   /* .an-story-list is single-column at every width now (spec §7) — no override. */
 
   .an-content-with-sidebar {

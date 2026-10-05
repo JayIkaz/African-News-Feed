@@ -1,5 +1,6 @@
 import type { MouseEvent, ReactNode } from "react";
 import { Link, useLocation } from "wouter";
+import { ChevronDown } from "lucide-react";
 import { COUNTRY_FLAGS } from "@/lib/countries";
 import { listingHref } from "@/lib/listing";
 import { SECTIONS, countryFromSlug, slugify } from "@/lib/slugs";
@@ -11,13 +12,15 @@ interface FiltersProps {
   country?: string;
   // The country list belongs where choosing a country keeps the section.
   showCountry?: boolean;
-  // Extra controls at the end of the section row.
+  // Extra controls at the end of the tools row, opposite the country menu.
   children?: ReactNode;
 }
 
-// Section links, and a country menu. Each one is the address of the list it
-// leads to, so a filter can be opened in a new tab, shared, and reached with
-// the back button. A country already chosen stays when the section changes.
+// Section links, and a row of tools under them: a country menu on the left,
+// and whatever the page passes as children (the home page's reading tools) on
+// the right. Each filter is the address of the list it leads to, so it can be
+// opened in a new tab, shared, and reached with the back button. A country
+// already chosen stays when the section changes.
 export function ListingFilters({ category, country, showCountry = false, children }: FiltersProps) {
   const [, navigate] = useLocation();
   return (
@@ -45,22 +48,27 @@ export function ListingFilters({ category, country, showCountry = false, childre
             );
           })}
         </nav>
-        {children}
       </div>
 
-      {showCountry && (
-        <div className="an-listing-country">
-          <label htmlFor="an-listing-country">Country</label>
-          <select
-            id="an-listing-country"
-            value={country ? slugify(country) : ""}
-            onChange={(e) => navigate(listingHref({ category, country: countryFromSlug(e.target.value) }))}
-          >
-            <option value="">All countries</option>
-            {COUNTRY_NAMES.map((name) => (
-              <option key={name} value={slugify(name)}>{name}</option>
-            ))}
-          </select>
+      {(showCountry || children) && (
+        <div className="an-listing-tools">
+          {showCountry && (
+            <div className="an-select">
+              <label htmlFor="an-listing-country" className="an-select-label">Country</label>
+              <select
+                id="an-listing-country"
+                value={country ? slugify(country) : ""}
+                onChange={(e) => navigate(listingHref({ category, country: countryFromSlug(e.target.value) }))}
+              >
+                <option value="">All countries</option>
+                {COUNTRY_NAMES.map((name) => (
+                  <option key={name} value={slugify(name)}>{name}</option>
+                ))}
+              </select>
+              <ChevronDown size={16} className="an-select-icon" aria-hidden="true" />
+            </div>
+          )}
+          {children}
         </div>
       )}
     </div>
