@@ -105,10 +105,18 @@
   --font-ui: var(--font-body);
   --font-data: var(--font-mono);
 
-  --radius-sm: 4px;
+  /* Corners come in three sizes. Small (6px) is for things inside a layout:
+     pictures, form fields, buttons that submit, tags, skeletons. Large (12px)
+     is for panels: the right-hand column's boxes, the article picture, the
+     Countries cards. Pill is for anything that filters or navigates: the section
+     links, the country menu, the reading tools, the header search, the
+     article's two buttons. Bars, hairlines, full-width bands and list rows stay
+     square. Tailwind's four steps are folded onto the first two so the shadcn
+     parts and the page classes that use rounded-md or rounded-xl follow. */
+  --radius-sm: 6px;
   --radius-md: 6px;
-  --radius-lg: 10px;
-  --radius-xl: 14px;
+  --radius-lg: 12px;
+  --radius-xl: 12px;
 }
 
 :root {
@@ -120,8 +128,9 @@
      Light editorial palette — spec §1 (revised 3 Oct 2026).
      Warm paper, near-black ink, one rust accent. The previous dark indigo
      and amber palette is recorded in docs/spec-amendments.md.
-     Structure comes from hairline dividers and spacing, not boxes:
-     no card backgrounds, borders, shadows, or rounded corners.
+     Structure comes from hairline dividers and spacing, not boxes: no card
+     backgrounds and no shadows. Corners are soft, in three sizes (--radius-sm,
+     --radius-lg, --radius-pill).
      All contrast figures below are measured, not eyeballed.
      ══════════════════════════════════════════════════════════════════ */
   color-scheme: light;
@@ -231,6 +240,8 @@
 
   --transition: 0.2s cubic-bezier(0.4,0,0.2,1);
   --radius: 0.3rem;
+  /* Fully rounded ends, for any height (see the note on corner sizes in @theme). */
+  --radius-pill: 999px;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -296,7 +307,7 @@ h1, h2, h3, h4, h5, h6 {
   display: block;
   width: 100%;
   overflow: hidden;
-  border-radius: 3px;
+  border-radius: var(--radius-sm);
   background: var(--paper-raised);
 }
 
@@ -329,6 +340,7 @@ h1, h2, h3, h4, h5, h6 {
 /* The rail slot before an advert is sold: same 300 x 250 box, a link to the
    Advertise page. */
 .an-ad-available {
+  border-radius: var(--radius-lg);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -455,7 +467,7 @@ html {
 }
 .an-brand-mark {
   flex-shrink: 0;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
 }
 .an-brand-name {
   font-family: var(--font-display);
@@ -475,10 +487,10 @@ html {
   box-sizing: border-box;
   width: 100%;
   height: 36px;
-  padding: 0 68px 0 14px;
+  padding: 0 68px 0 18px;
   background: var(--paper-raised);
   border: 1px solid var(--line);
-  border-radius: 3px;
+  border-radius: var(--radius-pill);
   font-family: var(--font-body);
   font-size: 13.5px;
   color: var(--ink);
@@ -518,7 +530,7 @@ html {
   transform: translateY(-50%);
   padding: 3px 6px;
   border: 1px solid var(--line-strong);
-  border-radius: 3px;
+  border-radius: var(--radius-sm);
   font-family: var(--font-mono);
   font-size: 12px;
   line-height: 1;
@@ -650,7 +662,7 @@ html {
   background: linear-gradient(90deg, var(--surface-1) 25%, var(--paper-3) 50%, var(--surface-1) 75%);
   background-size: 400px 100%;
   animation: shimmer 1.4s ease-in-out infinite;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
 }
 
 /* ── RESPONSIVE LAYOUT UTILITIES ── */
@@ -834,7 +846,7 @@ html {
 .an-skeleton-row {
   height: 64px;
   margin: 16px 0 17px;
-  border-radius: 3px;
+  border-radius: var(--radius-sm);
 }
 
 /* ── Time headings in the home stream ─────────────────────────────────
@@ -988,7 +1000,7 @@ html {
   justify-content: center;
   gap: 8px;
   min-height: 48px;
-  border-radius: 100px;
+  border-radius: var(--radius-pill);
   font-family: var(--font-ui);
   font-size: 15px;
   line-height: 1.2;
@@ -1029,7 +1041,7 @@ html {
 }
 .an-article-hero-frame {
   aspect-ratio: 21 / 9;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
   background: var(--paper-2);
 }
@@ -1048,12 +1060,12 @@ html {
 .an-article-skeleton {
   height: 16px;
   margin-bottom: 16px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
 }
 .an-article-skeleton--tags { width: 40%; }
 .an-article-skeleton--title { height: 36px; }
 .an-article-skeleton--title-short { height: 36px; width: 70%; }
-.an-article-skeleton--button { height: 48px; width: 240px; border-radius: 100px; }
+.an-article-skeleton--button { height: 48px; width: 240px; border-radius: var(--radius-pill); }
 .an-article-skeleton--short { width: 60%; }
 
 .an-article-missing {
@@ -1082,7 +1094,7 @@ html {
 .an-article-missing-link {
   display: inline-block;
   padding: 12px 24px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: var(--paper-2);
   font-family: var(--font-ui);
   font-size: 14px;
@@ -1148,7 +1160,7 @@ html {
   box-sizing: border-box;
   height: var(--an-control-h);
   padding: 0 16px;
-  border-radius: 100px;
+  border-radius: var(--radius-pill);
   border: 1.5px solid var(--paper-3);
   background: var(--surface-1);
   color: var(--ink-3);
@@ -1199,7 +1211,7 @@ html {
   height: var(--an-control-h);
   padding: 0 14px 0 16px;
   border: 1.5px solid var(--paper-3);
-  border-radius: 100px;
+  border-radius: var(--radius-pill);
   background: var(--surface-1);
   font-family: var(--font-ui);
   font-size: 13px;
@@ -1250,7 +1262,7 @@ html {
   box-sizing: border-box;
   height: var(--an-control-h);
   border: 1.5px solid var(--paper-3);
-  border-radius: 100px;
+  border-radius: var(--radius-pill);
   background: var(--surface-1);
   overflow: hidden;
 }
@@ -1310,7 +1322,7 @@ html {
   min-height: 44px;
   padding: 0 28px;
   border: 1px solid var(--paper-3);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: var(--surface-1);
   color: var(--ink-2);
   font-family: var(--font-ui);
@@ -1588,7 +1600,7 @@ html {
   padding: 10px 12px;
   background: var(--paper);
   border: 1px solid var(--line-strong);
-  border-radius: 5px;
+  border-radius: var(--radius-sm);
   font-family: var(--font-ui);
   font-size: 14px;
   color: var(--ink);
@@ -1604,7 +1616,7 @@ html {
   background: var(--accent);
   color: var(--paper);
   border: none;
-  border-radius: 5px;
+  border-radius: var(--radius-sm);
   font-family: var(--font-ui);
   font-size: 14px;
   font-weight: 600;
@@ -1711,7 +1723,7 @@ html {
   background: var(--accent);
   color: var(--paper);
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-family: var(--font-body);
   font-size: 15px;
   font-weight: 600;
@@ -1732,7 +1744,7 @@ html {
   width: 2.2ch;
   height: 1em;
   vertical-align: -0.15em;
-  border-radius: 3px;
+  border-radius: var(--radius-sm);
 }
 
 .an-inline-skeleton--wide {
@@ -1790,7 +1802,7 @@ html {
 
 .an-src-skeleton {
   height: 240px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
 }
 
 .an-footer-company {

@@ -72,7 +72,7 @@ export function CatTag({ category, size = 12 }: { category?: string | null; size
         fontSize: size,
         fontWeight: 600,
         padding: "2px 8px",
-        borderRadius: 4,
+        borderRadius: "var(--radius-sm)",
         lineHeight: 1.5,
       }}
     >
