@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm run typecheck
+
+      - name: API tests
+        run: pnpm --filter @workspace/api-server run test
+
+      - name: Tests for the repository scripts
+        run: pnpm run test:scripts
+
+      # Fails when a change adds inline styles. See artifacts/african-news/docs/styling.md.
+      - name: Inline style budget
+        run: pnpm run check:inline-styles
