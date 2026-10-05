@@ -29,9 +29,8 @@ artifacts-monorepo/
 │   │       ├── index.html          # Fonts: Playfair Display, Source Serif 4, DM Sans
 │   │       ├── components/
 │   │       │   ├── layout/
-│   │       │   │   ├── Navbar.tsx          # Globe logo, search, dropdown countries
+│   │       │   │   ├── Navbar.tsx          # 56px header: logo, search, Countries, Newsletter, phone menu
 │   │       │   │   ├── Footer.tsx          # 4-col dark footer, newsletter form
-│   │       │   │   ├── BreakingTicker.tsx  # Animated scrolling ticker
 │   │       │   │   └── AppLayout.tsx       # Wraps Navbar + Footer
 │   │       │   ├── article/
 │   │       │   │   ├── ArticleCard.tsx     # 4 variants: standard, featured, side, compact
@@ -96,13 +95,13 @@ Nigeria, South Africa, Kenya, Egypt, Ghana, Morocco, Ethiopia, Tanzania, Uganda,
 
 - **Auto ingestion**: RSS feeds polled on startup and every 60 minutes
 - **Category classifier**: Weighted keyword matching → 8 categories
-- **Breaking ticker**: Animated scrolling latest headlines
+- **Status line**: one line above the stream, "N countries, M sources, updated X ago", read from the API
 - **Hero grid**: Featured (large left) + 2 side cards (right column)
 - **Category pills**: Inline filter (no routing) with emoji icons
 - **Sidebar**: Trending #1–5, Region article counts, Newsletter signup
 - **Monetization**: `/advertise` + `/api-access` pages; ad banner slots
 - **Newsletter**: DB subscriber table + POST `/api/newsletter/subscribe`; welcome email via Resend (RESEND_API_KEY secret; sends from `onboarding@resend.dev` — add a verified domain in Resend dashboard to use a custom from address)
-- **Countries dropdown**: 5-column Navbar dropdown by region
+- **Countries**: header link to the `/countries` page (the dropdown was removed)
 - **Pagination**: Page-based with smooth scroll-to-top
 
 ## API Endpoints
