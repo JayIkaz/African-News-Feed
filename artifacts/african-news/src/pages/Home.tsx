@@ -1,30 +1,29 @@
+import { Fragment } from "react";
 import { useSearch } from "wouter";
-import { useGetTopStories } from "@workspace/api-client-react";
-import { useMediaQuery } from "@/lib/useMediaQuery";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { ArticleCard } from "@/components/article/ArticleCard";
-import { TopStoriesCarousel } from "@/components/article/TopStoriesCarousel";
 import { Sidebar } from "@/components/article/Sidebar";
 import { ListingFilters, NewerLink, PastTheEnd, ShowMore } from "@/components/article/ListingParts";
-import { PulseDivider } from "@/components/common/PulseDivider";
 import { SiteStatus } from "@/components/common/SiteStatus";
 import { AdBanner } from "@/components/ads/AdBanner";
 import { CheckCheck, Eraser, Inbox } from "lucide-react";
 import { useReadHistory } from "@/lib/useReadHistory";
 import { listingHref, parseListingQuery } from "@/lib/listing";
 import { useListing } from "@/lib/useListing";
+import { useNow } from "@/lib/useNow";
+import { groupByTime } from "@/lib/timeGroups";
 import { usePageMeta } from "@/lib/usePageMeta";
 
+// Stories to a page, and the number of rows before the in-stream advert.
 const LIMIT = 10;
 
 export default function Home() {
   const { page } = parseListingQuery(useSearch(), false);
-  const isMobile = useMediaQuery("(max-width: 640px)");
   const { isRead, markAllRead, clearHistory, readIds } = useReadHistory();
   const hrefFor = (p: number) => listingHref({ page: p });
 
-  const { data: topStories, isLoading: topLoading } = useGetTopStories({ limit: 3 });
   const list = useListing({}, page, LIMIT);
+  const now = useNow();
   const pastTheEnd = !list.isLoading && !list.failed && page > 1 && list.articles.length === 0;
   // The first page keeps the title of index.html; later pages say which page
   // they are, so no two share one.
@@ -32,6 +31,20 @@ export default function Home() {
     title: page > 1 ? `Latest African news, page ${page} | AfricaNews` : undefined,
     noindex: pastTheEnd,
   });
+
+  // One stream, newest first, under a heading for how long ago it was
+  // published. Each group remembers how many rows come before it, so the advert
+  // can be placed after the tenth row wherever that falls.
+  let rowsBefore = 0;
+  const groups = groupByTime(list.articles, (a) => a.publishedDate, now).map((group) => {
+    const firstRow = rowsBefore;
+    rowsBefore += group.items.length;
+    return { ...group, firstRow };
+  });
+  // Only once a full page of ten has loaded, so the advert never sits among
+  // skeletons and then jumps.
+  const showAd = !list.isLoading && list.articles.length >= LIMIT;
+
   return (
     <AppLayout>
       {/* The page had no h1. Screen-reader and search users get one; sighted
@@ -41,73 +54,12 @@ export default function Home() {
       <div className="an-container">
         <SiteStatus />
 
-        {/* One grid for the whole page: the stories on the left, the right-hand
-            column on the right from the first headline down. The column's
-            top is the advert space, level with the "Newest" heading. */}
+        {/* One grid for the whole page: the stream on the left, the right-hand
+            column on the right from the first row down. The column's top, the
+            advert space, is level with the section links. */}
         <div className="an-content-with-sidebar an-home-grid">
-
           <div>
-            {/* The lede block is held to the same column as the feed below it,
-                so the page reads at one measure instead of switching width
-                mid-scroll. */}
-
-            {/* ── Hero / Top Stories ── */}
-            <section>
-              <h2 className="an-section-title">Newest</h2>
-
-              {isMobile ? (
-                /* Mobile: swipeable carousel */
-                topLoading ? (
-                  <div className="an-carousel-root">
-                    {/* Matches the carousel slide's 300px (spec §7) */}
-                    <div className="an-skeleton" style={{ height: 300 }} />
-                  </div>
-                ) : topStories?.articles && topStories.articles.length > 0 ? (
-                  <TopStoriesCarousel articles={topStories.articles} />
-                ) : (
-                  <div style={{ padding: "40px 24px", textAlign: "center", color: "var(--ink-4)", fontFamily: "var(--font-ui)", fontSize: 14 }}>
-                    No top stories available.
-                  </div>
-                )
-              ) : (
-                /* Desktop: spec §4 top-story card full width, with the next two
-                   stories as ordinary feed rows beneath it */
-                <>
-                  {topLoading ? (
-                    <>
-                      {/* Matches the top story's 380px so the feed doesn't jump on load */}
-                      <div className="an-skeleton an-top-story" style={{ borderRadius: 0, marginBottom: 12 }} />
-                      <div className="an-story-list">
-                        <div className="an-skeleton an-skeleton-row" />
-                        <div className="an-skeleton an-skeleton-row" />
-                      </div>
-                    </>
-                  ) : topStories?.articles && topStories.articles.length > 0 ? (
-                    <>
-                      <div style={{ marginBottom: 12 }}>
-                        <ArticleCard article={topStories.articles[0]} featured />
-                      </div>
-                      {(topStories.articles[1] || topStories.articles[2]) && (
-                        <div className="an-story-list">
-                          {topStories.articles[1] && <ArticleCard article={topStories.articles[1]} />}
-                          {topStories.articles[2] && <ArticleCard article={topStories.articles[2]} />}
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: 40, color: "var(--ink-4)", fontFamily: "var(--font-ui)", fontSize: 14 }}>
-                      No top stories available.
-                    </div>
-                  )}
-                </>
-              )}
-            </section>
-
-            {/* Spec §5: the one place the pulse divider appears — the structural
-                boundary between the top story and everything below it. */}
-            <PulseDivider />
-
-            {/* ── Section links and tools ── no ad sits above them or above the first headline ── */}
+            {/* ── Section links and tools ── */}
             <ListingFilters showCountry>
               {/* Reading tools, opposite the country menu. */}
               {(list.articles.length > 0 || readIds.size > 0) && (
@@ -134,35 +86,39 @@ export default function Home() {
               )}
             </ListingFilters>
 
-            {/* ── Latest news ── */}
+            {/* ── The stream ── */}
             <div className="an-home-feed">
-              <div className="an-section-head">
-                <h2 className="an-section-title">Latest news</h2>
-                {list.total !== undefined && (
-                  <span className="an-section-count">
-                    {list.total.toLocaleString()} articles
-                  </span>
-                )}
-              </div>
-
               <NewerLink startPage={page} hrefFor={hrefFor} />
 
-              <div className="an-story-list an-articles-fade">
+              <div className="an-articles-fade">
                 {list.isLoading ? (
-                  /* Row-shaped, matching what loads in — the old 16/9 card
-                     skeleton described a layout the feed no longer uses and
-                     made the page jump when articles arrived. */
-                  Array(6).fill(0).map((_, i) => (
-                    <div key={i} className="an-skeleton an-skeleton-row" />
-                  ))
-                ) : list.articles.length > 0 ? (
-                  list.articles.slice(0, LIMIT).map((article) => (
-                    <ArticleCard key={article.id} article={article} isRead={isRead(article.id)} />
+                  /* Row-shaped, matching what loads in, so the page does not
+                     jump when the stories arrive. */
+                  <div className="an-story-list">
+                    {Array(6).fill(0).map((_, i) => (
+                      <div key={i} className="an-skeleton an-skeleton-row" />
+                    ))}
+                  </div>
+                ) : groups.length > 0 ? (
+                  groups.map((group) => (
+                    <section key={group.key} className="an-time-group" aria-labelledby={`an-time-${group.key}`}>
+                      <h2 id={`an-time-${group.key}`} className="an-time-heading">{group.label}</h2>
+                      <div className="an-story-list">
+                        {group.items.map((article, i) => (
+                          <Fragment key={article.id}>
+                            <ArticleCard article={article} isRead={isRead(article.id)} />
+                            {/* After the tenth row, inside the group it falls in:
+                                never straight under a heading. */}
+                            {showAd && group.firstRow + i === LIMIT - 1 && <AdBanner slot="inline" />}
+                          </Fragment>
+                        ))}
+                      </div>
+                    </section>
                   ))
                 ) : pastTheEnd ? (
                   <PastTheEnd firstHref={hrefFor(1)} />
                 ) : (
-                  <div style={{ gridColumn: "1/3", textAlign: "center", padding: "60px 24px", color: "var(--ink-4)" }}>
+                  <div style={{ textAlign: "center", padding: "60px 24px", color: "var(--ink-4)" }}>
                     <Inbox size={40} strokeWidth={1.5} aria-hidden="true" style={{ marginBottom: 16 }} />
                     <h3 style={{ fontFamily: "var(--font-headline)", fontSize: 20, color: "var(--ink-3)", marginBottom: 8 }}>No articles found</h3>
                     <p style={{ fontFamily: "var(--font-ui)", fontSize: 14 }}>Check back soon.</p>
@@ -170,18 +126,6 @@ export default function Home() {
                 )}
               </div>
 
-              {/* One ad row after the tenth story, only once a full page of ten
-                  has loaded, so it never sits among skeletons and then jumps.
-                  Stories added with "Show more" go under it. */}
-              {!list.isLoading && list.articles.length >= LIMIT && <AdBanner slot="inline" />}
-
-              {list.articles.length > LIMIT && (
-                <div className="an-story-list">
-                  {list.articles.slice(LIMIT).map((article) => (
-                    <ArticleCard key={article.id} article={article} isRead={isRead(article.id)} />
-                  ))}
-                </div>
-              )}
               {list.isLoadingMore && (
                 <div className="an-story-list">
                   {Array(3).fill(0).map((_, i) => (
