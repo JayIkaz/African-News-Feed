@@ -24,7 +24,7 @@ function WidgetHeader({ title }: { title: string }) {
 
 function Widget({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ background: "var(--surface-1)", border: "1px solid var(--paper-3)", borderRadius: 10, overflow: "hidden" }}>
+    <div style={{ background: "var(--surface-1)", border: "1px solid var(--paper-3)", borderRadius: "var(--radius-lg)", overflow: "hidden" }}>
       {children}
     </div>
   );
@@ -62,7 +62,7 @@ export function Sidebar() {
                 <span style={{ width: 8, height: 8, borderRadius: "50%", background: color, flexShrink: 0 }} />
                 {label}
               </span>
-              <span style={{ fontFamily: "var(--font-ui)", fontSize: 12, color: "var(--ink-4)", background: "var(--paper-2)", padding: "2px 8px", borderRadius: 20 }}>
+              <span style={{ fontFamily: "var(--font-ui)", fontSize: 12, color: "var(--ink-4)", background: "var(--paper-2)", padding: "2px 8px", borderRadius: "var(--radius-pill)" }}>
                 {regionCounts[key]?.toLocaleString() ?? "—"}
               </span>
             </Link>
@@ -76,7 +76,7 @@ export function Sidebar() {
         style={{
           background: "var(--paper-2)",
           color: "var(--ink)",
-          borderRadius: 10,
+          borderRadius: "var(--radius-lg)",
           padding: 20,
           position: "relative",
           overflow: "hidden",
