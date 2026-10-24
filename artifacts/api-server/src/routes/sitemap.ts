@@ -50,7 +50,7 @@ router.get("/", async (_req, res) => {
     for (const row of categoryRows) {
       if (!row.category) continue;
       entries.push(
-        urlEntry(`${SITE_URL}${categoryPath(row.category)}`, today, "hourly", "0.8")
+        urlEntry(`${SITE_URL}${categoryPath(row.category)}`, today, "daily", "0.8")
       );
     }
 
@@ -63,7 +63,7 @@ router.get("/", async (_req, res) => {
     for (const row of countryRows) {
       if (!row.country) continue;
       entries.push(
-        urlEntry(`${SITE_URL}${countryPath(row.country)}`, today, "hourly", "0.8")
+        urlEntry(`${SITE_URL}${countryPath(row.country)}`, today, "daily", "0.8")
       );
     }
 
@@ -118,7 +118,14 @@ ${entries.join("\n")}
 </urlset>`;
 
     res.setHeader("Content-Type", "application/xml");
-    res.setHeader("Cache-Control", "public, max-age=3600, stale-while-revalidate=1800");
+    // s-maxage is what Vercel's CDN reads; max-age alone only caches in the
+    // browser, so every crawler fetch was re-running the ~50 queries above.
+    // stale-while-revalidate lets the edge serve the previous copy while it
+    // refreshes, so a crawl burst never queues behind a rebuild.
+    res.setHeader(
+      "Cache-Control",
+      "public, max-age=600, s-maxage=3600, stale-while-revalidate=86400",
+    );
     res.status(200).send(xml);
   } catch (err) {
     console.error("Error generating sitemap:", err);

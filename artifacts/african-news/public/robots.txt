@@ -1,4 +1,116 @@
-User-agent: *
+# Search engines that send readers here are welcome, uncapped.
+# Each of these matches its own block and ignores the wildcard rules below,
+# so the Crawl-delay at the foot of this file does not apply to them.
+
+User-agent: Googlebot
 Allow: /
 
-Sitemap: https://africannewsfeed.news/sitemap.xml
+User-agent: Bingbot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+# Social and messaging link previews. These fetch a page once when someone
+# shares it, and vercel.json routes them to the server-rendered /api/share
+# response. Blocking any of them breaks link previews on that platform.
+
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: Slackbot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: TelegramBot
+Allow: /
+
+User-agent: Discordbot
+Allow: /
+
+# AI crawlers that take content without sending readers back.
+#
+# These all honour robots.txt. The ones that do not are handled at the edge
+# instead; robots.txt cannot stop a crawler that chooses to ignore it.
+#
+# Google-Extended and Applebot-Extended are training-only agents, separate
+# from Googlebot and Applebot above: disallowing them opts this site out of
+# Gemini and Apple Intelligence training without affecting search ranking.
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: PerplexityBot
+Disallow: /
+
+User-agent: Amazonbot
+Disallow: /
+
+User-agent: Meta-ExternalAgent
+Disallow: /
+
+User-agent: Meta-ExternalFetcher
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: Applebot-Extended
+Disallow: /
+
+User-agent: cohere-ai
+Disallow: /
+
+User-agent: Diffbot
+Disallow: /
+
+User-agent: ImagesiftBot
+Disallow: /
+
+User-agent: Omgilibot
+Disallow: /
+
+User-agent: YouBot
+Disallow: /
+
+User-agent: Scrapy
+Disallow: /
+
+# Everything else: allowed, but paced. Crawl-delay is advisory and ignored by
+# Google (which is why Googlebot has its own block above), but Bing and several
+# smaller crawlers do honour it.
+
+User-agent: *
+Allow: /
+Crawl-delay: 10
+
+Sitemap: https://www.africannewsfeed.news/sitemap.xml
