@@ -19,17 +19,20 @@ import type { Request, Response, NextFunction } from "express";
 // for a minute turns a blip into a minute of outage, and caching a 404 outlives
 // the article that is about to exist.
 //
-// This deliberately overwrites any Cache-Control already on the response. An
-// earlier version skipped when one was present, meaning to defer to a handler
-// that had set its own — but Vercel's Node runtime puts a default
-// `public, max-age=0, must-revalidate` on the response before the handler runs,
-// so that check only ever saw the platform default and stood down, and the
-// header never reached production. Nothing is lost by overwriting: the two
-// routes that set their own value, share.ts and sitemap.ts, both answer with
-// res.send and never pass through here, which only wraps res.json.
+// This overwrites any Cache-Control already on the response. Nothing is lost by
+// doing so: the two routes that set their own value, share.ts and sitemap.ts,
+// both answer with res.send and never pass through here, which only wraps
+// res.json. (An earlier revision guarded on the header being absent. A probe
+// run against production showed Cache-Control is unset when a request arrives,
+// so that guard was harmless either way, but unconditional is simpler.)
+//
+// HEAD is handled alongside GET. Express answers a HEAD request through the
+// matching GET handler, and a HEAD response is required to carry the same
+// headers as the GET it stands in for — so excluding it both broke the contract
+// and made `curl -I` report no caching on a route that was caching correctly.
 export function publicCache(maxAge: number, sMaxAge: number, staleWhileRevalidate: number) {
   return (req: Request, res: Response, next: NextFunction): void => {
-    if (req.method !== "GET") {
+    if (req.method !== "GET" && req.method !== "HEAD") {
       next();
       return;
     }
