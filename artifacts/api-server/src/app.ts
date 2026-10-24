@@ -24,6 +24,13 @@ const allowedOriginPatterns: RegExp[] = [
 
 app.use(
   cors({
+    // Cache the CORS preflight. Calling the API cross-origin means any request
+    // carrying a non-safelisted header (Authorization, above all) is preceded by
+    // an OPTIONS preflight. Without a max-age the browser repeats that preflight
+    // constantly, which would add back the edge requests this change removes.
+    // Browsers cap this themselves (Chrome at 2 hours); the value is an upper
+    // bound, not a promise.
+    maxAge: 86400,
     origin(origin, callback) {
       if (
         !origin ||
