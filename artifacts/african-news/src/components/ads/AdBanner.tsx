@@ -1,14 +1,18 @@
+import { useEffect, useState } from "react";
 import { Link } from "wouter";
 import { ArrowRight } from "lucide-react";
-import { getAdCreative, type AdSlotId } from "@/lib/ads";
+import { getAdCreatives, type AdCreative, type AdSlotId } from "@/lib/ads";
 
 interface AdBannerProps {
   slot: AdSlotId;
 }
 
+// How long each creative stays up before the next one wipes in.
+const ROTATE_MS = 7000;
+
 // The right-hand column slot is held open before an advert is sold: a panel of
 // the same 300 x 250 size says the space is available and links to the
-// Advertise page. When a creative is configured in src/lib/ads.ts it takes the
+// Advertise page. When creatives are configured in src/lib/ads.ts they take the
 // panel's place at the same size, so nothing around it moves. The panel is the
 // site's own notice, not an advertisement, so it carries no "Advertisement"
 // label.
@@ -27,24 +31,77 @@ function AvailableRailSlot() {
   );
 }
 
+function usePrefersReducedMotion(): boolean {
+  const [reduced, setReduced] = useState(
+    () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  );
+  useEffect(() => {
+    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const onChange = () => setReduced(query.matches);
+    query.addEventListener("change", onChange);
+    return () => query.removeEventListener("change", onChange);
+  }, []);
+  return reduced;
+}
+
+// "entering" is false for the creative shown on first load, so it appears
+// plainly while its image loads. Every later change of creative wipes in.
+function Slide({ creative, active, entering }: { creative: AdCreative; active: boolean; entering: boolean }) {
+  const classes = ["an-ad-slide", active ? "is-active" : "", active && entering ? "is-entering" : ""]
+    .filter(Boolean)
+    .join(" ");
+  return (
+    <a href={creative.href} target="_blank" rel="sponsored noopener noreferrer" className={classes}>
+      <picture>
+        {creative.mobileImage && <source media="(max-width: 640px)" srcSet={creative.mobileImage} />}
+        <img src={creative.image} alt={creative.alt} loading="lazy" />
+      </picture>
+    </a>
+  );
+}
+
 // The inline slot renders nothing until a creative is configured. When one is,
-// the box has a fixed aspect ratio from the first paint (see .an-ad in
-// index.css), so a slow image cannot move the content around it. The label is
-// visible text, not just a screen-reader name, so readers can tell an ad from
-// a story.
+// the frame has a fixed aspect ratio from the first paint (see .an-ad in
+// index.css), and every creative is stacked inside it, so neither a slow image
+// nor a change of creative can move the content around it. With more than one
+// creative the slot wipes between them. The rotation pauses while the pointer
+// or keyboard focus is on the advert, and it does not run at all for visitors
+// who have asked for reduced motion: they see the first creative only. The
+// label is visible text, not just a screen-reader name, so readers can tell an
+// ad from a story.
 export function AdBanner({ slot }: AdBannerProps) {
-  const creative = getAdCreative(slot);
-  if (!creative) return slot === "rail" ? <AvailableRailSlot /> : null;
+  const creatives = getAdCreatives(slot);
+  const [index, setIndex] = useState(0);
+  const [hasRotated, setHasRotated] = useState(false);
+  const [paused, setPaused] = useState(false);
+  const reducedMotion = usePrefersReducedMotion();
+  const rotating = creatives.length > 1 && !reducedMotion && !paused;
+
+  useEffect(() => {
+    if (!rotating) return;
+    const timer = window.setInterval(() => {
+      setHasRotated(true);
+      setIndex((current) => (current + 1) % creatives.length);
+    }, ROTATE_MS);
+    return () => window.clearInterval(timer);
+  }, [rotating, creatives.length]);
+
+  if (creatives.length === 0) return slot === "rail" ? <AvailableRailSlot /> : null;
 
   return (
-    <div className={`an-ad an-ad--${slot}`}>
+    <div
+      className={`an-ad an-ad--${slot}`}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
+    >
       <p className="an-ad-label">Advertisement</p>
-      <a href={creative.href} target="_blank" rel="sponsored noopener noreferrer" className="an-ad-frame">
-        <picture>
-          {creative.mobileImage && <source media="(max-width: 640px)" srcSet={creative.mobileImage} />}
-          <img src={creative.image} alt={creative.alt} loading="lazy" />
-        </picture>
-      </a>
+      <div className="an-ad-frame an-ad-stack">
+        {creatives.map((creative, i) => (
+          <Slide key={creative.image} creative={creative} active={i === index} entering={hasRotated} />
+        ))}
+      </div>
     </div>
   );
 }
