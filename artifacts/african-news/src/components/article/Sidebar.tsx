@@ -1,45 +1,112 @@
 import { Link } from "wouter";
+import { ArrowRight } from "lucide-react";
 import { useListCountries } from "@workspace/api-client-react";
 import { COUNTRY_REGIONS } from "@/lib/countries";
 import { NewsletterForm } from "@/components/common/NewsletterForm";
 import { AdBanner } from "@/components/ads/AdBanner";
 
-const REGIONS = [
-  { label: "North Africa", key: "North Africa", color: "var(--region-north)" },
-  { label: "West Africa", key: "West Africa", color: "var(--region-west)" },
-  { label: "East Africa", key: "East Africa", color: "var(--region-east)" },
-  { label: "Central Africa", key: "Central Africa", color: "var(--region-central)" },
-  { label: "Southern Africa", key: "Southern Africa", color: "var(--region-south)" },
-];
+const REGIONS = ["North Africa", "West Africa", "East Africa", "Central Africa", "Southern Africa"] as const;
 
-function WidgetHeader({ title }: { title: string }) {
-  return (
-    <div style={{ padding: "14px 18px", borderBottom: "1px solid var(--paper-2)", display: "flex", alignItems: "center", gap: 8 }}>
-      <h3 style={{ fontFamily: "var(--font-ui)", fontSize: 12, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--ink-2)" }}>
-        {title}
-      </h3>
-    </div>
-  );
-}
+// Gap between bar segments, in the bar's own units (the bar is 100 wide).
+const BAR_GAP = 0.8;
 
-function Widget({ children }: { children: React.ReactNode }) {
+const percent = (share: number) => (share > 0 && share < 0.005 ? "<1%" : `${Math.round(share * 100)}%`);
+
+function RegionsCard() {
+  const { data: countries, isLoading } = useListCountries();
+
+  // Stories per region, summed from the countries in that region. Countries
+  // with no region are left out, so the total is of the five regions only.
+  const rows = REGIONS.map((name) => ({
+    name,
+    count: (countries ?? [])
+      .filter((c) => COUNTRY_REGIONS[c.country] === name)
+      .reduce((sum, c) => sum + c.articleCount, 0),
+  }))
+    .sort((a, b) => b.count - a.count)
+    .map((row, i) => ({ ...row, rank: i + 1 }));
+  const total = rows.reduce((sum, r) => sum + r.count, 0);
+  const ready = !isLoading && total > 0;
+
+  // Segment positions: each is its share of the bar, less its share of the gaps.
+  const usable = 100 - BAR_GAP * (rows.length - 1);
+  let x = 0;
+  const segments = rows.map((row) => {
+    const width = ready ? (row.count / total) * usable : 0;
+    const segment = { ...row, x, width };
+    x += width + BAR_GAP;
+    return segment;
+  });
+
+  const summary = ready
+    ? `Share of stories by region: ${rows.map((r) => `${r.name.replace(" Africa", "")} ${Math.round((r.count / total) * 100)} percent`).join(", ")}`
+    : undefined;
+
   return (
-    <div style={{ background: "var(--surface-1)", border: "1px solid var(--paper-3)", borderRadius: "var(--radius-lg)", overflow: "hidden" }}>
-      {children}
-    </div>
+    <section className="an-regions" aria-labelledby="an-regions-title">
+      <header className="an-regions-header">
+        <h2 id="an-regions-title" className="an-regions-title">Browse by region</h2>
+      </header>
+
+      {isLoading ? (
+        <div className="an-regions-loading an-skeleton" aria-hidden="true" />
+      ) : (
+        <>
+          {ready && (
+            <div className="an-regions-summary">
+              <div className="an-regions-total">{total.toLocaleString()}</div>
+              <div className="an-regions-caption">stories across five regions</div>
+              <svg
+                className="an-regions-bar"
+                viewBox="0 0 100 1"
+                preserveAspectRatio="none"
+                role="img"
+                aria-label={summary}
+              >
+                {segments
+                  .filter((s) => s.width > 0)
+                  .map((s) => (
+                    <rect
+                      key={s.name}
+                      x={s.x}
+                      y={0}
+                      width={s.width}
+                      height={1}
+                      className={`an-regions-seg an-regions-seg--${s.rank}`}
+                    />
+                  ))}
+              </svg>
+            </div>
+          )}
+
+          <ul className="an-regions-list">
+            {rows.map((row) => (
+              <li key={row.name}>
+                <Link href={`/countries?region=${encodeURIComponent(row.name)}`} className="an-regions-row">
+                  <span className={`an-regions-swatch an-regions-swatch--${row.rank}`} aria-hidden="true" />
+                  <span className="an-regions-name">{row.name}</span>
+                  <span className="an-regions-share">{ready ? percent(row.count / total) : ""}</span>
+                  <span className="an-regions-count">{ready ? row.count.toLocaleString() : "—"}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+
+      <footer className="an-regions-footer">
+        <Link href="/countries" className="an-regions-all">
+          {countries && countries.length > 0 ? `All ${countries.length} countries` : "All countries"}
+          <ArrowRight size={14} strokeWidth={2} aria-hidden="true" />
+        </Link>
+      </footer>
+    </section>
   );
 }
 
 export function Sidebar() {
-  const { data: countries } = useListCountries();
-  const regionCounts = REGIONS.reduce<Record<string, number>>((acc, { key }) => {
-    acc[key] = (countries ?? []).filter(c => COUNTRY_REGIONS[c.country] === key)
-      .reduce((sum, c) => sum + c.articleCount, 0);
-    return acc;
-  }, {});
-
   return (
-    <aside style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+    <aside className="an-sidebar">
       {/* The top of the right-hand column: the one rail ad slot. */}
       <AdBanner slot="rail" />
 
@@ -48,40 +115,10 @@ export function Sidebar() {
           the label promised a ranking nothing computes. Restore it with a
           real signal (plan row P3-3). */}
 
-      {/* Browse by Region */}
-      <Widget>
-        <WidgetHeader title="Browse by Region" />
-        <div style={{ padding: "16px 18px" }}>
-          {REGIONS.map(({ label, key, color }) => (
-            <Link
-              key={key}
-              href={`/countries?region=${encodeURIComponent(key)}`}
-              className="an-region-row"
-            >
-              <span className="an-region-row-label">
-                <span style={{ width: 8, height: 8, borderRadius: "50%", background: color, flexShrink: 0 }} />
-                {label}
-              </span>
-              <span style={{ fontFamily: "var(--font-ui)", fontSize: 12, color: "var(--ink-4)", background: "var(--paper-2)", padding: "2px 8px", borderRadius: "var(--radius-pill)" }}>
-                {regionCounts[key]?.toLocaleString() ?? "—"}
-              </span>
-            </Link>
-          ))}
-        </div>
-      </Widget>
+      <RegionsCard />
 
       {/* Newsletter */}
-      <div
-        id="sidebar-newsletter"
-        style={{
-          background: "var(--paper-2)",
-          color: "var(--ink)",
-          borderRadius: "var(--radius-lg)",
-          padding: 20,
-          position: "relative",
-          overflow: "hidden",
-        }}
-      >
+      <div id="sidebar-newsletter" className="an-sidebar-newsletter">
         <NewsletterForm />
       </div>
     </aside>

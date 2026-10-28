@@ -3,6 +3,7 @@ import { useSearch } from "wouter";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { ArticleCard } from "@/components/article/ArticleCard";
 import { Sidebar } from "@/components/article/Sidebar";
+import { TopStories } from "@/components/article/TopStories";
 import { ListingFilters, NewerLink, PastTheEnd, ShowMore } from "@/components/article/ListingParts";
 import { SiteStatus } from "@/components/common/SiteStatus";
 import { AdBanner } from "@/components/ads/AdBanner";
@@ -52,13 +53,16 @@ export default function Home() {
       <h1 className="sr-only">AfricaNews: headlines from African news publishers</h1>
 
       <div className="an-container">
-        <SiteStatus />
-
         {/* One grid for the whole page: the stream on the left, the right-hand
             column on the right from the first row down. The column's top, the
-            advert space, is level with the section links. */}
+            advert space, is level with the top of the latest-stories card. */}
         <div className="an-content-with-sidebar an-home-grid">
           <div>
+            {/* ── The newest stories that have pictures ── */}
+            <TopStories />
+
+            <SiteStatus />
+
             {/* ── Section links and tools ── */}
             <ListingFilters showCountry>
               {/* Reading tools, opposite the country menu. */}
