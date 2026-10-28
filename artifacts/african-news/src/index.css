@@ -1838,3 +1838,80 @@ html {
   color: var(--ink);
   text-decoration: underline;
 }
+
+/* -- ROTATING ADVERTS --
+   The frame keeps the slot's aspect ratio and every creative is stacked inside
+   it, so a change of image never moves the page. The incoming creative wipes
+   in on a slanted edge and settles from a slight zoom; the outgoing one stays
+   in place underneath until the wipe has covered it, then is hidden. Hidden
+   creatives use visibility, which also takes them out of the tab order and away
+   from screen readers. The slant is set per slot so the angle looks similar on
+   the tall rail and the wide inline banner. */
+.an-ad--rail {
+  --an-ad-slant: 16%;
+}
+
+.an-ad--inline {
+  --an-ad-slant: 6%;
+}
+
+.an-ad-stack {
+  position: relative;
+}
+
+.an-ad-slide {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  visibility: hidden;
+  transition: visibility 0s linear 0.95s;
+}
+
+.an-ad-slide.is-active {
+  z-index: 2;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.an-ad-slide picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.an-ad-slide.is-entering {
+  animation: an-ad-wipe 0.9s cubic-bezier(0.77, 0, 0.175, 1) backwards;
+}
+
+.an-ad-slide.is-entering img {
+  animation: an-ad-settle 1.5s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+}
+
+@keyframes an-ad-wipe {
+  from {
+    clip-path: polygon(0 0, 0 0, calc(var(--an-ad-slant) * -1) 100%, 0 100%);
+  }
+  to {
+    clip-path: polygon(0 0, calc(100% + var(--an-ad-slant)) 0, 100% 100%, 0 100%);
+  }
+}
+
+@keyframes an-ad-settle {
+  from {
+    transform: scale(1.06);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .an-ad-slide {
+    transition: none;
+  }
+  .an-ad-slide.is-entering,
+  .an-ad-slide.is-entering img {
+    animation: none;
+  }
+}
