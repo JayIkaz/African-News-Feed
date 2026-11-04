@@ -57,7 +57,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api", router);
 
 // Ingestion scheduling and seeding no longer happen at import time — GitHub
-// Actions (.github/workflows/ingest.yml) owns the hourly cron, and seeding
+// Actions (.github/workflows/ingest.yml) owns the schedule, and seeding
 // runs from the ingest script or the long-lived server entrypoint. Import-time
 // side effects would fire on every serverless cold start.
 

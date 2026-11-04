@@ -14,7 +14,7 @@ app.listen(port, () => {
 
   // Long-lived server only (Replit / local dev). On Vercel serverless this
   // file is never the entrypoint (api/index.js imports app directly), and the
-  // hourly GitHub Actions cron owns ingestion in production.
+  // scheduled GitHub Actions job owns ingestion in production.
   seedSourcesIfEmpty()
     .then(() => {
       if (process.env.ENABLE_IN_PROCESS_INGESTION === "1") {

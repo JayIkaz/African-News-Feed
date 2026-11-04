@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getGetIngestionStatusQueryKey, useGetIngestionStatus } from "@workspace/api-client-react";
 
-// When the hourly job last fetched a publisher: the newest lastFetched across
+// When the ingestion job last fetched a publisher: the newest lastFetched across
 // every source, from the ingestion status endpoint. Null until it is known,
 // and null if the endpoint fails or no source has a time, so the page leaves
 // the claim out rather than guessing one.

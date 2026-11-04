@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { useQueries } from "@tanstack/react-query";
-import { getListArticlesQueryOptions, type Article, type ListArticlesParams } from "@workspace/api-client-react";
+import {
+  getListArticlesQueryKey,
+  getListArticlesQueryOptions,
+  type Article,
+  type ListArticlesParams,
+} from "@workspace/api-client-react";
+import { LIVE_LIST } from "./liveQuery";
 
 export interface ListingResult {
   articles: Article[];
@@ -40,7 +46,15 @@ export function useListing(
 
   const pages = Array.from({ length: extra + 1 }, (_, i) => startPage + i);
   const results = useQueries({
-    queries: pages.map((page) => getListArticlesQueryOptions({ ...filter, page, limit })),
+    // Every page shown is fetched again together, so the pages stay one list: if
+    // only the first were, stories pushed down by a new arrival would fall
+    // between it and the second.
+    queries: pages.map((page) => {
+      const params = { ...filter, page, limit };
+      return getListArticlesQueryOptions(params, {
+        query: { queryKey: getListArticlesQueryKey(params), ...LIVE_LIST },
+      });
+    }),
   });
 
   // The same story can fall on two pages when new ones arrive between the

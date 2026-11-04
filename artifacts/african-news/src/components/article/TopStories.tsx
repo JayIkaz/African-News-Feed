@@ -1,7 +1,8 @@
 import { useCallback, useState } from "react";
 import { Link } from "wouter";
 import { formatDistanceToNow, isValid } from "date-fns";
-import { useListArticles, type Article } from "@workspace/api-client-react";
+import { getListArticlesQueryKey, useListArticles, type Article } from "@workspace/api-client-react";
+import { LIVE_LIST } from "@/lib/liveQuery";
 import { getArticleImage } from "@/lib/articleImage";
 import { truncateToWord } from "@/lib/truncate";
 
@@ -92,7 +93,10 @@ function Row({ article, onImageError }: TileProps) {
 // image that then fails to load is dropped and the next story takes its place.
 // These stories also appear in the feed below; that repeat is deliberate.
 export function TopStories() {
-  const { data, isLoading, isError } = useListArticles({ limit: LOOK_AT });
+  const { data, isLoading, isError } = useListArticles(
+    { limit: LOOK_AT },
+    { query: { queryKey: getListArticlesQueryKey({ limit: LOOK_AT }), ...LIVE_LIST } },
+  );
   const [failed, setFailed] = useState<ReadonlySet<number>>(new Set());
   const retire = useCallback((id: number) => {
     setFailed((prev) => (prev.has(id) ? prev : new Set(prev).add(id)));
