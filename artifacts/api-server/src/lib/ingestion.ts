@@ -3,6 +3,7 @@ import { sourcesTable, articlesTable, type InsertArticle } from "@workspace/db/s
 import { eq, inArray, sql } from "drizzle-orm";
 import { detectLanguage } from "./detectLanguage";
 import { cleanSummary } from "./cleanSummary";
+import { clockOffsetMinutes, resolvePublishedDate } from "./publishedDate";
 
 interface RssItem {
   title?: string;
@@ -369,7 +370,13 @@ export async function ingestSource(source: typeof sourcesTable.$inferSelect): Pr
     await db.update(sourcesTable).set({ fetchStatus: "fetching" }).where(eq(sourcesTable.id, source.id));
 
     const items = await parseRss(source.rssUrl);
+    const fetchedAt = new Date();
+    const clockOffset = clockOffsetMinutes(source);
     let inserted = 0;
+    let added = 0;
+    let capped = 0;
+    let failed = 0;
+    let firstFailure: unknown;
 
     const candidateLinks = items
       .slice(0, 50)
@@ -392,13 +399,9 @@ export async function ingestSource(source: typeof sourcesTable.$inferSelect): Pr
       const summary = cleanSummary(rawSummary, source.name).slice(0, 2000);
       const category = classifyArticle(title, summary, item.category);
 
-      let publishedDate: Date;
-      try {
-        publishedDate = item.pubDate ? new Date(item.pubDate) : new Date();
-        if (isNaN(publishedDate.getTime())) publishedDate = new Date();
-      } catch {
-        publishedDate = new Date();
-      }
+      const resolved = resolvePublishedDate(item.pubDate, fetchedAt, clockOffset);
+      if (resolved.capped) capped++;
+      const publishedDate = resolved.date;
 
       let imageUrl: string | null = item.imageUrl ?? null;
 
@@ -429,15 +432,33 @@ export async function ingestSource(source: typeof sourcesTable.$inferSelect): Pr
             set: {
               summary: article.summary,
               category: article.category,
+              // A date is only ever moved earlier. This repairs a story that was
+              // stored with a date from the future, or two hours out (see
+              // publishedDate.ts), while it is still in the feed. It never moves
+              // a date later, so a publisher re-dating an old story cannot lift
+              // it back to the top.
+              publishedDate: sql`LEAST(${articlesTable.publishedDate}, excluded.published_date)`,
               imageUrl: article.imageUrl != null
                 ? article.imageUrl
                 : sql`${articlesTable.imageUrl}`,
             },
           });
         inserted++;
-      } catch {
-        // ignore unexpected errors
+        if (!existingUrls.has(item.link)) added++;
+      } catch (err) {
+        // One bad item must not stop the rest, but a failure that hits every
+        // item (a bad query, a closed connection) has to show in the log: it
+        // used to be swallowed, and the run reported success with nothing saved.
+        failed++;
+        firstFailure ??= err;
       }
+    }
+
+    if (capped > 0) {
+      console.warn(`[ingestion] ${source.name}: ${capped} item(s) dated after the fetch, set to the fetch time`);
+    }
+    if (failed > 0) {
+      console.error(`[ingestion] ${source.name}: ${failed} item(s) could not be saved, first error:`, firstFailure);
     }
 
     await db
@@ -449,7 +470,7 @@ export async function ingestSource(source: typeof sourcesTable.$inferSelect): Pr
       })
       .where(eq(sourcesTable.id, source.id));
 
-    console.log(`[ingestion] ${source.name}: inserted ${inserted} articles from ${items.length} items`);
+    console.log(`[ingestion] ${source.name}: saved ${inserted} of ${items.length} items, ${added} new`);
     return inserted;
   } catch (err) {
     console.error(`[ingestion] ${source.name} failed:`, err);

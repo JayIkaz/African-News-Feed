@@ -13,9 +13,10 @@ import { publicCache } from "../middlewares/publicCache";
 
 // Cache windows, chosen against how often each thing actually changes.
 //
-// Stories arrive on the hourly ingestion job, so a minute at the edge is well
-// inside the staleness a reader would notice and still collapses a crawl of
-// thousands of article URLs into a handful of database queries.
+// Stories arrive when the ingestion job runs, a few times a day, so a minute at
+// the edge is well inside the staleness a reader would notice and still
+// collapses a crawl of thousands of article URLs into a handful of database
+// queries.
 //
 // Categories, countries and publishers change when a feed is added or removed,
 // which is rare, so they hold for ten minutes.
