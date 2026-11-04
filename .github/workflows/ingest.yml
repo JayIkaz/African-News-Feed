@@ -1,11 +1,22 @@
 name: Ingestion
 
+# Which trigger started a run shows in the run's name in the Actions list, so the
+# number of runs each cron entry produces can be counted without opening them.
+run-name: Ingestion (${{ github.event_name }} ${{ github.event.schedule }})
+
 on:
   schedule:
-    # 23 minutes past every hour — offset from the top of the hour to avoid
-    # piling onto the same minute as everyone else's cron jobs. Replaces the
-    # old in-process 60-minute setInterval scheduler.
-    - cron: "23 * * * *"
+    # Every 15 minutes, at minutes that avoid the top of the hour. The job used to
+    # ask for one run an hour at :23, and GitHub started it 3 to 5 times a day
+    # (100 runs between 15 October and 4 November 2026, a median of 4.9 hours
+    # apart, the longest gap 10.8 hours). Others report the same pattern
+    # (github.com/orgs/community/discussions/210932). More requests may give
+    # GitHub more chances to start one; if it does not help, trigger the
+    # workflow from an outside scheduler through workflow_dispatch instead.
+    # The floor set below stops the extra requests from fetching every
+    # publisher more often than every 25 minutes. Replaces the old in-process
+    # 60-minute setInterval scheduler.
+    - cron: "8,23,38,53 * * * *"
   workflow_dispatch:
 
 concurrency:
@@ -33,4 +44,8 @@ jobs:
       - name: Run ingestion
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          # A scheduled run ends at once if any publisher was fetched less than
+          # this many minutes ago (see lib/ingestGuard.ts). A manual run always
+          # goes ahead.
+          INGEST_MIN_INTERVAL_MINUTES: ${{ github.event_name == 'schedule' && '25' || '0' }}
         run: pnpm --filter @workspace/api-server run ingest
