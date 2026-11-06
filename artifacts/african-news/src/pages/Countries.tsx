@@ -25,12 +25,12 @@ export default function Countries() {
   usePageMeta(
     activeRegion === "All"
       ? {
-          title: "Browse African news by country | AfricaNews",
+          title: "Browse African news by country | African News Feed",
           description: "Pick an African country to see its latest headlines. Countries are grouped into five regions.",
         }
       : {
-          title: `Browse ${activeRegion} news by country | AfricaNews`,
-          description: `The countries in ${activeRegion} with recent headlines on AfricaNews. Pick one to see its latest stories.`,
+          title: `Browse ${activeRegion} news by country | African News Feed`,
+          description: `The countries in ${activeRegion} with recent headlines on African News Feed. Pick one to see its latest stories.`,
         },
   );
 

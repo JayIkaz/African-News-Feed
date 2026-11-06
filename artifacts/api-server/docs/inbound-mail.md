@@ -12,7 +12,7 @@ personal inbox.
 3. It fetches the full message from Resend (the event carries no body) and sends
    a copy to `INBOUND_FORWARD_TO`. The copy comes from the mailbox it was sent
    to, on the verified sending subdomain: a message to `enquiries@` arrives from
-   `AfricaNews enquiries <enquiries@notifications.africannewsfeed.news>`, one to
+   `African News Feed enquiries <enquiries@notifications.africannewsfeed.news>`, one to
    `advertise@` from `advertise@notifications...`. The mailbox name is reduced
    to plain address characters, a `+tag` is dropped, and `inbound` is used when
    none of the recipients is on our domain.

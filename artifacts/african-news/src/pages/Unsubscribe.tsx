@@ -9,7 +9,7 @@ type Status = "idle" | "working" | "done" | "error";
 // straight from the link would let a mail scanner that opens every link in a
 // message unsubscribe people by accident.
 export default function Unsubscribe() {
-  usePageMeta({ title: "Unsubscribe | AfricaNews", noindex: true });
+  usePageMeta({ title: "Unsubscribe | African News Feed", noindex: true });
 
   const params = new URLSearchParams(window.location.search);
   const email = params.get("e") ?? "";
@@ -57,7 +57,7 @@ export default function Unsubscribe() {
           <p role="status">You have been unsubscribed. We have deleted your email address.</p>
         ) : (
           <>
-            <p>Stop emails from AfricaNews to {email}?</p>
+            <p>Stop emails from African News Feed to {email}?</p>
             <button className="an-page-button" type="button" onClick={unsubscribe} disabled={status === "working"}>
               {status === "working" ? "Unsubscribing…" : "Unsubscribe"}
             </button>

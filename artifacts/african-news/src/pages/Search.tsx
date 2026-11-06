@@ -32,7 +32,7 @@ export default function Search() {
   // Results for a made-up query are not worth indexing, and the same words
   // are already reachable through the section and country pages.
   usePageMeta({
-    title: query ? `Search: ${query} | AfricaNews` : "Search | AfricaNews",
+    title: query ? `Search: ${query} | African News Feed` : "Search | African News Feed",
     noindex: true,
   });
 

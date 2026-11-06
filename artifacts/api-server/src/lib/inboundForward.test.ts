@@ -94,7 +94,7 @@ describe("addressOf and isOwnAddress", () => {
 
   it("matches the site's domain and its subdomains only", () => {
     assert.equal(isOwnAddress("enquiries@africannewsfeed.news"), true);
-    assert.equal(isOwnAddress("AfricaNews <hello@notifications.africannewsfeed.news>"), true);
+    assert.equal(isOwnAddress("African News Feed <hello@notifications.africannewsfeed.news>"), true);
     assert.equal(isOwnAddress("x@evilafricannewsfeed.news"), false);
     assert.equal(isOwnAddress("x@africannewsfeed.news.example.com"), false);
     assert.equal(isOwnAddress("ada@gmail.com"), false);
@@ -121,7 +121,7 @@ describe("mailboxOf and senderFor", () => {
   });
 
   it("builds a sender on the verified sending subdomain", () => {
-    assert.equal(senderFor("enquiries"), "AfricaNews enquiries <enquiries@notifications.africannewsfeed.news>");
+    assert.equal(senderFor("enquiries"), "African News Feed enquiries <enquiries@notifications.africannewsfeed.news>");
   });
 });
 
@@ -187,7 +187,7 @@ describe("forwardReceivedEmail", () => {
     assert.deepEqual(out, { status: "forwarded", id: "out_1", attachments: "none" });
     assert.equal(sent.length, 1);
     const p = sent[0].payload;
-    assert.equal(p.from, "AfricaNews enquiries <enquiries@notifications.africannewsfeed.news>");
+    assert.equal(p.from, "African News Feed enquiries <enquiries@notifications.africannewsfeed.news>");
     assert.deepEqual(p.to, ["owner@gmail.com"]);
     assert.equal(p.replyTo, "Ada <ada@example.com>");
     assert.equal(p.subject, "Hello");
@@ -201,7 +201,7 @@ describe("forwardReceivedEmail", () => {
   it("names the mailbox in the sender and leaves the subject as the visitor wrote it", async () => {
     const { client, sent } = fakeClient({ received: { to: ["Advertise@africannewsfeed.news"], subject: "  Rates " } });
     await forwardReceivedEmail(client, config, event());
-    assert.equal(sent[0].payload.from, "AfricaNews advertise <advertise@notifications.africannewsfeed.news>");
+    assert.equal(sent[0].payload.from, "African News Feed advertise <advertise@notifications.africannewsfeed.news>");
     assert.equal(sent[0].payload.subject, "Rates");
   });
 
@@ -210,7 +210,7 @@ describe("forwardReceivedEmail", () => {
       received: { to: ["ada@example.com"], cc: ["enquiries@africannewsfeed.news"] },
     });
     await forwardReceivedEmail(client, config, event());
-    assert.equal(sent[0].payload.from, "AfricaNews enquiries <enquiries@notifications.africannewsfeed.news>");
+    assert.equal(sent[0].payload.from, "African News Feed enquiries <enquiries@notifications.africannewsfeed.news>");
   });
 
   it("uses the fixed sender when one is configured", async () => {
@@ -320,7 +320,7 @@ describe("forwardReceivedEmail", () => {
     const out = await forwardReceivedEmail(
       client,
       config,
-      event({ from: "AfricaNews inbound <inbound@notifications.africannewsfeed.news>" }),
+      event({ from: "African News Feed inbound <inbound@notifications.africannewsfeed.news>" }),
     );
     assert.equal(out.status, "ignored");
     assert.equal(calls.get, 0);

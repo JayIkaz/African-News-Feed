@@ -62,7 +62,7 @@ export function NewsletterForm({ headingLevel: Heading = "h3" }: NewsletterFormP
     <div>
       <Heading className="an-nl-title">Newsletter</Heading>
       <p className="an-nl-blurb">
-        Join the mailing list. We store your email address to contact you about AfricaNews, and every email has an unsubscribe link.
+        Join the mailing list. We store your email address to contact you about African News Feed, and every email has an unsubscribe link.
       </p>
       {status === "done" ? (
         <p className="an-nl-status" role="status">

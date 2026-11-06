@@ -8,8 +8,8 @@ import { CONTACT_EMAIL } from "@/lib/site";
 // before then.
 export default function Terms() {
   usePageMeta({
-    title: "Terms of use | AfricaNews",
-    description: "The terms for using AfricaNews, a news aggregator that links to publishers' own stories.",
+    title: "Terms of use | African News Feed",
+    description: "The terms for using African News Feed, a news aggregator that links to publishers' own stories.",
   });
 
   return (
@@ -18,9 +18,9 @@ export default function Terms() {
         <h1>Terms of use</h1>
         <p className="an-page-meta">Last updated: 3 October 2026</p>
 
-        <h2>Using AfricaNews</h2>
+        <h2>Using African News Feed</h2>
         <p>
-          AfricaNews is a news aggregator. By using the site you agree to these terms. If you do not agree, please do not use it.
+          African News Feed is a news aggregator. By using the site you agree to these terms. If you do not agree, please do not use it.
         </p>
 
         <h2>What we show</h2>

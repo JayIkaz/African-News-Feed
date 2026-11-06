@@ -29,7 +29,7 @@ export default function Home() {
   // The first page keeps the title of index.html; later pages say which page
   // they are, so no two share one.
   usePageMeta({
-    title: page > 1 ? `Latest African news, page ${page} | AfricaNews` : undefined,
+    title: page > 1 ? `Latest African news, page ${page} | African News Feed` : undefined,
     noindex: pastTheEnd,
   });
 
@@ -50,7 +50,7 @@ export default function Home() {
     <AppLayout>
       {/* The page had no h1. Screen-reader and search users get one; sighted
           users already have the masthead. */}
-      <h1 className="sr-only">AfricaNews: headlines from African news publishers</h1>
+      <h1 className="sr-only">African News Feed: headlines from African news publishers</h1>
 
       <div className="an-container">
         {/* One grid for the whole page: the stream on the left, the right-hand

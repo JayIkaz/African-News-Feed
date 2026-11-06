@@ -9,8 +9,8 @@ import { ADVERTISE_EMAIL } from "@/lib/site";
 // them. If analytics are added later, quote them only with their source.
 export default function Advertise() {
   usePageMeta({
-    title: "Advertise | AfricaNews",
-    description: "Where adverts appear on AfricaNews, how they are labelled, and how to get in touch.",
+    title: "Advertise | African News Feed",
+    description: "Where adverts appear on African News Feed, how they are labelled, and how to get in touch.",
   });
   const { sourceCount, countryCount, loading, ready } = useSiteCounts();
   const { data: countries } = useListCountries();
@@ -21,9 +21,9 @@ export default function Advertise() {
   return (
     <AppLayout>
       <div className="an-page">
-        <h1>Advertise on AfricaNews</h1>
+        <h1>Advertise on African News Feed</h1>
         <p>
-          AfricaNews shows headlines from{" "}
+          African News Feed shows headlines from{" "}
           {ready ? (
             <>{sourceCount} African news publishers in {countryCount} countries, and has collected {articleCount.toLocaleString()} stories so far.</>
           ) : loading ? (

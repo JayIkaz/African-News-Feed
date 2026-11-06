@@ -271,7 +271,7 @@ current guidance. The current spec is
 [`news-feed-design-spec.md`](./news-feed-design-spec.md).
 
 ````markdown
-# AfricaNews — visual design spec (dark editorial)
+# African News Feed — visual design spec (dark editorial)
 
 This supersedes the earlier light-palette, card-based version of this spec. The site has moved to a dark, high-contrast editorial layout inspired by The Intercept, borderless feed rows instead of boxed cards, reserving colour for category/urgency signals rather than decoration.
 
@@ -315,7 +315,7 @@ No card backgrounds, borders, shadows, or rounded corners in this direction. Str
 
 ## 5. Pulse divider (signature element)
 
-A thin SVG waveform line sits between the top story and the feed, echoing the AfricaNews pulse-through-Africa-silhouette logo. Stroke colour `rgba(242,241,237,0.18)`, 1px weight. This replaces a plain hairline rule at this one structural boundary — it is not repeated elsewhere, so it stays a signature rather than becoming decoration.
+A thin SVG waveform line sits between the top story and the feed, echoing the original pulse-through-Africa-silhouette logo. Stroke colour `rgba(242,241,237,0.18)`, 1px weight. This replaces a plain hairline rule at this one structural boundary — it is not repeated elsewhere, so it stays a signature rather than becoming decoration.
 
 ## 6. Latest news feed
 

@@ -465,16 +465,73 @@ html {
   gap: 10px;
   text-decoration: none;
 }
-.an-brand-mark {
-  flex-shrink: 0;
-  border-radius: var(--radius-sm);
+.an-brand-logo {
+  display: block;
+  height: 34px;
+  width: auto;
+  overflow: visible;
 }
-.an-brand-name {
-  font-family: var(--font-display);
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--ink);
+@media (max-width: 380px) {
+  .an-brand-logo { height: 30px; }
+}
+
+/* The header logo plays once when the page loads: the map fades up, then the
+   letters rise one after another. Hovering or focusing the logo sends a small
+   ripple through the letters. The ripple uses the separate `translate`
+   property so it never restarts the load animation. Both switch off for
+   visitors who ask for reduced motion. */
+.an-logo-mark,
+.an-logo-glyph {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+.an-logo-mark {
+  animation: an-logo-mark-in 560ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.an-logo-glyph {
+  animation: an-logo-glyph-in 460ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  transition: translate 200ms ease-out;
+}
+@keyframes an-logo-mark-in {
+  from { opacity: 0; transform: scale(0.88); }
+}
+@keyframes an-logo-glyph-in {
+  from { opacity: 0; transform: translateY(18px); }
+}
+.an-brand:hover .an-logo-glyph,
+.an-brand:focus-visible .an-logo-glyph {
+  translate: 0 -7px;
+}
+.an-logo-name g:nth-child(1) .an-logo-glyph { animation-delay: 220ms; transition-delay: 0ms; }
+.an-logo-name g:nth-child(2) .an-logo-glyph { animation-delay: 250ms; transition-delay: 22ms; }
+.an-logo-name g:nth-child(3) .an-logo-glyph { animation-delay: 280ms; transition-delay: 44ms; }
+.an-logo-name g:nth-child(4) .an-logo-glyph { animation-delay: 310ms; transition-delay: 66ms; }
+.an-logo-name g:nth-child(5) .an-logo-glyph { animation-delay: 340ms; transition-delay: 88ms; }
+.an-logo-name g:nth-child(6) .an-logo-glyph { animation-delay: 370ms; transition-delay: 110ms; }
+.an-logo-name g:nth-child(7) .an-logo-glyph { animation-delay: 400ms; transition-delay: 132ms; }
+.an-logo-name g:nth-child(8) .an-logo-glyph { animation-delay: 430ms; transition-delay: 154ms; }
+.an-logo-name g:nth-child(9) .an-logo-glyph { animation-delay: 460ms; transition-delay: 176ms; }
+.an-logo-name g:nth-child(10) .an-logo-glyph { animation-delay: 490ms; transition-delay: 198ms; }
+.an-logo-name g:nth-child(11) .an-logo-glyph { animation-delay: 520ms; transition-delay: 220ms; }
+.an-logo-name g:nth-child(12) .an-logo-glyph { animation-delay: 550ms; transition-delay: 242ms; }
+.an-logo-name g:nth-child(13) .an-logo-glyph { animation-delay: 580ms; transition-delay: 264ms; }
+.an-logo-name g:nth-child(14) .an-logo-glyph { animation-delay: 610ms; transition-delay: 286ms; }
+.an-logo-name g:nth-child(15) .an-logo-glyph { animation-delay: 640ms; transition-delay: 308ms; }
+@media (prefers-reduced-motion: reduce) {
+  .an-logo-mark,
+  .an-logo-glyph { animation: none; transition: none; }
+  .an-brand:hover .an-logo-glyph,
+  .an-brand:focus-visible .an-logo-glyph { translate: none; }
+}
+
+.an-footer-logo {
+  display: inline-block;
+  margin-bottom: 10px;
+  line-height: 0;
+}
+.an-footer-logo img {
+  display: block;
+  height: auto;
 }
 
 .an-nav-search-form {

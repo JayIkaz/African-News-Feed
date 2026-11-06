@@ -1,4 +1,4 @@
-# AfricaNews — visual design spec (light editorial)
+# African News Feed — visual design spec (light editorial)
 
 This supersedes the earlier card-based version of this spec. The site uses a quiet editorial layout inspired by The Intercept: borderless feed rows instead of boxed cards, a warm off-white page with near-black text, and one accent colour. Colour carries meaning (the active section, urgency) and is not decoration.
 
@@ -67,7 +67,7 @@ Below 640px the top story is presented as a swipeable carousel. It carries this 
 
 ## 5. Pulse divider (signature element)
 
-A thin SVG waveform line sits between the top story and the feed, echoing the AfricaNews pulse-through-Africa-silhouette logo. Stroke colour `--line-strong`, 1px weight. This replaces a plain hairline rule at this one structural boundary — it is not repeated elsewhere, so it stays a signature rather than becoming decoration.
+A thin SVG waveform line sits between the top story and the feed, echoing the original pulse-through-Africa-silhouette logo. Stroke colour `--line-strong`, 1px weight. This replaces a plain hairline rule at this one structural boundary — it is not repeated elsewhere, so it stays a signature rather than becoming decoration.
 
 **It stays unique to this boundary.** Built and reviewed in place; repeating it would turn a signature into a motif.
 

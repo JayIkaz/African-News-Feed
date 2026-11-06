@@ -9,7 +9,7 @@
 // ---------------------------------------------------------------------------
 
 export const SITE_ORIGIN = "https://www.africannewsfeed.news";
-export const SITE_NAME = "AfricaNews";
+export const SITE_NAME = "African News Feed";
 export const DEFAULT_IMAGE = `${SITE_ORIGIN}/opengraph.jpg`;
 // public/opengraph.jpg in the web app is 1280x720.
 const DEFAULT_IMAGE_SIZE = { width: 1280, height: 720 };

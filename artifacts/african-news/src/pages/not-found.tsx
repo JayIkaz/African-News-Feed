@@ -7,7 +7,7 @@ import { usePageMeta } from "@/lib/usePageMeta";
 export default function NotFound() {
   // The host answers every unknown address with this app and status 200, so
   // the page tells search engines it is not a real page.
-  usePageMeta({ title: "Page not found | AfricaNews", noindex: true });
+  usePageMeta({ title: "Page not found | African News Feed", noindex: true });
   return (
     <AppLayout>
       <div className="min-h-[70vh] flex items-center justify-center">
