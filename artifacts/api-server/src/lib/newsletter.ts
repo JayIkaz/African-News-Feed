@@ -9,7 +9,7 @@ export const COMPANY_LINE =
 // Resend only sends from a domain you have verified. notifications.africannewsfeed.news
 // is verified in the account; onboarding@resend.dev is restricted to the
 // account owner's own address, so it cannot be used for readers.
-const DEFAULT_FROM = "AfricaNews <hello@notifications.africannewsfeed.news>";
+const DEFAULT_FROM = "African News Feed <hello@notifications.africannewsfeed.news>";
 
 export interface EmailConfig {
   apiKey: string;
@@ -68,12 +68,12 @@ function escapeHtml(value: string): string {
 
 export function buildWelcomeEmail(email: string, secret: string) {
   const links = unsubscribeLinks(email, secret);
-  const subject = "You are on the AfricaNews mailing list";
+  const subject = "You are on the African News Feed mailing list";
 
   const text = [
-    "Thanks for signing up to AfricaNews.",
+    "Thanks for signing up to African News Feed.",
     "",
-    "AfricaNews collects headlines from African news publishers in one place and updates several times a day. Every story links to the publisher that wrote it.",
+    "African News Feed collects headlines from African news publishers in one place and updates several times a day. Every story links to the publisher that wrote it.",
     "",
     "This is the only email we send at present. We do not send a daily digest yet. If that changes, we will update our privacy page before the first one goes out.",
     "",
@@ -100,12 +100,12 @@ export function buildWelcomeEmail(email: string, secret: string) {
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F7F5F0;padding:32px 16px;">
 <tr><td align="center">
 <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
-<tr><td style="padding:0 0 24px;font-family:Georgia,'Times New Roman',serif;font-size:24px;font-weight:700;color:#1A1916;">AfricaNews</td></tr>
+<tr><td style="padding:0 0 24px;font-family:Georgia,'Times New Roman',serif;font-size:24px;font-weight:700;color:#1A1916;">African News Feed</td></tr>
 <tr><td style="border-top:1px solid #D8D5CF;padding:28px 0 0;font-family:Georgia,'Times New Roman',serif;font-size:26px;line-height:1.25;font-weight:700;color:#1A1916;">
 Thanks for signing up.
 </td></tr>
 <tr><td style="padding:16px 0 0;font-family:${font};font-size:16px;line-height:1.65;color:#1A1916;">
-AfricaNews collects headlines from African news publishers in one place and updates several times a day. Every story links to the publisher that wrote it.
+African News Feed collects headlines from African news publishers in one place and updates several times a day. Every story links to the publisher that wrote it.
 </td></tr>
 <tr><td style="padding:16px 0 0;font-family:${font};font-size:16px;line-height:1.65;color:#1A1916;">
 This is the only email we send at present. We do not send a daily digest yet. If that changes, we will update our <a href="${SITE_ORIGIN}/privacy" style="color:#9A3412;">privacy page</a> before the first one goes out.

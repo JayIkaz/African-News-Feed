@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useSearch } from "wouter";
 import { SECTIONS, categoryHref } from "@/lib/slugs";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 
 // A keystroke typed into a field is for the field, not for a shortcut.
 function isTyping(target: EventTarget | null): boolean {
@@ -126,8 +127,7 @@ export function Navbar() {
     <header className="an-header">
       <div className="an-header-inner">
         <Link href="/" className="an-brand">
-          <img className="an-brand-mark" src="/images/logo-mark.png" width="32" height="36" alt="" />
-          <img className="an-brand-name" src="/images/logo-wordmark.png" width="163" height="16" alt="African News Feed" />
+          <BrandLogo />
         </Link>
 
         <SearchBox

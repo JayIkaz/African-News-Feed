@@ -102,11 +102,11 @@ export function mailboxOf(recipients: string[]): string {
   return local.slice(0, 32) || "inbound";
 }
 
-// "AfricaNews enquiries <enquiries@notifications.africannewsfeed.news>". Any
+// "African News Feed enquiries <enquiries@notifications.africannewsfeed.news>". Any
 // local part works on a verified domain, and it gives a mail filter something
 // to match on.
 export function senderFor(mailbox: string): string {
-  return `AfricaNews ${mailbox} <${mailbox}@${SENDING_DOMAIN}>`;
+  return `African News Feed ${mailbox} <${mailbox}@${SENDING_DOMAIN}>`;
 }
 
 function describeFailure(error: { message?: string; statusCode?: number | null } | null): string {

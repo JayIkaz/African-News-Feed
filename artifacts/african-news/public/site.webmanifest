@@ -1,6 +1,6 @@
 {
-  "name": "AfricaNews",
-  "short_name": "AfricaNews",
+  "name": "African News Feed",
+  "short_name": "African News Feed",
   "description": "Headlines from African news publishers in one place, updated several times a day.",
   "start_url": "/",
   "display": "browser",

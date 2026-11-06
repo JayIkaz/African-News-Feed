@@ -51,7 +51,7 @@ export function Footer() {
           {/* Brand */}
           <div>
             <Link href="/" className="an-footer-logo">
-              <img src="/images/logo-stacked.png" width="168" height="98" alt="African News Feed" loading="lazy" />
+              <img src="/images/logo-stacked.svg" width="168" height="98" alt="African News Feed" loading="lazy" />
             </Link>
             <div style={{ fontFamily: "var(--font-ui)", fontSize: 12, fontWeight: 500, letterSpacing: "0.18em", textTransform: "uppercase", color: FOOT_DIM, marginBottom: 14 }}>The Continent's Pulse</div>
             <p style={{ fontFamily: "var(--font-ui)", fontSize: 13, lineHeight: 1.6, color: FOOT_LINK, marginBottom: 16 }}>
@@ -77,7 +77,7 @@ export function Footer() {
 
           {/* The site itself: what it is, who runs it, how to reach them */}
           <nav aria-label="About the site">
-            <h2 style={COLUMN_HEADING}>AfricaNews</h2>
+            <h2 style={COLUMN_HEADING}>African News Feed</h2>
             {SITE_LINKS.map(({ label, href }) => (
               <FootLink key={label} href={href}>{label}</FootLink>
             ))}
@@ -92,7 +92,7 @@ export function Footer() {
         {/* Bottom bar */}
         <div style={{ borderTop: `1px solid ${FOOT_RULE}`, paddingTop: 24, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
           <p style={{ fontFamily: "var(--font-ui)", fontSize: 12, color: FOOT_DIM }}>
-            © {new Date().getFullYear()} AfricaNews. Stories belong to their publishers.
+            © {new Date().getFullYear()} African News Feed. Stories belong to their publishers.
             {" · "}
             <a
               href="https://aukizan.com"

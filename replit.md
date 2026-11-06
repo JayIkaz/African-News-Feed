@@ -2,7 +2,7 @@
 
 ## Overview
 
-**AfricaNews** — A premium pan-African news aggregation platform that automatically collects, categorises, and displays articles from 65+ trusted newspapers across 25+ African countries.
+**African News Feed** — A premium pan-African news aggregation platform that automatically collects, categorises, and displays articles from 65+ trusted newspapers across 25+ African countries.
 
 ## Stack
 

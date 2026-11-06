@@ -5,8 +5,8 @@ import { CONTACT_EMAIL, ADVERTISE_EMAIL } from "@/lib/site";
 
 export default function About() {
   usePageMeta({
-    title: "About | AfricaNews",
-    description: "AfricaNews collects headlines from African news publishers in one stream, newest first, with a link to the publisher for every story.",
+    title: "About | African News Feed",
+    description: "African News Feed collects headlines from African news publishers in one stream, newest first, with a link to the publisher for every story.",
   });
   const { sourceCount, countryCount, loading, ready } = useSiteCounts();
 
@@ -15,9 +15,9 @@ export default function About() {
   return (
     <AppLayout>
       <div className="an-page">
-        <h1>About AfricaNews</h1>
+        <h1>About African News Feed</h1>
         <p>
-          AfricaNews collects headlines from{" "}
+          African News Feed collects headlines from{" "}
           {ready ? <>{sourceCount} African news publishers in {countryCount} countries</> : loading ? <>{skeleton} African news publishers in {skeleton} countries</> : <>African news publishers across the continent</>}{" "}
           and shows them in one stream, newest first. Every story links to the publisher that wrote it. We do not write, edit or rank the news.
         </p>
@@ -39,7 +39,7 @@ export default function About() {
 
         <h2>Who runs it</h2>
         <p>
-          AfricaNews is operated by Auvane Limited, trading as Aukizan, a company registered in England and Wales (company number 13726607). Its registered office is 61 Bridge Street, Kington, United Kingdom, HR5 3DJ. AfricaNews exists to put what African publishers report in one place, so you can follow the continent without visiting dozens of sites.
+          African News Feed is operated by Auvane Limited, trading as Aukizan, a company registered in England and Wales (company number 13726607). Its registered office is 61 Bridge Street, Kington, United Kingdom, HR5 3DJ. African News Feed exists to put what African publishers report in one place, so you can follow the continent without visiting dozens of sites.
         </p>
 
         <h2>Contact</h2>

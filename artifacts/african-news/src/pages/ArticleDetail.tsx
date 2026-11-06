@@ -78,7 +78,7 @@ export default function ArticleDetail() {
   // The title and description are the publisher's original text, whichever
   // language the reader has switched the page to.
   usePageMeta({
-    title: article ? `${article.title} | AfricaNews` : undefined,
+    title: article ? `${article.title} | African News Feed` : undefined,
     description: article?.summary ? truncateToWord(article.summary.replace(/\s+/g, " ").trim(), 160) : undefined,
     noindex: !isLoading && (!!error || !article),
   });

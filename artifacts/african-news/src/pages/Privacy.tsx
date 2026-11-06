@@ -11,8 +11,8 @@ import { CONTACT_EMAIL } from "@/lib/site";
 //  - a regular newsletter starts: say what is sent and how often
 export default function Privacy() {
   usePageMeta({
-    title: "Privacy policy | AfricaNews",
-    description: "What AfricaNews stores about you, who handles it, and how to ask us to change or delete it.",
+    title: "Privacy policy | African News Feed",
+    description: "What African News Feed stores about you, who handles it, and how to ask us to change or delete it.",
   });
 
   return (
@@ -23,7 +23,7 @@ export default function Privacy() {
 
         <h2>Who we are</h2>
         <p>
-          AfricaNews (africannewsfeed.news) is operated by Auvane Limited, trading as Aukizan, a company registered in England and Wales (company number 13726607, registered office 61 Bridge Street, Kington, United Kingdom, HR5 3DJ). Write to <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> with any question about this page. We handle personal data under the UK GDPR and the Data Protection Act 2018.
+          African News Feed (africannewsfeed.news) is operated by Auvane Limited, trading as Aukizan, a company registered in England and Wales (company number 13726607, registered office 61 Bridge Street, Kington, United Kingdom, HR5 3DJ). Write to <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> with any question about this page. We handle personal data under the UK GDPR and the Data Protection Act 2018.
         </p>
 
         <h2>What we collect</h2>
@@ -38,7 +38,7 @@ export default function Privacy() {
         </p>
 
         <h2>Cookies</h2>
-        <p>AfricaNews sets no cookies of its own.</p>
+        <p>African News Feed sets no cookies of its own.</p>
 
         <h2>Other companies that handle data</h2>
         <p>Vercel hosts the site and its API.</p>

@@ -80,8 +80,9 @@ export default function HomeScreen() {
         ]}
       >
         <Text style={[styles.logo, { color: colors.foreground }]}>
-          Africa
+          African{" "}
           <Text style={{ color: colors.primary }}>News</Text>
+          {" "}Feed
         </Text>
       </View>
 

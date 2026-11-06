@@ -19,7 +19,7 @@ function safeHref(url: string): string | null {
 }
 
 // One publisher: its name, where it is, a link to its own site, and the
-// stories of its that AfricaNews has collected. `page` is the page the address
+// stories of its that African News Feed has collected. `page` is the page the address
 // starts the list on.
 export default function Source({ id, page }: { id: number; page: number }) {
   const sources = useListSources();
@@ -40,12 +40,12 @@ export default function Source({ id, page }: { id: number; page: number }) {
   const thin = !!source && (!source.isActive || !source.rssUrl || source.articleCount === 0);
   usePageMeta({
     title: missing
-      ? "Publisher not found | AfricaNews"
+      ? "Publisher not found | African News Feed"
       : name
-        ? `${name} news${page > 1 ? `, page ${page}` : ""} | AfricaNews`
+        ? `${name} news${page > 1 ? `, page ${page}` : ""} | African News Feed`
         : undefined,
     description: name
-      ? `Headlines from ${name}${country ? ` in ${country}` : ""}, collected by AfricaNews several times a day, with a link to each story at the publisher.`
+      ? `Headlines from ${name}${country ? ` in ${country}` : ""}, collected by African News Feed several times a day, with a link to each story at the publisher.`
       : undefined,
     noindex: missing || thin || pastTheEnd || list.total === 0,
   });
@@ -55,7 +55,7 @@ export default function Source({ id, page }: { id: number; page: number }) {
       <AppLayout>
         <div className="an-page">
           <h1>Publisher not found</h1>
-          <p>AfricaNews has no publisher at this address.</p>
+          <p>African News Feed has no publisher at this address.</p>
           <p><Link href="/sources">See every source</Link></p>
         </div>
       </AppLayout>
@@ -79,7 +79,7 @@ export default function Source({ id, page }: { id: number; page: number }) {
               </Link>
             )}
             {list.total !== undefined && (
-              <span>{list.total.toLocaleString()} {list.total === 1 ? "story" : "stories"} on AfricaNews</span>
+              <span>{list.total.toLocaleString()} {list.total === 1 ? "story" : "stories"} on African News Feed</span>
             )}
             {homepage && name && (
               <a href={homepage} target="_blank" rel="noopener noreferrer" className="an-listing-hero-visit">
@@ -105,7 +105,7 @@ export default function Source({ id, page }: { id: number; page: number }) {
               ) : (
                 <div className="an-listing-empty">
                   <h3>No stories yet</h3>
-                  <p>AfricaNews has not collected a story from {name ?? "this publisher"} yet. <Link href="/sources">See every source</Link></p>
+                  <p>African News Feed has not collected a story from {name ?? "this publisher"} yet. <Link href="/sources">See every source</Link></p>
                 </div>
               )}
               {list.isLoadingMore && Array(3).fill(0).map((_, i) => (
