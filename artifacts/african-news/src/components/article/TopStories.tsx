@@ -35,10 +35,13 @@ interface RowProps {
   onImageError: (id: number) => void;
 }
 
-// The lead tile for the story on show. Every story's picture is stacked inside
-// it and only the active one is visible, so the next picture is already loaded
-// when its turn comes and the change is a cross-fade, not a blank tile. The
-// pictures are decoration: the link's name is the headline.
+// The lead tile for the story on show. The pictures are stacked inside it and
+// only the active one is visible, so the change is a cross-fade. The picture of
+// the story on show and of the one after it are loaded, so the next is ready
+// when its turn comes, and a picture stays once it has been shown (it is the
+// one fading out). The rest are not requested until needed: on a slow
+// connection six full-size pictures should not all load up front. The pictures
+// are decoration: the link's name is the headline.
 //
 // The rotation is driven by the progress bar along the tile's bottom edge. The
 // bar is a CSS animation that lasts one interval (see --an-top-interval in
@@ -63,6 +66,11 @@ function Lead({
   onImageError: (id: number) => void;
 }) {
   const article = stories[index];
+  const nextId = stories[(index + 1) % stories.length].id;
+  const [shown, setShown] = useState<ReadonlySet<number>>(() => new Set());
+  useEffect(() => {
+    setShown((prev) => (prev.has(article.id) ? prev : new Set(prev).add(article.id)));
+  }, [article.id]);
   return (
     <div
       className={`an-top-stage${moved ? " is-moved" : ""}`}
@@ -72,17 +80,18 @@ function Lead({
       aria-live={autoplay ? "off" : "polite"}
     >
       <Link href={`/article/${article.id}`} className="an-top-lead">
-        {stories.map((story, i) => (
-          <img
-            key={story.id}
-            src={getArticleImage(story) ?? undefined}
-            alt=""
-            className={`an-top-lead-img${i === index ? " is-active" : ""}`}
-            loading={i === 0 ? undefined : "lazy"}
-            referrerPolicy="no-referrer"
-            onError={() => onImageError(story.id)}
-          />
-        ))}
+        {stories.map((story, i) =>
+          story.id === article.id || story.id === nextId || shown.has(story.id) ? (
+            <img
+              key={story.id}
+              src={getArticleImage(story) ?? undefined}
+              alt=""
+              className={`an-top-lead-img${i === index ? " is-active" : ""}`}
+              referrerPolicy="no-referrer"
+              onError={() => onImageError(story.id)}
+            />
+          ) : null,
+        )}
         <span className="an-top-lead-scrim" aria-hidden="true" />
         <span key={`chip-${article.id}`} className="an-top-chip">{article.category}</span>
         <span key={`text-${article.id}`} className="an-top-lead-text">
