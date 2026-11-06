@@ -467,14 +467,22 @@ html {
 }
 .an-brand-mark {
   flex-shrink: 0;
-  border-radius: var(--radius-sm);
+  display: block;
+  height: 36px;
+  width: auto;
 }
 .an-brand-name {
-  font-family: var(--font-display);
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--ink);
+  display: block;
+  height: auto;
+}
+.an-footer-logo {
+  display: inline-block;
+  margin-bottom: 10px;
+  line-height: 0;
+}
+.an-footer-logo img {
+  display: block;
+  height: auto;
 }
 
 .an-nav-search-form {
