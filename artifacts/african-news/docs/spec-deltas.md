@@ -212,6 +212,16 @@ fixes exactly.
 **Fonts.** `index.html` now loads Fraunces / Inter / IBM Plex Mono, replacing
 Lora / IBM Plex Sans / IBM Plex Serif. Strictly required for §2.
 
+**Fonts, changed 11 November 2026.** The site no longer uses the three faces
+§2 names. Headlines are Bitter and body and interface text is Libre Franklin,
+both bundled as variable fonts. The uppercase labels that §2 sets in IBM Plex
+Mono (nav items, eyebrows, tags, timestamps) are now Libre Franklin, through
+`--font-label`; `--font-mono` is the system monospace. The reason: the
+Fraunces, Inter and Plex Mono pairing on cream paper is what most AI-built
+news sites look like, and the bundled files had no naira or cedi sign, so those
+fell back to another font in about 100 titles a month. The section 2 text
+below is the original spec and is left as it was.
+
 ---
 
 ## 6. Input to the spec's own §8 open items

@@ -30,7 +30,7 @@ Orange on the site's ink (#1A1916) is 4.67:1.
 
 ## Typeface
 
-The name is DM Serif Display (400, its only weight), released under the SIL Open Font License 1.1. The letters were shaped with HarfBuzz (kerning on) and drawn as outlines at a cap height of 40% of the mark's height in the horizontal lockup. To change the typeface, retypeset the outlines. The mark and icons do not change. Six options were compared on 6 November; the others were Fraunces 700 and 800, Playfair Display 800, Source Serif 4 700 and Plus Jakarta Sans 800.
+The name is DM Serif Display (400, its only weight), released under the SIL Open Font License 1.1. The letters were shaped with HarfBuzz (kerning on) and drawn as outlines at a cap height of 40% of the mark's height in the horizontal lockup. To change the typeface, retypeset the outlines. The mark and icons do not change. The wordmark is a separate decision from the site's headline face, which is Bitter. Six options were compared on 6 November; the others were Fraunces 700 and 800, Playfair Display 800, Source Serif 4 700 and Plus Jakarta Sans 800.
 
 ## Animation
 
