@@ -19,5 +19,5 @@ The count of `style={{` is held by a check that runs in CI
 `inline-style-budget.json`. When a change lowers the count, lock it in with
 `pnpm run check:inline-styles -- --update`. The budget only goes down.
 
-Headings use `--font-headline` (Fraunces). The Tailwind `font-serif` class is
+Headings use `--font-headline` (Bitter). The Tailwind `font-serif` class is
 mapped to it.
