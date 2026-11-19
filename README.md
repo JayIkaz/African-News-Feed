@@ -73,7 +73,7 @@ To regenerate the API client and schemas after editing `lib/api-spec/openapi.yam
 
 ## Environment variables
 
-`.env.example` has the same list with comments.
+`.env.example` is a commented template for the API's main variables. It does not list every variable below.
 
 | Variable | Used by | Purpose |
 | --- | --- | --- |
